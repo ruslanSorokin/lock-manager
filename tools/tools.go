@@ -1,5 +1,5 @@
 //go:build tools
-// +build tools//+build
+// +build tools
 
 package tools
 
