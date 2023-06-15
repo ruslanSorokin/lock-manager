@@ -1,3 +1,3 @@
 module github.com/ruslanSorokin/distributed-lock-manager
 
-go 1.20
+go 1.19
