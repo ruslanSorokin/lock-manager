@@ -1,3 +1,3 @@
-module github.com/ruslanSorokin/distributed-lock-manager
+module github.com/ruslanSorokin/lock-manager
 
 go 1.19
