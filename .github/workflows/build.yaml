@@ -81,3 +81,16 @@ jobs:
 
       - name: Build code
         run: go build -v ./...
+
+  docs-generate:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Check go generate
+        run: |
+          make docs.generate
+          git diff --exit-code

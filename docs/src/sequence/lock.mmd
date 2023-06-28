@@ -1,0 +1,27 @@
+sequenceDiagram
+  autonumber
+  participant w as Worker
+  participant lm as LockManager
+  participant ls as LockStorage
+
+  w->>+lm: lock(resourceID)
+  lm->>+ls: startTransaction()
+  ls-->>lm: _
+  lm->>ls: get(resourceID)
+  ls-->>lm: lock
+  alt lock != null
+    rect rgba(255, 0, 0, 0.5)
+      lm->>ls: abortTransaction()
+      ls-->>lm: _
+      lm-->>w: _
+      Note over w,lm: HTTP: 409::Conflict<br>GRPC: 6::ALREADY_EXISTS
+    end
+  end
+  lm->>lm: secretKey = randomUUID()
+  lm->>lm: lock = Lock(resourceID, secretKey)
+  lm->>ls: create(lock)
+  ls-->>lm: _
+  lm->>ls: applyTransaction()
+  ls-->>-lm: _
+  lm-->>-w: secretKey
+  Note over w,lm: HTTP: 201::Created<br>GRPC: 0::OK
