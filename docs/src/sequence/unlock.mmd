@@ -1,0 +1,33 @@
+sequenceDiagram
+  autonumber
+  participant w as Worker
+  participant lm as LockManager
+  participant ls as LockStorage
+
+  w->>+lm: unlock(resourceID, secretKey)
+  lm->>+ls: startTransaction()
+  ls-->>lm: _
+  lm->>ls: get(resourceID)
+  ls-->>lm: lock
+  alt lock == null
+    rect rgba(255, 0, 0, 0.5)
+      lm->>ls: abortTransaction()
+      ls-->>lm: _
+      lm-->>w: _
+      Note over w,lm: HTTP: 404::Not Found<br>GRPC: 5::NOT_FOUND
+    end
+  end
+  alt secretKey != lock.SecretKey
+    rect rgba(255, 0, 0, 0.5)
+      lm->>ls: abortTransaction()
+      ls-->>lm: _
+      lm-->>w: _
+      Note over w,lm: HTTP: 400::Bad Request<br>GRPC: 3::INVALID_ARGUMENT
+    end
+  end
+  lm->>ls: delete(resourceID)
+  ls-->>lm: _
+  lm->>ls: applyTransaction()
+  ls-->>-lm: _
+  lm-->>-w: _
+  Note over w,lm: HTTP: 200::OK<br>GRPC: 0::OK

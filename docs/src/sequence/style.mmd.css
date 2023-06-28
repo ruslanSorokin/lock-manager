@@ -1,0 +1,76 @@
+* {
+    background: #ffffff !important;
+}
+
+.actor-line {
+    stroke: #e9b218 !important;
+    fill: #f6bc1a !important;
+}
+
+.actor-man line {
+    stroke: #e9b218 !important;
+    fill: #f6bc1a !important;
+}
+
+.actor {
+    stroke: #29a769 !important;
+    fill: #29a769 !important;
+}
+
+#arrowhead path {
+    stroke: #29a769 !important;
+    fill: #29a769 !important;
+}
+
+.activation0 {
+    stroke: #e9b218 !important;
+    fill: #f6bc1a !important;
+}
+
+.messageLine0 {
+    marker-end: 'url(#arrowhead)' !important;
+    stroke-dasharray: '2 2' !important;
+    stroke-width: 2 !important;
+    stroke: #29a769 !important;
+}
+
+.marker {
+    stroke: #29a769 !important;
+    fill: #29a769 !important;
+}
+
+.messageLine1 {
+    stroke-dasharray: '2 2' !important;
+    stroke-width: 2 !important;
+    stroke: #29a769 !important;
+}
+
+.messageText {
+    font-size: 16px !important;
+    fill: #000000 !important;
+}
+
+.labelBox {
+    stroke: #29a769 !important;
+    fill: #29a769 !important;
+}
+
+line {
+    stroke: #e9b218 !important;
+    fill: #f6bc1a !important;
+}
+
+.loopLine {
+    stroke: #29a769 !important;
+}
+
+.note {
+    stroke: #000000 !important;
+    fill: #ffff00 !important;
+}
+
+.noteText {
+    font-size: 16px !important;
+    fill: #000000 !important;
+    stroke: none !important;
+}
