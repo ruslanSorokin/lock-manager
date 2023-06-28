@@ -86,22 +86,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Python
-        uses: actions/setup-python@v4
-
-
-      - name: Generate docs
+      - name: Check go generate
         run: |
           make docs.generate
-
-      - name: Run [end-of-file-fixer]
-        uses: pre-commit/action@v3.0.0
-        with:
-          extra_args: end-of-file-fixer --all-files
-
-      - name: Check docs diff
-        run: |
           git diff --exit-code
