@@ -1,3 +1,7 @@
+.SILENT: docs.generate
+docs.generate:
+	@cd docs && $(MAKE) --no-print-directory generate-uml
+
 .SILENT: tools.install
 tools.install: tools.download
 	@go mod download
