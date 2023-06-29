@@ -27,18 +27,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Check go mod deps
+      - name: Run [go mod tidy]
         run: |
           go mod tidy
           git diff --exit-code go.mod
 
-      - name: Download go mod deps
+      - name: Run [go mod download]
         run: |
           go mod download
 
-      - name: Verify go mod deps
+      - name: Run [go mod verify]
         run: |
-            go mod verify
+          go mod verify
 
   go-generate:
     runs-on: ubuntu-latest
@@ -57,7 +57,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Check go generate
+      - name: Run [go generate]
         run: |
           go generate ./...
           git diff --exit-code
@@ -90,7 +90,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Check docs generate
+      - name: Run [docs.generate]
         run: |
           make docs.generate
           git diff --exit-code
