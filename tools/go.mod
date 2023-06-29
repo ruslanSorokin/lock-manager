@@ -1,4 +1,4 @@
-module github.com/ruslanSorokin/ipc-lock-manager/tools
+module github.com/ruslanSorokin/lock-manager/tools
 
 go 1.19
 
