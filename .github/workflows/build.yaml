@@ -90,7 +90,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Check go generate
+      - name: Check docs generate
         run: |
           make docs.generate
           git diff --exit-code
