@@ -5,7 +5,7 @@ sequenceDiagram
   participant ls as LockStorage
 
   w->>+lm: unlock(resourceID, secretKey)
-  lm->>+ls: deleteIfSecretKeyMatch(lock)
+  lm->>+ls: deleteIfSecretKeyMatches(lock)
   alt lock is not found
     rect rgba(255, 0, 0, 0.5)
       ls-->>lm: ErrLockNotFound
