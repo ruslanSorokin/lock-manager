@@ -5,7 +5,7 @@
 #
 
 for file in "$@"; do
-    if !(test -f lock-manager/gen/file}.svg) || !(git diff --exit-code --quiet lock-manager/src/file}.mmd)
+    if !(test -f lock-manager/gen/${file}.svg) || !(git diff --exit-code --quiet lock-manager/src/${file}.mmd)
     then
         npx -p @mermaid-js/mermaid-cli mmdc -i src/${file}.mmd -o lock-manager/gen/${file}.svg --cssFile lock-manager/src/sequence/style.mmd.css --configFile lock-manager/src/sequence/config.json
     fi
