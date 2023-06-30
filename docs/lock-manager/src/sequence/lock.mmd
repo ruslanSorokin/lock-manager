@@ -5,8 +5,8 @@ sequenceDiagram
   participant ls as LockStorage
 
   w->>+lm: lock(resourceID)
-  lm->>lm: secretKey = randomUUID()
-  lm->>lm: lock = Lock(resourceID, secretKey)
+  lm->>lm: token = randomUUID()
+  lm->>lm: lock = Lock(resourceID, token)
   lm->>+ls: create(lock)
   alt lock is already in LockStorage
     rect rgba(255, 0, 0, 0.5)
@@ -16,5 +16,5 @@ sequenceDiagram
     end
   end
   ls-->>-lm: _
-  lm-->>-w: secretKey
+  lm-->>-w: token
   Note over w,lm: HTTP: 201::Created<br>GRPC: 0::OK

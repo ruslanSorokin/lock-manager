@@ -4,8 +4,8 @@ sequenceDiagram
   participant lm as LockManager
   participant ls as LockStorage
 
-  w->>+lm: unlock(resourceID, secretKey)
-  lm->>+ls: deleteIfSecretKeyMatches(lock)
+  w->>+lm: unlock(resourceID, token)
+  lm->>+ls: deleteIfTokenMatches(lock)
   alt lock is not found
     rect rgba(255, 0, 0, 0.5)
       ls-->>lm: ErrLockNotFound
@@ -13,9 +13,9 @@ sequenceDiagram
       Note over w,lm: HTTP: 404::Not Found<br>GRPC: 5::NOT_FOUND
     end
   end
-  alt secretKey doesn't match the one that is already in the LockStorage
+  alt token doesn't match the one that is already in the LockStorage
     rect rgba(255, 0, 0, 0.5)
-      ls-->>lm: ErrInvalidSecretKey
+      ls-->>lm: ErrInvalidToken
       lm-->>w: _
       Note over w,lm: HTTP: 400::Bad Request<br>GRPC: 3::INVALID_ARGUMENT
     end

@@ -28,12 +28,12 @@ type LockStorageI interface {
 	// If there is no locks at all, then the nil slice is returned.
 	GetAll(ctx context.Context) []model.Lock
 
-	// DeleteIfSecretKeyMatches deletes lock with given resourceID only if the
-	// secret key is the same as the one that already in the storage.
+	// DeleteIfTokenMatches deletes lock with given resourceID only if the
+	// token is the same as the one that already in the storage.
 	//
 	// If there is no such lock, then ErrLockNotFound is returned.
 	//
-	// If secret key is not the same as the one that already in the storage, then
-	// ErrInvalidSecretKey is returned.
-	DeleteIfSecretKeyMatches(ctx context.Context, resourceID, secretKey string) error
+	// If token is not the same as the one that already in the storage, then
+	// ErrInvalidToken is returned.
+	DeleteIfTokenMatches(ctx context.Context, resourceID, token string) error
 }
