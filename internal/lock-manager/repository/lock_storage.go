@@ -23,11 +23,6 @@ type LockStorageI interface {
 	// If there is no such lock, then ErrLockNotFound is returned.
 	Get(ctx context.Context, resourceID string) (*model.Lock, error)
 
-	// GetAll returns slice of locks.
-	//
-	// If there is no locks at all, then the nil slice is returned.
-	GetAll(ctx context.Context) []model.Lock
-
 	// DeleteIfTokenMatches deletes lock with given resourceID only if the
 	// token is the same as the one that already in the storage.
 	//
