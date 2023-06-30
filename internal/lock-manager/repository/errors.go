@@ -6,5 +6,5 @@ import "errors"
 var (
 	ErrLockAlreadyExists = errors.New("LockStorage: lock already exists")
 	ErrLockNotFound      = errors.New("LockStorage: lock is not found")
-	ErrInvalidSecretKey  = errors.New("LockStorage: invalid secret key")
+	ErrInvalidToken      = errors.New("LockStorage: invalid token")
 )
