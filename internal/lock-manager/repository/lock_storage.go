@@ -21,7 +21,7 @@ type LockStorageI interface {
 	// Get returns lock with given resourceID.
 	//
 	// If there is no such lock, then ErrLockNotFound is returned.
-	Get(ctx context.Context, resourceID string) (*model.Lock, error)
+	Get(ctx context.Context, resourceID string) (model.Lock, error)
 
 	// DeleteIfTokenMatches deletes lock with given resourceID only if the
 	// token is the same as the one that already in the storage.
