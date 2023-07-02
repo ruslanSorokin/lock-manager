@@ -311,3 +311,5 @@ issues:
         - wrapcheck
     - text: 'shadow: declaration of "(err|ctx)" shadows declaration at'
       linters: [govet]
+    - text: 'odd number of arguments passed as key-value pairs for logging'
+      linters: [loggercheck]
