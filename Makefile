@@ -9,11 +9,10 @@ tools.install: tools.download
 
 _lint_vet:
 	@(cd cmd && go vet ./...)
-	@(cd pkg && go vet ./...)
 	@(cd internal && go vet ./...)
 
 _lint_imports:
-	@goimports-reviser cmd pkg internal tools
+	@goimports-reviser cmd internal tools
 
 _lint_golangci:
 	@golangci-lint run
