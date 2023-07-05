@@ -3,7 +3,7 @@ package iredis
 import (
 	"context"
 
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/repository"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/repository"
 )
 
 func (s LockStorage) Delete(ctx context.Context, resourceID string) error {
