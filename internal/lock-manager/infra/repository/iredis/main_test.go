@@ -12,8 +12,8 @@ import (
 	"github.com/ory/dockertest"
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog"
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/repository"
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/repository/iredis"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/repository"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/repository/iredis"
 )
 
 //nolint:gochecknoglobals // Using global var in tests

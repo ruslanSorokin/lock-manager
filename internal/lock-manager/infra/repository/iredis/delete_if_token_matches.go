@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/redis/go-redis/v9"
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/repository"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/repository"
 )
 
 //nolint:gosec // no credentials
