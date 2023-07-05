@@ -14,7 +14,7 @@ func (s LockStorage) Delete(ctx context.Context, resourceID string) error {
 			"resourceID", resourceID,
 		)
 
-		return err
+		return repository.Errf(err)
 	}
 	if delCount != 1 {
 		err = repository.ErrLockNotFound
@@ -23,7 +23,7 @@ func (s LockStorage) Delete(ctx context.Context, resourceID string) error {
 			"resourceID", resourceID,
 		)
 
-		return err
+		return repository.Errf(err)
 	}
 
 	return nil

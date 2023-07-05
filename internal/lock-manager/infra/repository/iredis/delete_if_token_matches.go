@@ -42,7 +42,7 @@ func (s LockStorage) DeleteIfTokenMatches(ctx context.Context, lock model.Lock) 
 			"token", lock.Token,
 		)
 
-		return err
+		return repository.Errf(err)
 	}
 
 	exitCode, ok := ec.(int64)
@@ -55,7 +55,7 @@ func (s LockStorage) DeleteIfTokenMatches(ctx context.Context, lock model.Lock) 
 			"ec", ec,
 		)
 
-		return err
+		return repository.Errf(err)
 	}
 	switch exitCode {
 	case InvalidTokenExitCode:
@@ -74,5 +74,5 @@ func (s LockStorage) DeleteIfTokenMatches(ctx context.Context, lock model.Lock) 
 		)
 	}
 
-	return err
+	return repository.Errf(err)
 }

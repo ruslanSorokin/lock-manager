@@ -1,10 +1,21 @@
 package repository
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/ruslanSorokin/lock-manager/internal/pkg/util"
+)
+
+const errPrefix = "lock storage"
 
 // Errors of LockStorageI.
 var (
-	ErrLockAlreadyExists = errors.New("lock storage: lock already exists")
-	ErrLockNotFound      = errors.New("lock storage: lock is not found")
-	ErrInvalidToken      = errors.New("lock storage: invalid token")
+	ErrLockAlreadyExists = errors.New("lock already exists")
+	ErrLockNotFound      = errors.New("lock is not found")
+	ErrInvalidToken      = errors.New("invalid token")
+)
+
+var (
+	//nolint:gochecknoglobals // Error wrapper
+	Errf = util.NewErrWrapper(errPrefix)
 )

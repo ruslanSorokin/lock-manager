@@ -16,7 +16,7 @@ func (s LockStorage) Create(ctx context.Context, l model.Lock) error {
 			"lock", l,
 		)
 
-		return err
+		return repository.Errf(err)
 	}
 	if !didSet {
 		err = repository.ErrLockAlreadyExists
@@ -25,7 +25,7 @@ func (s LockStorage) Create(ctx context.Context, l model.Lock) error {
 			"lock", l,
 		)
 
-		return err
+		return repository.Errf(err)
 	}
 
 	return nil
