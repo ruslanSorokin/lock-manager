@@ -1,4 +1,4 @@
-package repository
+package provider
 
 import (
 	"reflect"
@@ -21,12 +21,12 @@ func getTestName[T any](f T) string {
 // RunLockStorageTests runs each test on the LockStorage, received from ctor.
 // Before each test and in the end, storage gets flushed with the flusher.
 func RunLockStorageTests(t *testing.T,
-	ctor func() LockStorageI, flusher func() error) {
+	ctor func() LockProviderI, flusher func() error) {
 	require := require.New(t)
 
 	// TODO: use reflect for this purpose
 	// see: https://github.com/ungerik/pkgreflect
-	tests := []func(*testing.T, LockStorageI){
+	tests := []func(*testing.T, LockProviderI){
 		testCreate,
 		testCreateErrLockAlreadyExists,
 

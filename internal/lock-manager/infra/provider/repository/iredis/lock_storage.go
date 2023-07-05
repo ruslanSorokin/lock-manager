@@ -3,7 +3,7 @@ package iredis
 import (
 	"github.com/go-logr/logr"
 	"github.com/redis/go-redis/v9"
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/repository"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/provider"
 )
 
 // LockStorage stores logger & redis client.
@@ -12,7 +12,7 @@ type LockStorage struct {
 	db *redis.Client
 }
 
-var _ repository.LockStorageI = (*LockStorage)(nil)
+var _ provider.LockProviderI = (*LockStorage)(nil)
 
 // NewLockStorage creates a new LockStorage.
 func NewLockStorage(l logr.Logger, db *redis.Client) LockStorage {

@@ -1,4 +1,4 @@
-package repository
+package provider
 
 import (
 	"errors"
@@ -8,7 +8,7 @@ import (
 
 const errPrefix = "lock storage"
 
-// Errors of LockStorageI.
+// Errors of LockProviderI.
 var (
 	ErrLockAlreadyExists = errors.New("lock already exists")
 	ErrLockNotFound      = errors.New("lock is not found")

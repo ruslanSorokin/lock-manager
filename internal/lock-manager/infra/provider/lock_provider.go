@@ -1,4 +1,4 @@
-package repository
+package provider
 
 import (
 	"context"
@@ -6,8 +6,8 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
 )
 
-// LockStorageI provides CRUD+Custom operations on the lock model.
-type LockStorageI interface {
+// LockProviderI provides CRUD+Custom operations on the lock model.
+type LockProviderI interface {
 	// Create creates a new lock.
 	//
 	// If lock with such resourceID already exists, then ErrLockAlreadyExists is

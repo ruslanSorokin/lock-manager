@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/repository"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/provider"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
 )
 
@@ -16,16 +16,16 @@ func (s LockStorage) Create(ctx context.Context, l model.Lock) error {
 			"lock", l,
 		)
 
-		return repository.Errf(err)
+		return provider.Errf(err)
 	}
 	if !didSet {
-		err = repository.ErrLockAlreadyExists
+		err = provider.ErrLockAlreadyExists
 		s.l.Info(
 			err.Error(),
 			"lock", l,
 		)
 
-		return repository.Errf(err)
+		return provider.Errf(err)
 	}
 
 	return nil

@@ -1,4 +1,4 @@
-package repository
+package provider
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
 )
 
-func testDeleteIfTokenMatches(t *testing.T, s LockStorageI) {
+func testDeleteIfTokenMatches(t *testing.T, s LockProviderI) {
 	assert := assert.New(t)
 	require := require.New(t)
 
@@ -54,7 +54,7 @@ func testDeleteIfTokenMatches(t *testing.T, s LockStorageI) {
 	}
 }
 
-func testDeleteIfTokenMatchesErrInvalidToken(t *testing.T, s LockStorageI) {
+func testDeleteIfTokenMatchesErrInvalidToken(t *testing.T, s LockProviderI) {
 	assert := assert.New(t)
 	require := require.New(t)
 
@@ -101,7 +101,7 @@ func testDeleteIfTokenMatchesErrInvalidToken(t *testing.T, s LockStorageI) {
 	}
 }
 
-func testDeleteIfTokenMatchesErrLockNotFound(t *testing.T, s LockStorageI) {
+func testDeleteIfTokenMatchesErrLockNotFound(t *testing.T, s LockProviderI) {
 	require := require.New(t)
 	assert := assert.New(t)
 

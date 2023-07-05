@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/redis/go-redis/v9"
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/repository"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/provider"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
 )
 
@@ -42,7 +42,7 @@ func (s LockStorage) DeleteIfTokenMatches(ctx context.Context, lock model.Lock) 
 			"token", lock.Token,
 		)
 
-		return repository.Errf(err)
+		return provider.Errf(err)
 	}
 
 	exitCode, ok := ec.(int64)
@@ -55,18 +55,18 @@ func (s LockStorage) DeleteIfTokenMatches(ctx context.Context, lock model.Lock) 
 			"ec", ec,
 		)
 
-		return repository.Errf(err)
+		return provider.Errf(err)
 	}
 	switch exitCode {
 	case InvalidTokenExitCode:
-		err = repository.ErrInvalidToken
+		err = provider.ErrInvalidToken
 		s.l.Info(
 			err.Error(),
 			"resourceID", lock.ResourceID,
 			"token", lock.Token,
 		)
 	case LockNotFoundExitCode:
-		err = repository.ErrLockNotFound
+		err = provider.ErrLockNotFound
 		s.l.Info(
 			err.Error(),
 			"resourceID", lock.ResourceID,
@@ -74,5 +74,5 @@ func (s LockStorage) DeleteIfTokenMatches(ctx context.Context, lock model.Lock) 
 		)
 	}
 
-	return repository.Errf(err)
+	return provider.Errf(err)
 }

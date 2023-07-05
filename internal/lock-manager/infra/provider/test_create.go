@@ -1,4 +1,4 @@
-package repository
+package provider
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
 )
 
-func testCreate(t *testing.T, s LockStorageI) {
+func testCreate(t *testing.T, s LockProviderI) {
 	assert := assert.New(t)
 	require := require.New(t)
 
@@ -48,7 +48,7 @@ func testCreate(t *testing.T, s LockStorageI) {
 	}
 }
 
-func testCreateErrLockAlreadyExists(t *testing.T, s LockStorageI) {
+func testCreateErrLockAlreadyExists(t *testing.T, s LockProviderI) {
 	require := require.New(t)
 
 	tcs := []struct {
