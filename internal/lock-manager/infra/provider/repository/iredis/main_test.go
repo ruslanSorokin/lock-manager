@@ -12,8 +12,8 @@ import (
 	"github.com/ory/dockertest"
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog"
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/repository"
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/repository/iredis"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/provider"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/provider/repository/iredis"
 )
 
 //nolint:gochecknoglobals // Using global var in tests
@@ -92,8 +92,8 @@ func TestIntegrationRedisLockStorage(t *testing.T) {
 		t.Skip()
 	}
 
-	lockStorageGetter := func() func() repository.LockStorageI {
-		return func() repository.LockStorageI {
+	lockStorageGetter := func() func() provider.LockProviderI {
+		return func() provider.LockProviderI {
 			return iredis.NewLockStorage(log, redisCl)
 		}
 	}()
@@ -104,7 +104,7 @@ func TestIntegrationRedisLockStorage(t *testing.T) {
 		}
 	}()
 
-	repository.RunLockStorageTests(
+	provider.RunLockStorageTests(
 		t,
 		lockStorageGetter,
 		dbFlusherGetter,

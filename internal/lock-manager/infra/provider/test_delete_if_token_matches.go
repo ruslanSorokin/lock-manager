@@ -1,4 +1,4 @@
-package repository
+package provider
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
 )
 
-func testDeleteIfTokenMatches(t *testing.T, s LockStorageI) {
+func testDeleteIfTokenMatches(t *testing.T, s LockProviderI) {
 	assert := assert.New(t)
 	require := require.New(t)
 
@@ -40,8 +40,7 @@ func testDeleteIfTokenMatches(t *testing.T, s LockStorageI) {
 
 		err = s.DeleteIfTokenMatches(
 			ctx,
-			tc.l.ResourceID,
-			tc.l.Token,
+			tc.l,
 		)
 		require.NoError(err,
 			"must delete the lock without any error",
@@ -55,7 +54,7 @@ func testDeleteIfTokenMatches(t *testing.T, s LockStorageI) {
 	}
 }
 
-func testDeleteIfTokenMatchesErrInvalidToken(t *testing.T, s LockStorageI) {
+func testDeleteIfTokenMatchesErrInvalidToken(t *testing.T, s LockProviderI) {
 	assert := assert.New(t)
 	require := require.New(t)
 
@@ -90,8 +89,10 @@ func testDeleteIfTokenMatchesErrInvalidToken(t *testing.T, s LockStorageI) {
 
 		err = s.DeleteIfTokenMatches(
 			ctx,
-			tc.l.ResourceID,
-			wrongToken,
+			model.NewLock(
+				tc.l.ResourceID,
+				wrongToken,
+			),
 		)
 		require.ErrorIsf(err, ErrInvalidToken,
 			"must return %w, as we use wrong token for deletion",
@@ -100,7 +101,7 @@ func testDeleteIfTokenMatchesErrInvalidToken(t *testing.T, s LockStorageI) {
 	}
 }
 
-func testDeleteIfTokenMatchesErrLockNotFound(t *testing.T, s LockStorageI) {
+func testDeleteIfTokenMatchesErrLockNotFound(t *testing.T, s LockProviderI) {
 	require := require.New(t)
 	assert := assert.New(t)
 
@@ -125,8 +126,7 @@ func testDeleteIfTokenMatchesErrLockNotFound(t *testing.T, s LockStorageI) {
 
 		err := s.DeleteIfTokenMatches(
 			ctx,
-			tc.l.ResourceID,
-			tc.l.Token,
+			tc.l,
 		)
 		require.ErrorIsf(err, ErrLockNotFound,
 			"must return %w, as there is no such lock in the storage",
@@ -140,8 +140,7 @@ func testDeleteIfTokenMatchesErrLockNotFound(t *testing.T, s LockStorageI) {
 
 		err = s.DeleteIfTokenMatches(
 			ctx,
-			tc.l.ResourceID,
-			tc.l.Token,
+			tc.l,
 		)
 		require.NoError(err, ErrLockNotFound,
 			"must delete lock without any error",
@@ -150,8 +149,7 @@ func testDeleteIfTokenMatchesErrLockNotFound(t *testing.T, s LockStorageI) {
 
 		err = s.DeleteIfTokenMatches(
 			ctx,
-			tc.l.ResourceID,
-			tc.l.Token,
+			tc.l,
 		)
 		require.ErrorIsf(err, ErrLockNotFound,
 			"must return %w, as there is no such lock in the storage",

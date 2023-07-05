@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-logr/logr"
 	"github.com/redis/go-redis/v9"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/provider"
 )
 
 // Config stores all configurable parameters for redis connection.
@@ -45,7 +46,7 @@ func NewClient(l logr.Logger, uri, uname, pword string, db uint) (*redis.Client,
 			"unable to ping redis",
 		)
 
-		return nil, err
+		return nil, provider.Errf(err)
 	}
 
 	l.Info(

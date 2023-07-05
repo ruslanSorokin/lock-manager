@@ -1,4 +1,4 @@
-package repository
+package provider
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
 )
 
-func testDelete(t *testing.T, s LockStorageI) {
+func testGet(t *testing.T, s LockProviderI) {
 	assert := assert.New(t)
 	require := require.New(t)
 
@@ -35,23 +35,20 @@ func testDelete(t *testing.T, s LockStorageI) {
 
 		err := s.Create(ctx, tc.l)
 		assert.NoError(err,
-			"should create the lock without any error",
+			"should create lock without any error",
 		)
 
-		err = s.Delete(ctx, tc.l.ResourceID)
+		l, err := s.Get(ctx, tc.l.ResourceID)
 		require.NoError(err,
-			"must return the lock without any error",
+			"must return lock without any error",
 		)
-
-		_, err = s.Get(ctx, tc.l.ResourceID)
-		assert.ErrorIsf(err, ErrLockNotFound,
-			"must return %w, as we've just deleted the lock",
-			ErrLockNotFound,
+		require.Equal(l, tc.l,
+			"must be the same, as it was before inserting into the storage",
 		)
 	}
 }
 
-func testDeleteErrLockNotFound(t *testing.T, s LockStorageI) {
+func testGetErrLockNotFound(t *testing.T, s LockProviderI) {
 	require := require.New(t)
 
 	tcs := []struct {
@@ -73,7 +70,7 @@ func testDeleteErrLockNotFound(t *testing.T, s LockStorageI) {
 	for _, tc := range tcs {
 		ctx := context.Background()
 
-		err := s.Delete(ctx, tc.l.ResourceID)
+		_, err := s.Get(ctx, tc.l.ResourceID)
 		require.ErrorIsf(err, ErrLockNotFound,
 			"must return %w, as there is no such lock in the storage",
 			ErrLockNotFound,

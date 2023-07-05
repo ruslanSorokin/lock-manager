@@ -3,7 +3,7 @@ package iredis
 import (
 	"context"
 
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/repository"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/provider"
 )
 
 func (s LockStorage) Delete(ctx context.Context, resourceID string) error {
@@ -14,16 +14,16 @@ func (s LockStorage) Delete(ctx context.Context, resourceID string) error {
 			"resourceID", resourceID,
 		)
 
-		return err
+		return provider.Errf(err)
 	}
 	if delCount != 1 {
-		err = repository.ErrLockNotFound
+		err = provider.ErrLockNotFound
 		s.l.Info(
 			err.Error(),
 			"resourceID", resourceID,
 		)
 
-		return err
+		return provider.Errf(err)
 	}
 
 	return nil
