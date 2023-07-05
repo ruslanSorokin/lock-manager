@@ -6,6 +6,7 @@ import (
 
 	"github.com/redis/go-redis/v9"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/repository"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
 )
 
 //nolint:gosec // no credentials
@@ -27,18 +28,18 @@ const (
 	LockNotFoundExitCode = 0
 )
 
-func (s LockStorage) DeleteIfTokenMatches(ctx context.Context, resourceID, token string) error {
+func (s LockStorage) DeleteIfTokenMatches(ctx context.Context, lock model.Lock) error {
 	script := redis.NewScript(deleteIfTokenMatchesScript)
 
 	ec, err := script.Run(ctx, s.db,
-		[]string{resourceID},
-		[]string{token},
+		[]string{lock.ResourceID},
+		[]string{lock.Token},
 	).Result()
 	if err != nil {
 		s.l.Error(
 			err,
-			"resourceID", resourceID,
-			"token", token,
+			"resourceID", lock.ResourceID,
+			"token", lock.Token,
 		)
 
 		return err
@@ -49,8 +50,8 @@ func (s LockStorage) DeleteIfTokenMatches(ctx context.Context, resourceID, token
 		err = errors.New("type assertion error")
 		s.l.Error(
 			err,
-			"resourceID", resourceID,
-			"token", token,
+			"resourceID", lock.ResourceID,
+			"token", lock.Token,
 			"ec", ec,
 		)
 
@@ -61,15 +62,15 @@ func (s LockStorage) DeleteIfTokenMatches(ctx context.Context, resourceID, token
 		err = repository.ErrInvalidToken
 		s.l.Info(
 			err.Error(),
-			"resourceID", resourceID,
-			"token", token,
+			"resourceID", lock.ResourceID,
+			"token", lock.Token,
 		)
 	case LockNotFoundExitCode:
 		err = repository.ErrLockNotFound
 		s.l.Info(
 			err.Error(),
-			"resourceID", resourceID,
-			"token", token,
+			"resourceID", lock.ResourceID,
+			"token", lock.Token,
 		)
 	}
 
