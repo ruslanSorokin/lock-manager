@@ -6,6 +6,8 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
 )
 
+//go:generate go run github.com/vektra/mockery/v2@v2.30.16 --name=LockProviderI --structname LockProvider --output=mock --case=underscore --disable-version-string --outpkg=mock
+
 // LockProviderI provides CRUD+Custom operations on the lock model.
 type LockProviderI interface {
 	// Create creates a new lock.
