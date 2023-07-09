@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/redis/go-redis/v9"
+
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/provider"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
 )

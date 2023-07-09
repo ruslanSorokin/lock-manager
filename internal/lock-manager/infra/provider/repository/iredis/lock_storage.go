@@ -3,6 +3,7 @@ package iredis
 import (
 	"github.com/go-logr/logr"
 	"github.com/redis/go-redis/v9"
+
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/provider"
 )
 

@@ -12,6 +12,7 @@ import (
 	"github.com/ory/dockertest"
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog"
+
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/provider"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/provider/repository/iredis"
 )
