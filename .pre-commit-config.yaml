@@ -42,8 +42,12 @@ repos:
     rev: v1.0.0-rc.1
     hooks:
       - id: go-mod-tidy
+        name: go-mod
+        alias: go-mod
         exclude: tools
       - id: go-fmt
+        name: go-fmt
+        alias: go-fmt
         exclude: tools
       - id: my-cmd
         name: goimports-reviser
