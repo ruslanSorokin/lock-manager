@@ -21,6 +21,8 @@ repos:
     rev: v2.1.1
     hooks:
       - id: conventional-pre-commit
+        name: conventional-commits
+        alias: conventional-commits
         stages: [commit-msg]
         args:
           [
@@ -28,7 +30,6 @@ repos:
             chore,
             ci,
             deploy,
-            dev,
             docs,
             feat,
             fix,
@@ -43,6 +44,15 @@ repos:
     rev: v1.0.0-rc.1
     hooks:
       - id: go-mod-tidy
+        name: go-mod
+        alias: go-mod
         exclude: tools
       - id: go-fmt
+        name: go-fmt
+        alias: go-fmt
         exclude: tools
+      - id: my-cmd
+        name: goimports-reviser
+        alias: goimports-reviser
+        exclude: tools
+        args: [goimports-reviser, ./...]

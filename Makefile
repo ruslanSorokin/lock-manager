@@ -3,8 +3,9 @@ docs.generate:
 	@cd docs && $(MAKE) --no-print-directory generate-uml
 
 .SILENT: tools.install
-tools.install: tools.download
+tools.install:
 	@go mod download
+	@cat tools/tools.go | grep _ | awk -F'"' '{print $$2}' | xargs -tI % go install %
 	@cd docs && $(MAKE) --no-print-directory install-tools
 
 _lint_vet:
