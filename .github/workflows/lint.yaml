@@ -87,12 +87,13 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        hook_id:
+        hook_aliases:
           [
             trailing-whitespace,
             end-of-file-fixer,
             check-yaml,
             detect-private-key,
+            goimports-reviser
           ]
     steps:
       - name: Checkout code
@@ -101,7 +102,7 @@ jobs:
       - name: Install Python
         uses: actions/setup-python@v4
 
-      - name: Run [${{ matrix.hook_id }}]
+      - name: Run [${{ matrix.hook_aliases }}]
         uses: pre-commit/action@v3.0.0
         with:
-          extra_args: ${{ matrix.hook_id }} --all-files
+          extra_args: ${{ matrix.hook_aliases }} --all-files
