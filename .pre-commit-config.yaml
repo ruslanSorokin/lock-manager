@@ -28,7 +28,6 @@ repos:
             chore,
             ci,
             deploy,
-            dev,
             docs,
             feat,
             fix,
