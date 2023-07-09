@@ -45,3 +45,8 @@ repos:
         exclude: tools
       - id: go-fmt
         exclude: tools
+      - id: my-cmd
+        name: goimports-reviser
+        alias: goimports-reviser
+        exclude: tools
+        args: [goimports-reviser, ./...]
