@@ -21,6 +21,8 @@ repos:
     rev: v2.1.1
     hooks:
       - id: conventional-pre-commit
+        name: conventional-commits
+        alias: conventional-commits
         stages: [commit-msg]
         args:
           [
