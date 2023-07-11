@@ -23,11 +23,15 @@ var redisCl *redis.Client
 //nolint:gochecknoglobals // Using global var in tests
 var log logr.Logger
 
-const redisImageName = "redis"
-const redisImageVersion = "7.0.10"
+const (
+	redisImageName    = "redis"
+	redisImageVersion = "7.0.10"
+)
 
-const redisIP = "localhost"
-const redisPort = "6379/tcp"
+const (
+	redisIP   = "localhost"
+	redisPort = "6379/tcp"
+)
 
 func flushStorage(db *redis.Client) error {
 	return db.FlushAll(context.Background()).Err()

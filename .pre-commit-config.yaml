@@ -51,6 +51,10 @@ repos:
         name: go-fmt
         alias: go-fmt
         exclude: tools
+      - id: go-fumpt
+        name: go-fumpt
+        alias: go-fumpt
+        exclude: tools
       - id: my-cmd
         name: goimports-reviser
         alias: goimports-reviser

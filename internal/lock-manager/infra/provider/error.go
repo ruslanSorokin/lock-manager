@@ -15,7 +15,5 @@ var (
 	ErrInvalidToken      = errors.New("invalid token")
 )
 
-var (
-	//nolint:gochecknoglobals // Error wrapper
-	Errf = util.NewErrWrapper(errPrefix)
-)
+//nolint:gochecknoglobals // Error wrapper
+var Errf = util.NewErrWrapper(errPrefix)
