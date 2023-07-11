@@ -85,7 +85,8 @@ func (_m *LockProvider) Get(ctx context.Context, resourceID string) (model.Lock,
 func NewLockProvider(t interface {
 	mock.TestingT
 	Cleanup(func())
-}) *LockProvider {
+},
+) *LockProvider {
 	mock := &LockProvider{}
 	mock.Mock.Test(t)
 
