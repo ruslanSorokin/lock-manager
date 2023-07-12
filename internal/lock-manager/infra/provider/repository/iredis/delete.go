@@ -13,7 +13,6 @@ func (s LockStorage) Delete(ctx context.Context, resourceID string) error {
 			err,
 			"resourceID", resourceID,
 		)
-
 		return provider.Errf(err)
 	}
 	if delCount != 1 {
@@ -22,7 +21,6 @@ func (s LockStorage) Delete(ctx context.Context, resourceID string) error {
 			err.Error(),
 			"resourceID", resourceID,
 		)
-
 		return provider.Errf(err)
 	}
 

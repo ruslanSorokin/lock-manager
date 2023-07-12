@@ -18,7 +18,6 @@ func (s LockStorage) Get(ctx context.Context, resourceID string) (model.Lock, er
 			err.Error(),
 			"lock", resourceID,
 		)
-
 		return model.Lock{}, provider.Errf(err)
 	}
 	if err != nil {
@@ -26,7 +25,6 @@ func (s LockStorage) Get(ctx context.Context, resourceID string) (model.Lock, er
 			err,
 			"resourceID", resourceID,
 		)
-
 		return model.Lock{}, provider.Errf(err)
 	}
 

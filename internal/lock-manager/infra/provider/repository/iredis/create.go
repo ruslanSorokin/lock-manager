@@ -15,7 +15,6 @@ func (s LockStorage) Create(ctx context.Context, l model.Lock) error {
 			err,
 			"lock", l,
 		)
-
 		return provider.Errf(err)
 	}
 	if !didSet {
@@ -24,7 +23,6 @@ func (s LockStorage) Create(ctx context.Context, l model.Lock) error {
 			err.Error(),
 			"lock", l,
 		)
-
 		return provider.Errf(err)
 	}
 
