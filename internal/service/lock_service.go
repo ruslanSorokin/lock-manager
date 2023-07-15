@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-logr/logr"
 
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/provider"
+	"github.com/ruslanSorokin/lock-manager/internal/infra/provider"
 )
 
 //go:generate go run github.com/vektra/mockery/v2@latest --name=LockServiceI --structname LockService --output=mock --case=underscore --disable-version-string --outpkg=mock

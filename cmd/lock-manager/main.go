@@ -6,8 +6,8 @@ import (
 	"github.com/go-logr/zerologr"
 	"github.com/rs/zerolog"
 
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/provider/repository/iredis"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/config"
+	"github.com/ruslanSorokin/lock-manager/internal/config"
+	"github.com/ruslanSorokin/lock-manager/internal/infra/provider/repository/iredis"
 )
 
 const (

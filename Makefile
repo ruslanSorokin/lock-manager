@@ -13,7 +13,7 @@ _lint_vet:
 	@(cd internal && go vet ./...)
 
 _lint_imports:
-	@goimports-reviser cmd internal tools
+	@goimports-reviser cmd internal
 
 _lint_golangci:
 	@golangci-lint run
@@ -31,4 +31,4 @@ test.run:
 
 .SILENT: build
 build:
-	@go build -v cmd/afterwork-backend/main.go
+	@go build -v cmd/lock-manager/main.go

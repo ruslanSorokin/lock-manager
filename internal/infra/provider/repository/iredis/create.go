@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/provider"
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
+	"github.com/ruslanSorokin/lock-manager/internal/infra/provider"
+	"github.com/ruslanSorokin/lock-manager/internal/model"
 )
 
 func (s LockStorage) Create(ctx context.Context, l model.Lock) error {

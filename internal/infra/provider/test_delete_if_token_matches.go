@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
+	"github.com/ruslanSorokin/lock-manager/internal/model"
 )
 
 func testDeleteIfTokenMatches(t *testing.T, s LockProviderI) {

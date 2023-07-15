@@ -3,7 +3,7 @@ package provider
 import (
 	"context"
 
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
+	"github.com/ruslanSorokin/lock-manager/internal/model"
 )
 
 //go:generate go run github.com/vektra/mockery/v2@latest --name=LockProviderI --structname LockProvider --output=mock --case=underscore --disable-version-string --outpkg=mock

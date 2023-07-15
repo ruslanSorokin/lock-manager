@@ -3,7 +3,7 @@ package provider
 import (
 	"errors"
 
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/util"
+	"github.com/ruslanSorokin/lock-manager/internal/util"
 )
 
 const errPrefix = "lock storage"

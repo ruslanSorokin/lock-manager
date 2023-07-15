@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
+	"github.com/ruslanSorokin/lock-manager/internal/model"
 )
 
 func (s LockService) Lock(

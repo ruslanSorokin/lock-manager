@@ -5,7 +5,7 @@ package mock
 import (
 	context "context"
 
-	model "github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
+	model "github.com/ruslanSorokin/lock-manager/internal/model"
 	mock "github.com/stretchr/testify/mock"
 )
 
