@@ -8,6 +8,10 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/provider"
 )
 
+//go:generate go run github.com/vektra/mockery/v2@latest --name=LockServiceI --structname LockService --output=mock --case=underscore --disable-version-string --outpkg=mock
+
+//go:generate go run mvdan.cc/gofumpt@latest -l -w mock/lock_service_i.go
+
 type LockServiceI interface {
 	// Lock locks given `resourceID` and returns a token.
 	//
