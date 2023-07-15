@@ -33,7 +33,6 @@ type LockProviderI interface {
 	//
 	// If there is no such lock, then ErrLockNotFound is returned.
 	//
-	// If token is not the same as the one that is already in the storage, then
-	// ErrInvalidToken is returned.
+	// If token doesn't fit, then ErrWrongToken is returned.
 	DeleteIfTokenMatches(ctx context.Context, lock model.Lock) error
 }

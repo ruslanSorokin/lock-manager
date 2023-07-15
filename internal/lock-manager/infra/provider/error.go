@@ -12,7 +12,7 @@ const errPrefix = "lock storage"
 var (
 	ErrLockAlreadyExists = errors.New("lock already exists")
 	ErrLockNotFound      = errors.New("lock is not found")
-	ErrInvalidToken      = errors.New("invalid token")
+	ErrWrongToken        = errors.New("wrong token")
 )
 
 //nolint:gochecknoglobals // Error wrapper

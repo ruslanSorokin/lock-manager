@@ -39,7 +39,7 @@ func (s LockService) Unlock(
 		)
 		return Errf(err)
 
-	case errors.Is(err, provider.ErrInvalidToken):
+	case errors.Is(err, provider.ErrWrongToken):
 		s.log.Info(
 			err.Error(),
 			"resourceID", rID,

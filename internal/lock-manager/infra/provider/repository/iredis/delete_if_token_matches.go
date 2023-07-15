@@ -58,7 +58,7 @@ func (s LockStorage) DeleteIfTokenMatches(ctx context.Context, lock model.Lock) 
 	}
 	switch exitCode {
 	case InvalidTokenExitCode:
-		err = provider.ErrInvalidToken
+		err = provider.ErrWrongToken
 		s.l.Info(
 			err.Error(),
 			"resourceID", lock.ResourceID,

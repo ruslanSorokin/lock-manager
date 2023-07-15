@@ -94,9 +94,9 @@ func testDeleteIfTokenMatchesErrInvalidToken(t *testing.T, s LockProviderI) {
 				wrongToken,
 			),
 		)
-		require.ErrorIsf(err, ErrInvalidToken,
+		require.ErrorIsf(err, ErrWrongToken,
 			"must return %w, as we use wrong token for deletion",
-			ErrInvalidToken,
+			ErrWrongToken,
 		)
 	}
 }
