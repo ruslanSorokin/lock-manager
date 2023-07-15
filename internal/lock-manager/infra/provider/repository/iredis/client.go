@@ -46,7 +46,6 @@ func NewClient(l logr.Logger, uri, uname, pword string, db uint) (*redis.Client,
 			err,
 			"unable to ping redis",
 		)
-
 		return nil, provider.Errf(err)
 	}
 
