@@ -8,7 +8,7 @@ sequenceDiagram
   alt resourceID is invalid
     rect rgba(255, 0, 0, 0.5)
       lm-->>w: _
-      Note over w,lm: HTTP: 400::Conflict<br>GRPC: 3::INVALID_ARGUMENT
+      Note over w,lm: HTTP: 400::Bad Request<br>GRPC: 3::INVALID_ARGUMENT
     end
   end
   lm->>lm: token = randomUUID()
