@@ -31,15 +31,7 @@ func (s LockService) Unlock(
 	)
 
 	switch {
-	case errors.Is(err, provider.ErrLockNotFound):
-		s.log.Info(
-			err.Error(),
-			"resourceID", rID,
-			"token", tkn,
-		)
-		return Errf(err)
-
-	case errors.Is(err, provider.ErrWrongToken):
+	case errors.Is(err, provider.ErrLockNotFound) || errors.Is(err, provider.ErrWrongToken):
 		s.log.Info(
 			err.Error(),
 			"resourceID", rID,
