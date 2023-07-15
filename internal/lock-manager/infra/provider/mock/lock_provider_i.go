@@ -14,13 +14,13 @@ type LockProvider struct {
 	mock.Mock
 }
 
-// Create provides a mock function with given fields: ctx, l
-func (_m *LockProvider) Create(ctx context.Context, l model.Lock) error {
-	ret := _m.Called(ctx, l)
+// Create provides a mock function with given fields: ctx, lock
+func (_m *LockProvider) Create(ctx context.Context, lock model.Lock) error {
+	ret := _m.Called(ctx, lock)
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, model.Lock) error); ok {
-		r0 = rf(ctx, l)
+		r0 = rf(ctx, lock)
 	} else {
 		r0 = ret.Error(0)
 	}
