@@ -2,9 +2,7 @@ package service
 
 import (
 	"context"
-	"errors"
 
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/infra/provider"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
 )
 
@@ -29,25 +27,9 @@ func (s LockService) Unlock(
 			tkn,
 		),
 	)
-
-	switch {
-	case errors.Is(err, provider.ErrLockNotFound) || errors.Is(err, provider.ErrWrongToken):
-		s.log.Info(
-			err.Error(),
-			"resourceID", rID,
-			"token", tkn,
-		)
+	if err != nil {
 		return Errf(err)
-
-	case err != nil:
-		s.log.Error(
-			err,
-			"resourceID", rID,
-			"token", tkn,
-		)
-		return Errf(err)
-
-	default:
-		return nil
 	}
+
+	return nil
 }
