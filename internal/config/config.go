@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 
 	"github.com/go-logr/logr"
-	"github.com/spf13/viper"
+	"github.com/ilyakaznacheev/cleanenv"
 )
 
 type configType string
@@ -21,37 +21,29 @@ const (
 	Prod  configType = "prod"
 )
 
+const (
+	configExtension = ".yaml"
+)
+
+const (
+	logPathKey = "path"
+)
+
 // MustLoad either returns parsed config of type *T or panics.
-func MustLoad[T any](log logr.Logger, app string, config configType) *T {
-	path := filepath.Join(folder, app)
-	viper := viper.New()
+func MustLoad[T any](log logr.Logger, config configType) *T {
+	path := filepath.Join(folder, string(config)) + configExtension
 	var cfg T
 
-	viper.SetConfigType(extension)
-	viper.SetConfigName(string(config))
-	viper.AddConfigPath(path)
-
-	err := viper.ReadInConfig()
+	err := cleanenv.ReadConfig(path, &cfg)
+	log.Info(
+		"trying to read config",
+		logPathKey, path,
+	)
 	if err != nil {
 		log.Error(
-			err,
-			"unable to read config",
-			"appName", app,
-			"cfgName", config,
+			err, "unable to read config",
+			logPathKey, path,
 		)
-
-		panic(err)
-	}
-
-	err = viper.Unmarshal(&cfg)
-	if err != nil {
-		log.Error(
-			err,
-			"unable to parse config",
-			"appName", app,
-			"cfgName", config,
-		)
-
 		panic(err)
 	}
 

@@ -8,10 +8,7 @@ import (
 
 	"github.com/ruslanSorokin/lock-manager/internal/config"
 	"github.com/ruslanSorokin/lock-manager/internal/infra/provider/repository/iredis"
-)
-
-const (
-	appName = "lock-manager"
+	"github.com/ruslanSorokin/lock-manager/internal/service"
 )
 
 func run() error {
@@ -19,14 +16,21 @@ func run() error {
 	zl = zl.With().Timestamp().Logger()
 	log := zerologr.New(&zl)
 
-	cfg := config.MustLoad[Config](log, appName, config.Local)
+	cfg := config.MustLoad[Config](log, config.Local)
 
-	_, err := iredis.NewClientFromConfig(
-		log, cfg.redis,
+	dbRedis, err := iredis.NewClientFromConfig(
+		log, cfg.repository.redis,
 	)
 	if err != nil {
 		return err
 	}
+
+	lp := iredis.NewLockStorage(log, dbRedis)
+
+	_ = service.NewLockService(
+		log, lp,
+	)
+
 	return nil
 }
 

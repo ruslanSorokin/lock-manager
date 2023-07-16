@@ -1,0 +1,6 @@
+repository:
+  redis:
+    uri: "localhost:6379"
+    db: 0
+    username:
+    password:
