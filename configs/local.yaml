@@ -6,9 +6,9 @@ repository:
     password:
 
 service:
-  resourceid:
-    maxLen: 32
-    minLen: 32
+  resourceID:
+    maxLength: 32
+    minLength: 32
   token:
-    maxLen: 32
-    minLen: 32
+    maxLength: 32
+    minLength: 32

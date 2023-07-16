@@ -8,18 +8,6 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/infra/provider"
 )
 
-type Config struct {
-	ResourceID struct {
-		MaxLen int `env-default:"-1"`
-		MinLen int `env-default:"-1"`
-	}
-
-	Token struct {
-		MaxLen int `env-default:"-1"`
-		MinLen int `env-default:"-1"`
-	}
-}
-
 //go:generate go run github.com/vektra/mockery/v2@latest --name=LockServiceI --structname LockService --output=mock --case=underscore --disable-version-string --outpkg=mock
 
 //go:generate go run mvdan.cc/gofumpt@latest -l -w mock/lock_service_i.go

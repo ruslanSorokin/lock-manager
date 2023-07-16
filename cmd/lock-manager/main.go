@@ -19,7 +19,7 @@ func run() error {
 	cfg := config.MustLoad[Config](log, config.Local)
 
 	dbRedis, err := iredis.NewClientFromConfig(
-		log, cfg.repository.redis,
+		log, cfg.Repository.Redis,
 	)
 	if err != nil {
 		return err
@@ -28,7 +28,7 @@ func run() error {
 	lp := iredis.NewLockStorage(log, dbRedis)
 
 	_ = service.NewLockServiceFromConfig(
-		log, lp, cfg.service,
+		log, lp, cfg.Service,
 	)
 
 	return nil

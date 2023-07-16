@@ -6,6 +6,8 @@ import (
 )
 
 type Config struct {
-	repository struct{ redis iredis.Config }
-	service    service.Config
+	Repository struct {
+		Redis iredis.Config `yaml:"redis"`
+	} `yaml:"repository"`
+	Service service.Config `yaml:"service"`
 }
