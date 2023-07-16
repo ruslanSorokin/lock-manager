@@ -27,8 +27,8 @@ func run() error {
 
 	lp := iredis.NewLockStorage(log, dbRedis)
 
-	_ = service.NewLockService(
-		log, lp,
+	_ = service.NewLockServiceFromConfig(
+		log, lp, cfg.service,
 	)
 
 	return nil

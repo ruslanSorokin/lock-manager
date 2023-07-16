@@ -11,10 +11,10 @@ func (s LockService) Unlock(
 	rID, tkn string,
 ) error {
 	switch {
-	case !isValidResourceID(rID):
+	case !s.isValidResourceID(rID):
 		return ErrInvalidResourceID
 
-	case !isValidToken(tkn):
+	case !s.isValidToken(tkn):
 		return ErrInvalidToken
 
 	default:
@@ -23,8 +23,7 @@ func (s LockService) Unlock(
 	err := s.lockProvider.DeleteIfTokenMatches(
 		ctx,
 		model.NewLock(
-			rID,
-			tkn,
+			rID, tkn,
 		),
 	)
 	if err != nil {

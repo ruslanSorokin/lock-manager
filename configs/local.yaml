@@ -4,3 +4,11 @@ repository:
     db: 0
     username:
     password:
+
+service:
+  resourceid:
+    maxLen: 32
+    minLen: 32
+  token:
+    maxLen: 32
+    minLen: 32

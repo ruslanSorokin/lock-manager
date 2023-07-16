@@ -10,7 +10,7 @@ func (s LockService) Lock(
 	ctx context.Context,
 	rID string,
 ) (string, error) {
-	if !isValidResourceID(rID) {
+	if !s.isValidResourceID(rID) {
 		return "", ErrInvalidResourceID
 	}
 
