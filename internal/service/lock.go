@@ -10,8 +10,8 @@ func (s LockService) Lock(
 	ctx context.Context,
 	rID string,
 ) (string, error) {
-	if !s.isValidResourceID(rID) {
-		return "", ErrInvalidResourceID
+	if err := s.validateResourceID(rID); err != nil {
+		return "", err
 	}
 
 	l := model.NewLockWithToken(rID)

@@ -39,8 +39,8 @@ type LockService struct {
 	log          logr.Logger
 	lockProvider provider.LockProviderI
 
-	isValidResourceID resourceIDValidator
-	isValidToken      tokenValidator
+	validateResourceID resourceIDValidator
+	validateToken      tokenValidator
 }
 
 var _ LockServiceI = (*LockService)(nil)
@@ -52,10 +52,10 @@ func NewLockService(
 	tknMinLen, tknMaxLen int,
 ) LockService {
 	return LockService{
-		log:               l,
-		lockProvider:      lp,
-		isValidResourceID: newResourceIDValidator(rIDdMinLen, rIDMaxLen),
-		isValidToken:      newTokenValidator(tknMinLen, tknMaxLen),
+		log:                l,
+		lockProvider:       lp,
+		validateResourceID: newResourceIDValidator(rIDdMinLen, rIDMaxLen),
+		validateToken:      newTokenValidator(tknMinLen, tknMaxLen),
 	}
 }
 

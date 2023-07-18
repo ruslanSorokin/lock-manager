@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/ruslanSorokin/lock-manager/internal/model"
 )
@@ -10,14 +11,15 @@ func (s LockService) Unlock(
 	ctx context.Context,
 	rID, tkn string,
 ) error {
-	switch {
-	case !s.isValidResourceID(rID):
-		return ErrInvalidResourceID
-
-	case !s.isValidToken(tkn):
-		return ErrInvalidToken
-
-	default:
+	var errs []error
+	if err := s.validateResourceID(rID); err != nil {
+		errs = append(errs, Errf(err))
+	}
+	if err := s.validateToken(tkn); err != nil {
+		errs = append(errs, Errf(err))
+	}
+	if len(errs) != 0 {
+		return errors.Join(errs...)
 	}
 
 	err := s.lockProvider.DeleteIfTokenMatches(
