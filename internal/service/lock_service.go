@@ -39,8 +39,8 @@ type LockService struct {
 	log          logr.Logger
 	lockProvider provider.LockProviderI
 
-	isValidResourceID func(string) bool
-	isValidToken      func(string) bool
+	isValidResourceID resourceIDValidator
+	isValidToken      tokenValidator
 }
 
 var _ LockServiceI = (*LockService)(nil)

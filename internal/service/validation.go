@@ -10,7 +10,9 @@ const (
 	defaultTokenMaxLen = 32
 )
 
-func newResourceIDValidator(minLen, maxLen int) func(string) bool {
+type resourceIDValidator func(string) bool
+
+func newResourceIDValidator(minLen, maxLen int) resourceIDValidator {
 	if minLen == -1 {
 		minLen = defaultResourceIDMinLen
 	}
@@ -24,7 +26,9 @@ func newResourceIDValidator(minLen, maxLen int) func(string) bool {
 	}
 }
 
-func newTokenValidator(minLen, maxLen int) func(string) bool {
+type tokenValidator func(string) bool
+
+func newTokenValidator(minLen, maxLen int) tokenValidator {
 	if minLen == -1 {
 		minLen = defaultTokenMinLen
 	}
