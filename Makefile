@@ -31,4 +31,12 @@ test.run:
 
 .SILENT: build
 build:
-	@go build -v cmd/lock-manager/main.go
+	@go build -v -o main ./cmd/lock-manager
+
+.SILENT: run
+run:
+	@go run ./cmd/lock-manager
+
+.SILENT: docker.build
+docker.build:
+	@docker build --file Dockerfile --tag lock-manager .
