@@ -5,6 +5,11 @@ repository:
     username:
     password:
 
+handler:
+  grpc:
+    ip: "localhost"
+    port: "8082"
+
 service:
   resourceID:
     maxLength: 32
