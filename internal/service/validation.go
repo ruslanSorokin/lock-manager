@@ -31,17 +31,10 @@ func newResourceIDValidator(minLen, maxLen int) resourceIDValidator {
 
 type tokenValidator func(string) error
 
-func newTokenValidator(minLen, maxLen int) tokenValidator {
-	if minLen == -1 {
-		minLen = defaultTokenMinLen
-	}
-	if maxLen == -1 {
-		maxLen = defaultTokenMaxLen
-	}
-
+func newTokenValidator() tokenValidator {
 	return func(tkn string) error {
 		l := len(tkn)
-		if l >= minLen && l <= maxLen {
+		if l >= defaultTokenMinLen && l <= defaultTokenMaxLen {
 			return ErrInvalidToken
 		}
 		return nil

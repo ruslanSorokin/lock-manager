@@ -49,13 +49,12 @@ func NewLockService(
 	l logr.Logger,
 	lp provider.LockProviderI,
 	rIDdMinLen, rIDMaxLen int,
-	tknMinLen, tknMaxLen int,
 ) LockService {
 	return LockService{
 		log:                l,
 		lockProvider:       lp,
 		validateResourceID: newResourceIDValidator(rIDdMinLen, rIDMaxLen),
-		validateToken:      newTokenValidator(tknMinLen, tknMaxLen),
+		validateToken:      newTokenValidator(),
 	}
 }
 
@@ -67,7 +66,6 @@ func NewLockServiceFromConfig(
 	return NewLockService(
 		l, lp,
 		cfg.ResourceID.MinLen, cfg.ResourceID.MaxLen,
-		cfg.Token.MinLen, cfg.Token.MaxLen,
 	)
 }
 
@@ -78,6 +76,5 @@ func NewLockServiceWithDefaults(
 	return NewLockService(
 		l, lp,
 		defaultResourceIDMinLen, defaultResourceIDMaxLen,
-		defaultTokenMinLen, defaultTokenMaxLen,
 	)
 }
