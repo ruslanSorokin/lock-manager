@@ -40,3 +40,11 @@ run:
 .SILENT: docker.build
 docker.build:
 	@docker build --file Dockerfile --tag lock-manager .
+
+.SILENT: docker.up
+docker.up:
+	@cd deploy && docker-compose -f docker-compose.yaml -f infra/redis/docker-compose.override.yaml up --build lock-manager -d
+
+.SILENT: docker.down
+docker.down:
+	@cd deploy && docker-compose -f docker-compose.yaml -f infra/redis/docker-compose.override.yaml down

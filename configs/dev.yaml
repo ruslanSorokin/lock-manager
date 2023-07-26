@@ -1,0 +1,19 @@
+repository:
+  redis:
+    uri: "storage:6379"
+    db: 0
+    username:
+    password:
+
+handler:
+  grpc:
+    ip: "localhost"
+    port: "8082"
+
+service:
+  resourceID:
+    maxLength: 32
+    minLength: 32
+  token:
+    maxLength: 32
+    minLength: 32
