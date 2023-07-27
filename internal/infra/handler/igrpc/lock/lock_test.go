@@ -65,6 +65,7 @@ func newPbErrs(errs ...pb.LockRes_Error) []pb.LockRes_Error {
 }
 
 func TestLock(t *testing.T) {
+	t.Parallel()
 	runner := newRunner()
 
 	validResourceID := uuid.NewString()

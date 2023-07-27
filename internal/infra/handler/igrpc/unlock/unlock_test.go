@@ -66,6 +66,7 @@ func newPbErrs(errs ...pb.UnlockRes_Error) []pb.UnlockRes_Error {
 }
 
 func TestUnlock(t *testing.T) {
+	t.Parallel()
 	runner := newRunner()
 
 	validResourceID := uuid.NewString()
