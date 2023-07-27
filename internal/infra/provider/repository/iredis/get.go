@@ -14,10 +14,6 @@ func (s LockStorage) Get(ctx context.Context, resourceID string) (model.Lock, er
 	res, err := s.db.Get(ctx, resourceID).Result()
 	if errors.Is(err, redis.Nil) {
 		err = provider.ErrLockNotFound
-		s.l.Info(
-			err.Error(),
-			"lock", resourceID,
-		)
 		return model.Lock{}, provider.Errf(err)
 	}
 	if err != nil {

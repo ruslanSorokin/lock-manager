@@ -59,19 +59,9 @@ func (s LockStorage) DeleteIfTokenMatches(ctx context.Context, lock model.Lock) 
 	switch exitCode {
 	case InvalidTokenExitCode:
 		err = provider.ErrWrongToken
-		s.l.Info(
-			err.Error(),
-			"resourceID", lock.ResourceID,
-			"token", lock.Token,
-		)
 
 	case LockNotFoundExitCode:
 		err = provider.ErrLockNotFound
-		s.l.Info(
-			err.Error(),
-			"resourceID", lock.ResourceID,
-			"token", lock.Token,
-		)
 	}
 
 	return provider.Errf(err)

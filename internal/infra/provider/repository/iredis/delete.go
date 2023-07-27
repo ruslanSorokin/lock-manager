@@ -17,10 +17,6 @@ func (s LockStorage) Delete(ctx context.Context, resourceID string) error {
 	}
 	if delCount != 1 {
 		err = provider.ErrLockNotFound
-		s.l.Info(
-			err.Error(),
-			"resourceID", resourceID,
-		)
 		return provider.Errf(err)
 	}
 
