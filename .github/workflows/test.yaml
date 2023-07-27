@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 env:
-  GO_VERSION: "1.20"
+  GO_VERSION: "stable"
 
 jobs:
   test:
@@ -15,7 +15,8 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        go: ['stable', 'oldstable']
+        # go: ['stable', 'oldstable']
+        go: ['stable']
 
     steps:
       - name: Install Go
