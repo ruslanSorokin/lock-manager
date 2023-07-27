@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  lock-manager:
+    build:
+      context: "../"
+      dockerfile: "./Dockerfile"
+    depends_on: ["storage"]
+    restart: "always"
+    ports: ["8082:8082"]
+
+  storage:
+    ports: ["9090:9090"]

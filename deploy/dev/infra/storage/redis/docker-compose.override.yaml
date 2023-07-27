@@ -1,0 +1,11 @@
+version: "3.9"
+
+volumes:
+  redis_data:
+
+services:
+  storage:
+    image: redis:7.0.12
+    restart: always
+    ports: ["9090:6379"]
+    volumes: ["redis_data:/data"]

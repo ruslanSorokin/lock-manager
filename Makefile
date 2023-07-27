@@ -31,4 +31,20 @@ test.run:
 
 .SILENT: build
 build:
-	@go build -v cmd/lock-manager/main.go
+	@go build -v -o main ./cmd/lock-manager
+
+.SILENT: run
+run:
+	@go run ./cmd/lock-manager
+
+.SILENT: docker.build
+docker.build:
+	@docker build --file Dockerfile --tag lock-manager .
+
+.SILENT: docker.up
+docker.up:
+	@cd deploy && docker-compose -f docker-compose.yaml -f infra/redis/docker-compose.override.yaml up --build lock-manager -d
+
+.SILENT: docker.down
+docker.down:
+	@cd deploy && docker-compose -f docker-compose.yaml -f infra/redis/docker-compose.override.yaml down
