@@ -48,9 +48,8 @@ func run(c config.Type) error {
 	return nil
 }
 
-var cfgFlag = flag.String("config", "dev", "startup config")
-
 func main() {
+	cfgFlag := flag.String("config", "dev", "startup config")
 	flag.Parse()
 	cfg := config.Type(*cfgFlag)
 	if err := run(cfg); err != nil {
