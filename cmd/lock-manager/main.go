@@ -27,6 +27,7 @@ func run(c config.Type) error {
 	if err != nil {
 		return err
 	}
+	defer iredis.Close(dbRedis)
 
 	lp := iredis.NewLockStorage(log, dbRedis)
 

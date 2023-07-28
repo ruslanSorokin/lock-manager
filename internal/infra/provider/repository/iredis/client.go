@@ -60,3 +60,7 @@ func NewClient(l logr.Logger, uri, uname, pword string, db uint) (*redis.Client,
 func NewClientFromConfig(l logr.Logger, cfg Config) (*redis.Client, error) {
 	return NewClient(l, cfg.URI, cfg.Username, cfg.Password, cfg.DB)
 }
+
+func Close(c *redis.Client) error {
+	return c.Close()
+}
