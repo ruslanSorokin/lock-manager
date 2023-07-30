@@ -1,10 +1,7 @@
 # syntax = docker/dockerfile:1-experimental
 
-# Builder
+# Golang-Build container
 FROM golang:1.20.6-alpine3.18 as builder
-
-ARG GOMODCACHE
-ARG GOCACHE
 
 RUN apk add git make bash build-base && \
   mkdir /app
@@ -20,7 +17,7 @@ COPY . .
 
 RUN make app.build
 
-# Distribution
+# Distribution container
 FROM alpine:3.18
 
 LABEL maintainer="Ruslan Sorokin strawberryladder@gmail.com"
@@ -35,4 +32,4 @@ EXPOSE 8082
 COPY --from=builder /app/main .
 COPY configs/ configs/
 
-CMD ["./main"]
+ENTRYPOINT [ "./main" ]
