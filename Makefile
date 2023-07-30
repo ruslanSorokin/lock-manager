@@ -21,30 +21,35 @@ _lint_golangci:
 .SILENT: lint
 lint: _lint_vet _lint_imports _lint_golangci
 
-.SILENT: short-test.run
-short-test.run:
+
+.SILENT: app
+
+app.unit-test:
 	@go test ./... -count=1 -v -short
 
-.SILENT: test.run
-test.run:
+app.test:
 	@go test ./... -count=1 -v
 
-.SILENT: build
-build:
-	@go build -v -o main ./cmd/lock-manager
+APP_ENTRYPOINT = ./cmd/lock-manager
 
-.SILENT: run
-run:
-	@go run ./cmd/lock-manager
+app.build:
+	@go build -v -o main $(APP_ENTRYPOINT)
 
-.SILENT: docker.build
+app.run:
+	@go run $(APP_ENTRYPOINT)
+
+
+.SILENT: docker
+
+DOCKER_TAG = lock-manager
+
 docker.build:
-	@docker build --file Dockerfile --tag lock-manager .
+	@docker build --file Dockerfile --tag $(DOCKER_TAG) .
 
-.SILENT: docker.up
+DOCKER_COMPOSE_ROOT = deploy/docker
+
 docker.up:
-	@cd deploy && docker-compose -f docker-compose.yaml -f infra/redis/docker-compose.override.yaml up --build lock-manager -d
+	@cd $(DOCKER_COMPOSE_ROOT) && docker-compose -f docker-compose.yaml -f infra/storage/redis/docker-compose.override.yaml up --build $(DOCKER_TAG) -d
 
-.SILENT: docker.down
 docker.down:
-	@cd deploy && docker-compose -f docker-compose.yaml -f infra/redis/docker-compose.override.yaml down
+	@cd $(DOCKER_COMPOSE_ROOT) && docker-compose -f docker-compose.yaml -f infra/storage/redis/docker-compose.override.yaml down

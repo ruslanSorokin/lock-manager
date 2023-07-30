@@ -5,6 +5,9 @@ volumes:
 
 services:
   storage:
+    extends:
+      file: docker-compose.yaml
+      service: storage
     image: redis:7.0.12
     restart: always
     ports: ["9090:6379"]

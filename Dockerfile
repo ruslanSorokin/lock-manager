@@ -18,8 +18,7 @@ RUN --mount=type=cache,target=${GOMODCACHE} \
 
 COPY . .
 
-RUN --mount=type=cache,target=${GOCACHE} \
-  make build
+RUN make app.build
 
 # Distribution
 FROM alpine:3.18
