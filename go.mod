@@ -9,7 +9,7 @@ require (
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/ory/dockertest v3.3.5+incompatible
 	github.com/redis/go-redis/v9 v9.0.5
-	github.com/rs/zerolog v1.29.1
+	github.com/rs/zerolog v1.30.0
 	github.com/ruslanSorokin/lock-manager-api v0.0.0-20230715112900-02bd87ce70e3
 	github.com/stretchr/testify v1.8.4
 	google.golang.org/grpc v1.57.0
