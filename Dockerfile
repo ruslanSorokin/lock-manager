@@ -27,8 +27,6 @@ RUN apk add --no-cache tzdata && \
 
 WORKDIR /app
 
-EXPOSE 8082
-
 COPY --from=builder /app/main .
 COPY configs/ configs/
 
