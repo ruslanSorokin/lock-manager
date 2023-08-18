@@ -61,11 +61,11 @@ func start(c config.Type) error {
 
 	g := &run.Group{}
 
-	g.Add(func() error { return grpcHandler.Start() },
+	g.Add(grpcHandler.Start,
 		func(err error) { grpcHandler.GracefulStop() })
 
-	g.Add(func() error { return mtrHandler.Start() },
-		func(err error) { mtrHandler.GracefulStop() })
+	g.Add(mtrHandler.Start,
+		func(err error) { panic(mtrHandler.GracefulStop()) })
 
 	g.Add(run.SignalHandler(context.TODO(),
 		syscall.SIGINT, syscall.SIGTERM))
