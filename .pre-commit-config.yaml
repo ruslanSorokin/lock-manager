@@ -59,4 +59,4 @@ repos:
         name: goimports-reviser
         alias: goimports-reviser
         exclude: tools
-        args: [goimports-reviser, ./...]
+        args: [goimports-reviser, .]
