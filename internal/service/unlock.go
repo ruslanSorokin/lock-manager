@@ -22,15 +22,11 @@ func (s LockService) Unlock(
 		return errors.Join(errs...)
 	}
 
-	err := s.lockProvider.DeleteIfTokenMatches(
-		ctx,
-		model.NewLock(
-			rID, tkn,
-		),
-	)
+	err := s.lockProvider.DeleteIfTokenMatches(ctx, model.NewLock(rID, tkn))
 	if err != nil {
 		return Errf(err)
 	}
 
+	s.mtr.IncUnlockedTotal()
 	return nil
 }

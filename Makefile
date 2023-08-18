@@ -36,7 +36,7 @@ app.build:
 	@go build -v -o main $(APP_ENTRYPOINT)
 
 app.run:
-	@go run $(APP_ENTRYPOINT)
+	@go run $(APP_ENTRYPOINT) -config local
 
 
 .SILENT: docker

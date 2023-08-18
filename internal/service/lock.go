@@ -21,5 +21,6 @@ func (s LockService) Lock(
 		return "", Errf(err)
 	}
 
+	s.mtr.IncLockedTotal()
 	return l.Token, nil
 }

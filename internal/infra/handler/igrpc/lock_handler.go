@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-logr/logr"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 
 	pb "github.com/ruslanSorokin/lock-manager-api/gen/grpc/go"
 	"github.com/ruslanSorokin/lock-manager/internal/infra/handler/igrpc/lock"
@@ -32,34 +33,41 @@ type LockHandler struct {
 	unlock unlock.Handler
 }
 
-func NewLockHandler(srv *grpc.Server, log logr.Logger, svc service.LockServiceI, ip, port string) LockHandler {
-	return LockHandler{
+func New(
+	srv *grpc.Server,
+	log logr.Logger,
+	svc service.LockServiceI,
+	port string, withReflection bool,
+) LockHandler {
+	h := LockHandler{
 		srv:    srv,
 		log:    log,
 		svc:    svc,
-		cfg:    Config{IP: ip, Port: port},
+		cfg:    Config{Port: port},
 		lock:   lock.New(log, svc),
 		unlock: unlock.New(log, svc),
 	}
-}
-
-func NewLockHandlerFromConfig(srv *grpc.Server, log logr.Logger, svc service.LockServiceI, cfg Config) LockHandler {
-	return LockHandler{
-		srv:    srv,
-		log:    log,
-		svc:    svc,
-		cfg:    cfg,
-		lock:   lock.New(log, svc),
-		unlock: unlock.New(log, svc),
-	}
-}
-
-func (h LockHandler) Register() {
 	pb.RegisterLockManagerServiceServer(h.srv, h)
+
+	if withReflection {
+		log.Info("grpc reflection enabled")
+		reflection.Register(srv)
+	}
+
+	return h
+}
+
+func NewFromConfig(
+	srv *grpc.Server,
+	log logr.Logger,
+	svc service.LockServiceI,
+	cfg Config,
+) LockHandler {
+	return New(srv, log, svc, cfg.Port, cfg.Reflection)
 }
 
 func (h LockHandler) Start() error {
-	addr := fmt.Sprintf("%s:%s", h.cfg.IP, h.cfg.Port)
+	addr := fmt.Sprintf(":%s", h.cfg.Port)
 
 	lst, err := net.Listen("tcp", addr)
 	if err != nil {
@@ -73,6 +81,10 @@ func (h LockHandler) Start() error {
 
 func (h LockHandler) GracefulStop() {
 	h.srv.GracefulStop()
+}
+
+func (h LockHandler) Stop() {
+	h.srv.Stop()
 }
 
 func (h LockHandler) Lock(

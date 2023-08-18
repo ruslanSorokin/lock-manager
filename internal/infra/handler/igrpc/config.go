@@ -1,6 +1,6 @@
 package igrpc
 
 type Config struct {
-	IP   string
-	Port string
+	Port       string
+	Reflection bool
 }

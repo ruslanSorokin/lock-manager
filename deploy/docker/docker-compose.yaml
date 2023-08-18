@@ -7,8 +7,8 @@ services:
       dockerfile: "./Dockerfile"
     depends_on: ["storage"]
     restart: "always"
-    expose: [8082]
-    ports: ["8082:8082"]
+    expose: [8082, 8084]
+    ports: ["8082:8082", "8084:8084"]
 
   storage:
     expose:
