@@ -48,13 +48,13 @@ func start(c config.Type) error {
 	svc := service.NewLockServiceFromConfig(
 		log, lockRepo, iprom.New(promReg), cfg.Service)
 
-	grpcProccesingTimeHistogram := grpcutil.NewProccesingTimeHistogram(promReg)
+	grpcProcessingTimeHistogram := grpcutil.NewProcessingTimeHistogram(promReg)
 
 	grpcSrv := grpc.NewServer(
-		grpc.ChainUnaryInterceptor(grpcProccesingTimeHistogram.UnaryServerInterceptor()),
-		grpc.ChainStreamInterceptor(grpcProccesingTimeHistogram.StreamServerInterceptor()))
+		grpc.ChainUnaryInterceptor(grpcProcessingTimeHistogram.UnaryServerInterceptor()),
+		grpc.ChainStreamInterceptor(grpcProcessingTimeHistogram.StreamServerInterceptor()))
 
-	grpcProccesingTimeHistogram.InitializeMetrics(grpcSrv)
+	grpcProcessingTimeHistogram.InitializeMetrics(grpcSrv)
 
 	grpcHandler := igrpc.NewFromConfig(
 		grpcSrv, log, svc, cfg.Handler.GRPC)
