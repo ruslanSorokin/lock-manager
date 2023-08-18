@@ -39,11 +39,11 @@ func start(c config.Type) error {
 
 	promReg := prometheus.NewRegistry()
 
-	mtrHandler := promutil.New(
+	mtrHandler := promutil.NewFromConfig(
 		log,
 		promReg,
 		http.NewServeMux(),
-		cfg.Observability.Pull.Metric.Port)
+		cfg.Observability.Pull.Metric)
 
 	svc := service.NewLockServiceFromConfig(
 		log, lockRepo, iprom.New(promReg), cfg.Service)

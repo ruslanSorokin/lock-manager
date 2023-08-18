@@ -19,6 +19,7 @@ observability:
   pull:
     metric:
       port: "8084"
+      readTimeOut: 5s
 
 application:
   environment: "local"

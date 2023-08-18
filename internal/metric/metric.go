@@ -1,16 +1,6 @@
 package metric
 
-type appMetric interface {
-	SetAppVersion(string)
-	SetAppEnvironment(string)
-}
-
-type serviceMetric interface {
+type ServiceMetricI interface {
 	IncLockedTotal()
 	IncUnlockedTotal()
-}
-
-type MetricI interface {
-	appMetric
-	serviceMetric
 }

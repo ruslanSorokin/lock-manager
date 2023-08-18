@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/go-logr/logr"
 	"github.com/prometheus/client_golang/prometheus"
@@ -26,15 +27,27 @@ func New(
 	reg *prometheus.Registry,
 	mux *http.ServeMux,
 	port string,
+	readTO time.Duration,
 ) *Handler {
 	return &Handler{
-		cfg: Config{Port: port},
+		cfg: Config{Port: port, ReadTimeOut: readTO},
 
 		log: log,
 		reg: reg,
 		mux: mux,
-		srv: &http.Server{},
+		srv: &http.Server{
+			ReadTimeout: readTO,
+		},
 	}
+}
+
+func NewFromConfig(
+	log logr.Logger,
+	reg *prometheus.Registry,
+	mux *http.ServeMux,
+	cfg Config,
+) *Handler {
+	return New(log, reg, mux, cfg.Port, cfg.ReadTimeOut)
 }
 
 func (m Handler) Start() error {

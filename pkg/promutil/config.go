@@ -1,5 +1,8 @@
 package promutil
 
+import "time"
+
 type Config struct {
-	Port string
+	Port        string
+	ReadTimeOut time.Duration
 }

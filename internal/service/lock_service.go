@@ -37,7 +37,7 @@ type LockServiceI interface {
 }
 
 type LockService struct {
-	mtr          metric.MetricI
+	mtr          metric.ServiceMetricI
 	log          logr.Logger
 	lockProvider provider.LockProviderI
 
@@ -50,7 +50,7 @@ var _ LockServiceI = (*LockService)(nil)
 func NewLockService(
 	l logr.Logger,
 	lp provider.LockProviderI,
-	m metric.MetricI,
+	m metric.ServiceMetricI,
 	rIDdMinLen, rIDMaxLen int,
 ) LockService {
 	return LockService{
@@ -65,7 +65,7 @@ func NewLockService(
 func NewLockServiceFromConfig(
 	l logr.Logger,
 	lp provider.LockProviderI,
-	m metric.MetricI,
+	m metric.ServiceMetricI,
 	cfg Config,
 ) LockService {
 	return NewLockService(
@@ -77,7 +77,7 @@ func NewLockServiceFromConfig(
 func NewLockServiceWithDefaults(
 	l logr.Logger,
 	lp provider.LockProviderI,
-	m metric.MetricI,
+	m metric.ServiceMetricI,
 ) LockService {
 	return NewLockService(
 		l, lp, m,
