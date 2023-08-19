@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/golangci/golangci-lint v1.54.1
-	github.com/incu6us/goimports-reviser/v3 v3.3.1
+	github.com/incu6us/goimports-reviser/v3 v3.4.1
 	golang.org/x/tools v0.12.0
 )
 
