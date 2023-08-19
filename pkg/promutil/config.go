@@ -3,6 +3,6 @@ package promutil
 import "time"
 
 type Config struct {
-	Port        string
-	ReadTimeOut time.Duration
+	Port        string        `yaml:"port"`
+	ReadTimeOut time.Duration `yaml:"readTimeOut"`
 }
