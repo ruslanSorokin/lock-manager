@@ -31,7 +31,7 @@ func NewClient(l logr.Logger, uri, uname, pword string, db uint) (*redis.Client,
 	err := cl.Ping(ctx).Err()
 	if err != nil {
 		l.Error(err, "unable to ping redis")
-		return nil, errors.Wrap(err, "redisutil:")
+		return nil, errors.Wrap(err, "redisutil")
 	}
 
 	l.Info("connected to redis")
