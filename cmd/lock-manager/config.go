@@ -2,14 +2,14 @@ package main
 
 import (
 	"github.com/ruslanSorokin/lock-manager/internal/infra/handler/igrpc"
-	"github.com/ruslanSorokin/lock-manager/internal/infra/provider/repository/iredis"
 	"github.com/ruslanSorokin/lock-manager/internal/service"
 	"github.com/ruslanSorokin/lock-manager/pkg/promutil"
+	"github.com/ruslanSorokin/lock-manager/pkg/redisutil"
 )
 
 type Config struct {
 	Repository struct {
-		Redis iredis.Config `yaml:"redis"`
+		Redis redisutil.Config `yaml:"redis"`
 	} `yaml:"repository"`
 	Handler struct {
 		GRPC igrpc.Config `yaml:"grpc"`

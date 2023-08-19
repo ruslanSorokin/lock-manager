@@ -20,6 +20,7 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/service"
 	"github.com/ruslanSorokin/lock-manager/pkg/grpcutil"
 	"github.com/ruslanSorokin/lock-manager/pkg/promutil"
+	"github.com/ruslanSorokin/lock-manager/pkg/redisutil"
 )
 
 func start(c config.Type) error {
@@ -28,12 +29,12 @@ func start(c config.Type) error {
 
 	cfg := config.MustLoad[Config](log, c)
 
-	dbRedis, err := iredis.NewClientFromConfig(
+	dbRedis, err := redisutil.NewClientFromConfig(
 		log, cfg.Repository.Redis)
 	if err != nil {
 		return err
 	}
-	defer iredis.Close(dbRedis)
+	defer redisutil.Close(dbRedis)
 
 	lockRepo := iredis.NewLockStorage(log, dbRedis)
 

@@ -15,6 +15,7 @@ import (
 
 	"github.com/ruslanSorokin/lock-manager/internal/infra/provider"
 	"github.com/ruslanSorokin/lock-manager/internal/infra/provider/repository/iredis"
+	"github.com/ruslanSorokin/lock-manager/pkg/redisutil"
 )
 
 //nolint:gochecknoglobals // Using global var in tests
@@ -65,7 +66,7 @@ func TestMain(m *testing.M) {
 		log.Error(err, "could not start the resource")
 	}
 
-	cfg := iredis.Config{
+	cfg := redisutil.Config{
 		URI:      fmt.Sprintf("%s:%s", redisIP, resource.GetPort(redisPort)),
 		Username: "",
 		Password: "",
@@ -73,7 +74,7 @@ func TestMain(m *testing.M) {
 	}
 
 	if err = pool.Retry(func() error {
-		redisCl, err = iredis.NewClientFromConfig(log, cfg)
+		redisCl, err = redisutil.NewClientFromConfig(log, cfg)
 		if err != nil {
 			return err
 		}
