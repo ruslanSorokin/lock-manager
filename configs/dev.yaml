@@ -7,13 +7,20 @@ repository:
 
 handler:
   grpc:
-    ip: "localhost"
     port: "8082"
+    reflection: true
 
 service:
   resourceID:
     maxLength: 32
     minLength: 32
-  token:
-    maxLength: 32
-    minLength: 32
+
+observability:
+  pull:
+    metric:
+      port: "8084"
+      readTimeOut: 5s
+
+application:
+  environment: "dev"
+  version: "v0.1.0"

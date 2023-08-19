@@ -6,6 +6,7 @@ import (
 	"github.com/go-logr/logr"
 
 	"github.com/ruslanSorokin/lock-manager/internal/infra/provider"
+	"github.com/ruslanSorokin/lock-manager/internal/metric"
 )
 
 //go:generate go run github.com/vektra/mockery/v2@latest --name=LockServiceI --structname LockService --output=mock --case=underscore --disable-version-string --outpkg=mock
@@ -36,6 +37,7 @@ type LockServiceI interface {
 }
 
 type LockService struct {
+	mtr          metric.ServiceMetricI
 	log          logr.Logger
 	lockProvider provider.LockProviderI
 
@@ -48,9 +50,11 @@ var _ LockServiceI = (*LockService)(nil)
 func NewLockService(
 	l logr.Logger,
 	lp provider.LockProviderI,
+	m metric.ServiceMetricI,
 	rIDdMinLen, rIDMaxLen int,
 ) LockService {
 	return LockService{
+		mtr:                m,
 		log:                l,
 		lockProvider:       lp,
 		validateResourceID: newResourceIDValidator(rIDdMinLen, rIDMaxLen),
@@ -61,10 +65,11 @@ func NewLockService(
 func NewLockServiceFromConfig(
 	l logr.Logger,
 	lp provider.LockProviderI,
+	m metric.ServiceMetricI,
 	cfg Config,
 ) LockService {
 	return NewLockService(
-		l, lp,
+		l, lp, m,
 		cfg.ResourceID.MinLen, cfg.ResourceID.MaxLen,
 	)
 }
@@ -72,9 +77,10 @@ func NewLockServiceFromConfig(
 func NewLockServiceWithDefaults(
 	l logr.Logger,
 	lp provider.LockProviderI,
+	m metric.ServiceMetricI,
 ) LockService {
 	return NewLockService(
-		l, lp,
+		l, lp, m,
 		defaultResourceIDMinLen, defaultResourceIDMaxLen,
 	)
 }

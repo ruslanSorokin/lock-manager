@@ -19,10 +19,6 @@ func (s LockStorage) Create(ctx context.Context, l model.Lock) error {
 	}
 	if !didSet {
 		err = provider.ErrLockAlreadyExists
-		s.l.Info(
-			err.Error(),
-			"lock", l,
-		)
 		return provider.Errf(err)
 	}
 
