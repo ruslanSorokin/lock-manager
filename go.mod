@@ -11,7 +11,7 @@ require (
 	github.com/oklog/run v1.1.0
 	github.com/ory/dockertest v3.3.5+incompatible
 	github.com/prometheus/client_golang v1.14.0
-	github.com/redis/go-redis/v9 v9.0.5
+	github.com/redis/go-redis/v9 v9.1.0
 	github.com/rs/zerolog v1.30.0
 	github.com/ruslanSorokin/lock-manager-api v0.0.0-20230715112900-02bd87ce70e3
 	github.com/stretchr/testify v1.8.4
