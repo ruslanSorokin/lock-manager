@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/ruslanSorokin/lock-manager/internal/infra/handler/igrpc"
 	"github.com/ruslanSorokin/lock-manager/internal/service"
+	"github.com/ruslanSorokin/lock-manager/pkg/grpcutil"
 	"github.com/ruslanSorokin/lock-manager/pkg/promutil"
 	"github.com/ruslanSorokin/lock-manager/pkg/redisutil"
 )
@@ -12,7 +12,7 @@ type Config struct {
 		Redis redisutil.Config `yaml:"redis"`
 	} `yaml:"repository"`
 	Handler struct {
-		GRPC igrpc.Config `yaml:"grpc"`
+		GRPC grpcutil.Config `yaml:"grpc"`
 	} `yaml:"handler"`
 	Service       service.Config `yaml:"service"`
 	Observability struct {
