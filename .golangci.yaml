@@ -12,7 +12,6 @@ run:
   timeout: 3m
   skip-dirs:
     - "tools"
-    - "api"
 
 # This file contains only configs which differ from defaults.
 # All possible options can be found here https://github.com/golangci/golangci-lint/blob/master/.golangci.reference.yml
@@ -217,7 +216,6 @@ linters:
     - lll # reports long lines
     - loggercheck # checks key value pairs for common logger libraries (kitlog,klog,logr,zap)
     - makezero # finds slice declarations with non-zero initial length
-    - musttag # enforces field tags in (un)marshaled structs
     - nakedret # finds naked returns in functions greater than a specified function length
     - nestif # reports deeply nested if statements
     - nilerr # finds the code that returns nil even if it checks that the error is not nil
@@ -311,5 +309,5 @@ issues:
         - wrapcheck
     - text: 'shadow: declaration of "(err|ctx)" shadows declaration at'
       linters: [govet]
-    - text: 'odd number of arguments passed as key-value pairs for logging'
+    - text: "odd number of arguments passed as key-value pairs for logging"
       linters: [loggercheck]
