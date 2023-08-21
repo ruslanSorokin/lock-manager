@@ -40,7 +40,7 @@ func NewClient(l logr.Logger, uri, uname, pword string, db uint) (*redis.Client,
 }
 
 // NewClientFromConfig creates a new instance of redis client from config.
-func NewClientFromConfig(l logr.Logger, cfg Config) (*redis.Client, error) {
+func NewClientFromConfig(l logr.Logger, cfg *Config) (*redis.Client, error) {
 	return NewClient(l, cfg.URI, cfg.Username, cfg.Password, cfg.DB)
 }
 

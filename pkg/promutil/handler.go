@@ -45,7 +45,7 @@ func NewFromConfig(
 	log logr.Logger,
 	reg *prometheus.Registry,
 	mux *http.ServeMux,
-	cfg Config,
+	cfg *Config,
 ) *Handler {
 	return New(log, reg, mux, cfg.Port, cfg.ReadTimeOut)
 }
