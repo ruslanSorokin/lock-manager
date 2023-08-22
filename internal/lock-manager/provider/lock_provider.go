@@ -6,10 +6,6 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
 )
 
-//go:generate go run github.com/vektra/mockery/v2@latest --name=LockProviderI --structname LockProvider --output=mock --case=underscore --disable-version-string --outpkg=mock
-
-//go:generate go run mvdan.cc/gofumpt@latest -l -w mock/lock_provider_i.go
-
 // LockProviderI provides CRUD+Custom operations on the `Lock` model.
 //
 // Uniqueness is guaranteed by `Lock.ResourceID` field.
