@@ -1,6 +1,5 @@
 *
 !internal
-!pkg
 !cmd
 !configs
 !go.mod
