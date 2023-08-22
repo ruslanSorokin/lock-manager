@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/go-logr/logr"
+	"golang.org/x/exp/slices"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -78,6 +79,13 @@ func response(
 }
 
 func New(log logr.Logger, svc service.LockServiceI) Handler {
+	logicalErrs := []error{
+		service.ErrInvalidResourceID,
+		service.ErrInvalidToken,
+		provider.ErrWrongToken,
+		provider.ErrLockNotFound,
+	}
+
 	return func(
 		ctx context.Context,
 		req *pb.UnlockReq,
@@ -86,25 +94,23 @@ func New(log logr.Logger, svc service.LockServiceI) Handler {
 		tkn := req.GetToken()
 
 		err := svc.Unlock(ctx, rID, tkn)
-		code := errToCode(err)
-		switch code {
-		case codes.OK:
+		switch {
+		case err == nil:
 			return response(err)
 
-		case codes.Internal:
-			log.Error(err, "internal error during attempt to unlock resource",
-				LogKeyResourceID, rID,
-				LogKeyToken, tkn,
-				LogKeyGRPCCode, code)
-
-		default:
+		case slices.Contains(logicalErrs, err):
 			log.Error(err, "bad attempt to unlock resource",
 				LogKeyResourceID, rID,
 				LogKeyToken, tkn,
-				LogKeyGRPCCode, code)
+				LogKeyGRPCCode, errToCode(err))
+			return response(err)
 
+		default:
+			log.Error(err, "internal error during attempt to unlock resource",
+				LogKeyResourceID, rID,
+				LogKeyToken, tkn,
+				LogKeyGRPCCode, errToCode(err))
+			return response(err)
 		}
-
-		return response(err)
 	}
 }

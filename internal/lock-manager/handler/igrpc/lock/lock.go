@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/go-logr/logr"
+	"golang.org/x/exp/slices"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -17,10 +18,6 @@ const (
 	LogKeyResourceID = "resource_id"
 	LogKeyToken      = "token"
 	LogKeyGRPCCode   = "grpc_code"
-)
-
-const (
-	msgInternalError = "internal error"
 )
 
 type Handler func(context.Context, *pb.LockReq) (*pb.LockRes, error)
@@ -73,6 +70,11 @@ func New(
 	log logr.Logger,
 	svc service.LockServiceI,
 ) Handler {
+	logicalErrs := []error{
+		service.ErrInvalidResourceID,
+		provider.ErrLockAlreadyExists,
+	}
+
 	return func(
 		ctx context.Context,
 		req *pb.LockReq,
@@ -80,24 +82,23 @@ func New(
 		rID := req.GetResourceId()
 		tkn, err := svc.Lock(ctx, rID)
 		code := errToCode(err)
-		switch code {
-		case codes.OK:
+		switch {
+		case err == nil:
 			return response(err, &tkn)
 
-		case codes.Internal:
-			log.Error(err, "internal error during attempt to lock resource",
-				LogKeyResourceID, rID,
-				LogKeyToken, tkn,
-				LogKeyGRPCCode, code)
-
-		default:
+		case slices.Contains(logicalErrs, err):
 			log.Error(err, "bad attempt to lock resource",
 				LogKeyResourceID, rID,
 				LogKeyToken, tkn,
 				LogKeyGRPCCode, code)
+			return response(err, nil)
 
+		default:
+			log.Error(err, "internal error during attempt to lock resource",
+				LogKeyResourceID, rID,
+				LogKeyToken, tkn,
+				LogKeyGRPCCode, code)
+			return response(err, nil)
 		}
-
-		return response(err, nil)
 	}
 }
