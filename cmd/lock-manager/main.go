@@ -3,82 +3,54 @@ package main
 import (
 	"context"
 	"flag"
-	"net/http"
 	"os"
 	"syscall"
 
 	"github.com/go-logr/zerologr"
 	"github.com/oklog/run"
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/rs/zerolog"
-	"google.golang.org/grpc"
 
-	"github.com/ruslanSorokin/lock-manager/internal/config"
-	"github.com/ruslanSorokin/lock-manager/internal/infra/handler/igrpc"
-	"github.com/ruslanSorokin/lock-manager/internal/infra/provider/repository/iredis"
-	"github.com/ruslanSorokin/lock-manager/internal/metric/iprom"
-	"github.com/ruslanSorokin/lock-manager/internal/service"
-	"github.com/ruslanSorokin/lock-manager/pkg/grpcutil"
-	"github.com/ruslanSorokin/lock-manager/pkg/promutil"
-	"github.com/ruslanSorokin/lock-manager/pkg/redisutil"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/app"
+	"github.com/ruslanSorokin/lock-manager/internal/pkg/apputil"
 )
 
-func start(c config.Type) error {
+func start(e apputil.Env) error {
 	zl := zerolog.New(os.Stdout).With().Timestamp().Logger()
 	log := zerologr.New(&zl)
 
-	cfg := config.MustLoad[Config](log, c)
+	log.Info("environment", "env", e)
 
-	dbRedis, err := redisutil.NewClientFromConfig(
-		log, cfg.Repository.Redis)
+	cfg := apputil.MustLoad[Config](e)
+
+	a, cleanup, err := app.Wire(e, log, cfg.ToAppConfig())
 	if err != nil {
 		return err
 	}
-	defer redisutil.Close(dbRedis)
+	defer cleanup()
 
-	lockRepo := iredis.NewLockStorage(log, dbRedis)
+	a.Configure()
 
-	promReg := prometheus.NewRegistry()
+	rg := &run.Group{}
 
-	mtrHandler := promutil.NewFromConfig(
-		log,
-		promReg,
-		http.NewServeMux(),
-		cfg.Observability.Pull.Metric)
+	rg.Add(a.RunGRPC,
+		func(_ error) { a.GracefulStopGRPC() })
 
-	svc := service.NewLockServiceFromConfig(
-		log, lockRepo, iprom.New(promReg), cfg.Service)
+	rg.Add(a.RunMetric,
+		func(_ error) { a.GracefulStopMetric() })
 
-	grpcProcessingTimeHistogram := grpcutil.NewProcessingTimeHistogram(promReg)
-
-	grpcSrv := grpc.NewServer(
-		grpc.ChainUnaryInterceptor(grpcProcessingTimeHistogram.UnaryServerInterceptor()),
-		grpc.ChainStreamInterceptor(grpcProcessingTimeHistogram.StreamServerInterceptor()))
-
-	grpcProcessingTimeHistogram.InitializeMetrics(grpcSrv)
-
-	grpcHandler := igrpc.NewFromConfig(
-		grpcSrv, log, svc, cfg.Handler.GRPC)
-
-	g := &run.Group{}
-
-	g.Add(grpcHandler.Start,
-		func(err error) { grpcHandler.GracefulStop() })
-
-	g.Add(mtrHandler.Start,
-		func(err error) { panic(mtrHandler.GracefulStop()) })
-
-	g.Add(run.SignalHandler(context.TODO(),
+	rg.Add(run.SignalHandler(context.TODO(),
 		syscall.SIGINT, syscall.SIGTERM))
 
-	return g.Run()
+	return rg.Run()
 }
 
 func main() {
-	cfgFlag := flag.String("config", "dev", "startup config")
+	var envFlag string
+	flag.StringVar(&envFlag, "env", "dev", "app environment")
 	flag.Parse()
-	cfg := config.Type(*cfgFlag)
-	if err := start(cfg); err != nil {
+
+	env := apputil.MustParseEnv(envFlag)
+	if err := start(env); err != nil {
 		panic(err)
 	}
 }

@@ -1,0 +1,25 @@
+all: false
+quiet: true
+disable-version-string: true
+with-expecter: true
+case: underscore
+outpkg: mock
+filename: '{{trimSuffix .InterfaceNameSnake "_i"}}.go'
+dir: "{{.InterfaceDir}}/mock"
+mockname: '{{trimSuffix .InterfaceName "I"}}'
+packages:
+  github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider:
+    interfaces:
+      LockProviderI:
+  github.com/ruslanSorokin/lock-manager/internal/lock-manager/service:
+    interfaces:
+      LockServiceI:
+  github.com/ruslanSorokin/lock-manager/internal/lock-manager/imetric:
+    interfaces:
+      ServiceMetricI:
+  github.com/ruslanSorokin/lock-manager/internal/pkg/apputil:
+    interfaces:
+      MetricI:
+  github.com/ruslanSorokin/lock-manager/internal/pkg/grpcutil:
+    interfaces:
+      RecoveryMetricI:

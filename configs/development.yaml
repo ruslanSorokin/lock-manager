@@ -1,0 +1,26 @@
+repository:
+  redis:
+    uri: "storage:6379"
+    db: 0
+    username:
+    password:
+
+handler:
+  grpc:
+    port: "8082"
+    withReflection: true
+
+service:
+  resourceID:
+    maxLength: 32
+    minLength: 32
+
+observability:
+  pull:
+    metric:
+      port: "8084"
+      readTimeOut: 5s
+
+application:
+  environment: "dev"
+  version: "v0.1.0"

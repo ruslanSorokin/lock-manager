@@ -8,7 +8,7 @@ repository:
 handler:
   grpc:
     port: "8082"
-    reflection: true
+    withReflection: true
 
 service:
   resourceID:
