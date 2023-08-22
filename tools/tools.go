@@ -9,4 +9,5 @@ import (
 	_ "github.com/vektra/mockery/v2"
 	_ "mvdan.cc/gofumpt"
 	_ "golang.org/x/tools/cmd/goimports"
+	_ "github.com/google/wire"
 )
