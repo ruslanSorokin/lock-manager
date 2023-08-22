@@ -54,7 +54,7 @@ repos:
       - id: go-fumpt
         name: go-fumpt
         alias: go-fumpt
-        exclude: tools
+        exclude: tools|wire_gen.go
       - id: my-cmd
         name: goimports-reviser
         alias: goimports-reviser
