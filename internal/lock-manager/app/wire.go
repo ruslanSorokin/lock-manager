@@ -69,7 +69,11 @@ func provideHTTPServer() *http.Server {
 	return &http.Server{}
 }
 
-func provideGRPCServer(log logging.Logger, metric *promgrpc.ServerMetrics, recoveryHandler func(any) error) *grpc.Server {
+func provideGRPCServer(
+	log logging.Logger,
+	metric *promgrpc.ServerMetrics,
+	recoveryHandler func(any) error,
+) *grpc.Server {
 	unaryInters := []grpc.UnaryServerInterceptor{
 		metric.UnaryServerInterceptor(),
 		logging.UnaryServerInterceptor(log),
