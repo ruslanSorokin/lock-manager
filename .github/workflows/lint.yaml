@@ -95,6 +95,7 @@ jobs:
             detect-private-key,
             goimports-reviser,
             go-fumpt,
+            golines,
           ]
     steps:
       - name: Install Python
