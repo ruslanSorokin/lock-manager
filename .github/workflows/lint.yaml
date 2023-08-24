@@ -95,6 +95,7 @@ jobs:
             detect-private-key,
             goimports-reviser,
             go-fumpt,
+            golines,
           ]
     steps:
       - name: Install Python
@@ -113,6 +114,7 @@ jobs:
         run: |
           go install github.com/incu6us/goimports-reviser/v3@latest
           go install mvdan.cc/gofumpt@latest
+          go install github.com/segmentio/golines@latest
 
       - name: Checkout code
         uses: actions/checkout@v3

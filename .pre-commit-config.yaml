@@ -46,11 +46,7 @@ repos:
       - id: go-mod-tidy
         name: go-mod
         alias: go-mod
-        exclude: tools
-      - id: go-fmt
-        name: go-fmt
-        alias: go-fmt
-        exclude: tools
+        exclude: tools|wire_gen.go|mock
       - id: go-fumpt
         name: go-fumpt
         alias: go-fumpt
@@ -58,5 +54,10 @@ repos:
       - id: my-cmd
         name: goimports-reviser
         alias: goimports-reviser
-        exclude: tools
+        exclude: tools|wire_gen.go|mock
         args: [goimports-reviser, .]
+      - id: my-cmd
+        name: golines
+        alias: golines
+        exclude: tools|wire_gen.go|mock
+        args: [golines, ., -w]
