@@ -39,7 +39,10 @@ func start(e apputil.Env) error {
 	rg.Add(run.SignalHandler(context.TODO(),
 		syscall.SIGINT, syscall.SIGTERM))
 
-	return rg.Run()
+	if err := rg.Run(); !errors.As(err, &run.SignalError{}) {
+		return err
+	}
+	return nil
 }
 
 func main() {
@@ -49,8 +52,6 @@ func main() {
 
 	env := apputil.MustParseEnv(envFlag)
 	if err := start(env); err != nil {
-		if !errors.As(err, &run.SignalError{}) {
-			panic(err)
-		}
+		panic(err)
 	}
 }
