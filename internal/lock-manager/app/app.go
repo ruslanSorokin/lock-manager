@@ -1,10 +1,12 @@
 package app
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-logr/logr"
 	promgrpc "github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus"
+	"github.com/oklog/run"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/igrpc"
 	iservice "github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
@@ -15,14 +17,14 @@ import (
 )
 
 type (
-	repository struct {
+	repositoryComponent struct {
 		redisConn *redisconn.Conn
 	}
-	server struct {
+	serverComponent struct {
 		grpcServer  *grpc.Server
 		grpcHandler igrpc.LockHandlerI
 	}
-	metric struct {
+	metricComponent struct {
 		promReg     *prometheus.Registry
 		promGRPC    *promgrpc.ServerMetrics
 		httpSrv     *http.Server
@@ -36,9 +38,9 @@ type App struct {
 	cfg *Config
 	log logr.Logger
 
-	repository repository
-	server     server
-	metric     metric
+	repository repositoryComponent
+	server     serverComponent
+	metric     metricComponent
 	service    iservice.LockServiceI
 
 	environment apputil.Env
@@ -64,12 +66,12 @@ func New(
 	return &App{
 		cfg:        cfg,
 		log:        log,
-		repository: repository{redisConn: redisConn},
-		server: server{
+		repository: repositoryComponent{redisConn: redisConn},
+		server: serverComponent{
 			grpcServer:  grpcSrv,
 			grpcHandler: grpcHandler,
 		},
-		metric: metric{
+		metric: metricComponent{
 			promReg:     promReg,
 			promGRPC:    promGRPCMetric,
 			httpSrv:     httpSrv,
@@ -83,27 +85,38 @@ func New(
 	}
 }
 
-func (a App) Configure() {
+func (a App) prepare() {
 	a.metric.promGRPC.InitializeMetrics(a.server.grpcServer)
 
 	a.metric.app.SetVersion(a.version)
 	a.metric.app.SetEnvironment(a.environment)
 }
 
-func (a App) RunGRPC() error {
-	return a.server.grpcHandler.Start()
-}
+func (a App) Run(ctx context.Context) error {
+	a.prepare()
+	rg := run.Group{}
 
-func (a App) GracefulStopGRPC() {
-	a.server.grpcHandler.GracefulStop()
-}
+	rg.Add(a.server.grpcHandler.Start,
+		func(e error) {
+			if e != nil {
+				a.log.Error(e, "grpc server")
+			}
 
-func (a App) RunMetric() error {
-	return a.metric.httpHandler.Start()
-}
+			a.server.grpcHandler.GracefulStop()
+		})
 
-func (a App) GracefulStopMetric() {
-	if err := a.metric.httpHandler.GracefulStop(); err != nil {
-		a.log.Error(err, "grpc shutdown error")
-	}
+	rg.Add(a.metric.httpHandler.Start,
+		func(e error) {
+			if e != nil {
+				a.log.Error(e, "http metric server")
+			}
+
+			if err := a.metric.httpHandler.GracefulStop(); err != nil {
+				a.log.Error(err, "http metric server shutdown")
+			}
+		})
+
+	rg.Add(run.SignalHandler(ctx))
+
+	return rg.Run()
 }

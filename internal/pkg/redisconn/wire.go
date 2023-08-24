@@ -4,7 +4,6 @@
 package redisconn
 
 import (
-	"github.com/go-logr/logr"
 	"github.com/google/wire"
 )
 

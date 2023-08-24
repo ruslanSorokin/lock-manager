@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"os"
 	"syscall"
@@ -28,15 +29,12 @@ func start(e apputil.Env) error {
 	}
 	defer cleanup()
 
-	a.Configure()
-
 	rg := &run.Group{}
 
-	rg.Add(a.RunGRPC,
-		func(_ error) { a.GracefulStopGRPC() })
+	ctx, cancel := context.WithCancel(context.TODO())
 
-	rg.Add(a.RunMetric,
-		func(_ error) { a.GracefulStopMetric() })
+	rg.Add(func() error { return a.Run(ctx) },
+		func(err error) { cancel() })
 
 	rg.Add(run.SignalHandler(context.TODO(),
 		syscall.SIGINT, syscall.SIGTERM))
@@ -51,6 +49,8 @@ func main() {
 
 	env := apputil.MustParseEnv(envFlag)
 	if err := start(env); err != nil {
-		panic(err)
+		if !errors.As(err, &run.SignalError{}) {
+			panic(err)
+		}
 	}
 }
