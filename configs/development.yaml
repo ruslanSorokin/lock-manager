@@ -9,6 +9,12 @@ handler:
   grpc:
     port: "8082"
     withReflection: true
+    ping:
+      after: 10m
+      timeout: 15s
+    conn:
+      maxIdle: 5m
+      maxAge: 5m
 
 service:
   resourceID:

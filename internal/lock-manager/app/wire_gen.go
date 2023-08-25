@@ -8,9 +8,6 @@ package app
 
 import (
 	"github.com/go-logr/logr"
-	prometheus2 "github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus"
-	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
-	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/igrpc"
 	iprom2 "github.com/ruslanSorokin/lock-manager/internal/lock-manager/imetric/iprom"
@@ -22,7 +19,6 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/grpcutil/iprom"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/promutil"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/redisconn"
-	"google.golang.org/grpc"
 	"net/http"
 )
 
@@ -30,30 +26,31 @@ import (
 
 func Wire(env apputil.Env, logger logr.Logger, config *Config) (*App, func(), error) {
 	redisconnConfig := config.Redis
-	conn, cleanup, err := redisconn.WireProvide(logger, redisconnConfig)
+	conn, cleanup, err := redisconn.WireProvideConn(logger, redisconnConfig)
 	if err != nil {
 		return nil, nil, err
 	}
 	registry := prometheus.NewRegistry()
 	serverMetrics := grpcutil.NewProcessingTimeHistogram(registry)
 	serveMux := http.NewServeMux()
-	httpServer := provideHTTPServer()
+	server := provideHTTPServer()
 	loggingLogger := grpcutil.NewInterceptorLogger(logger)
 	recoveryMetric := iprom.NewRecoveryMetric(registry)
 	v := grpcutil.NewPanicRecoveryHandler(logger, recoveryMetric)
-	grpcServer := provideGRPCServer(loggingLogger, serverMetrics, v)
-	lockStorage := iredis.NewLockStorage(logger, conn)
-	ipromMetric := iprom2.New(registry)
-	serviceConfig := config.LockService
-	lockService := service.NewFromConfig(logger, lockStorage, ipromMetric, serviceConfig)
+	v2 := grpcutil.WireProvideInterceptors(loggingLogger, v, serverMetrics)
 	grpcutilConfig := config.GRPC
+	grpcServer := grpcutil.WireProvideServer(v2, grpcutilConfig)
+	lockStorage := iredis.NewLockStorage(logger, conn)
+	metric := iprom2.New(registry)
+	serviceConfig := config.LockService
+	lockService := service.NewFromConfig(logger, lockStorage, metric, serviceConfig)
 	handler := grpcutil.NewHandlerFromConfig(grpcServer, logger, grpcutilConfig)
 	lockHandler := igrpc.NewLockHandler(handler, logger, lockService)
 	promutilConfig := config.HTTPMetric
 	promutilHandler := promutil.NewHandlerFromConfig(logger, registry, serveMux, promutilConfig)
-	metric2 := iprom3.New(registry)
+	ipromMetric := iprom3.New(registry)
 	ver := config.Ver
-	app := New(config, logger, conn, registry, serverMetrics, serveMux, httpServer, grpcServer, lockService, lockHandler, promutilHandler, metric2, env, ver)
+	app := New(config, logger, conn, registry, serverMetrics, serveMux, server, grpcServer, lockService, lockHandler, promutilHandler, ipromMetric, env, ver)
 	return app, func() {
 		cleanup()
 	}, nil
@@ -63,15 +60,4 @@ func Wire(env apputil.Env, logger logr.Logger, config *Config) (*App, func(), er
 
 func provideHTTPServer() *http.Server {
 	return &http.Server{}
-}
-
-func provideGRPCServer(log logging.Logger, metric2 *prometheus2.ServerMetrics, recoveryHandler func(any) error) *grpc.Server {
-	unaryInters := []grpc.UnaryServerInterceptor{metric2.
-		UnaryServerInterceptor(), logging.UnaryServerInterceptor(log), recovery.UnaryServerInterceptor(recovery.WithRecoveryHandler(recoveryHandler)),
-	}
-	streamInters := []grpc.StreamServerInterceptor{metric2.
-		StreamServerInterceptor(), logging.StreamServerInterceptor(log), recovery.StreamServerInterceptor(recovery.WithRecoveryHandler(recoveryHandler)),
-	}
-
-	return grpc.NewServer(grpc.ChainUnaryInterceptor(unaryInters...), grpc.ChainStreamInterceptor(streamInters...))
 }

@@ -5,9 +5,12 @@ package grpcutil
 
 import "github.com/google/wire"
 
-//nolint:gochecknoglobals // Wire Set
+//nolint:gochecknoglobals // Wire Sets
 var (
-	InterceptorLoggerSet       = wire.NewSet(NewInterceptorLogger)
-	PanicRecoveryHandlerSet    = wire.NewSet(NewPanicRecoveryHandler)
-	ProcessingTimeHistogramSet = wire.NewSet(NewProcessingTimeHistogram)
+	WireHandlerSet           = wire.NewSet(NewHandler)
+	WireHandlerFromConfigSet = wire.NewSet(NewHandlerFromConfig)
+
+	WireInterceptorLoggerSet       = wire.NewSet(NewInterceptorLogger)
+	WirePanicRecoveryHandlerSet    = wire.NewSet(NewPanicRecoveryHandler)
+	WireProcessingTimeHistogramSet = wire.NewSet(NewProcessingTimeHistogram)
 )
