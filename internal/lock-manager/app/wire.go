@@ -36,12 +36,12 @@ func Wire(apputil.Env, logr.Logger, *Config) (*App, func(), error) {
 
 		redisconn.WireProvideConn,
 
-		ipromapp.MetricSet,
+		ipromapp.WireMetricSet,
 
-		promutil.HandlerFromConfigSet,
-		promutil.RegistrySet,
+		promutil.WireHandlerFromConfigSet,
+		promutil.WireRegistrySet,
 
-		ipromgrpc.RecoveryMetricSet,
+		ipromgrpc.WireRecoveryMetricSet,
 
 		grpcutil.WireInterceptorLoggerSet,
 		grpcutil.WirePanicRecoveryHandlerSet,
@@ -55,10 +55,10 @@ func Wire(apputil.Env, logr.Logger, *Config) (*App, func(), error) {
 		grpcutil.WireProvideInterceptors,
 		grpcutil.WireProvideServer,
 
-		service.FromConfigSet,
-		iredis.LockStorageSet,
-		ipromsvc.Set,
-		igrpc.LockHandlerSet,
+		service.WireFromConfigSet,
+		iredis.WireLockStorageSet,
+		ipromsvc.WireSet,
+		igrpc.WireLockHandlerSet,
 	))
 }
 

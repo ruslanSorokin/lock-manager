@@ -10,6 +10,6 @@ import (
 
 //nolint:gochecknoglobals // Wire Set
 var (
-	LockStorageSet = wire.NewSet(NewLockStorage, bind)
-	bind           = wire.Bind(new(provider.LockProviderI), new(*LockStorage))
+	WireLockStorageSet = wire.NewSet(NewLockStorage, bind)
+	bind               = wire.Bind(new(provider.LockProviderI), new(*LockStorage))
 )

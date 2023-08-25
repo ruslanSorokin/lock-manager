@@ -10,6 +10,6 @@ import (
 
 //nolint:gochecknoglobals // Wire Set
 var (
-	Set  = wire.NewSet(New, bind)
-	bind = wire.Bind(new(imetric.ServiceMetricI), new(*Metric))
+	WireSet = wire.NewSet(New, bind)
+	bind    = wire.Bind(new(imetric.ServiceMetricI), new(*Metric))
 )
