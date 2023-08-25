@@ -47,22 +47,22 @@ func errToCode(e error) codes.Code {
 func errToMsg(e error) string {
 	switch {
 	case errors.Is(e, nil):
-		return "resource has been unlocked"
+		return "RESOURCE_HAS_BEEN_UNLOCKED"
 
 	case errors.Is(e, service.ErrInvalidResourceID):
-		return "invalid resource id"
+		return "INVALID_RESOURCE_ID"
 
 	case errors.Is(e, service.ErrInvalidToken):
-		return "invalid token"
+		return "INVALID_TOKEN"
 
 	case errors.Is(e, provider.ErrWrongToken):
-		return "token doesn't fit"
+		return "TOKEN_DOES_NOT_FIT"
 
 	case errors.Is(e, provider.ErrLockNotFound):
-		return "resource not found"
+		return "RESOURCE_NOT_FOUND"
 
 	default:
-		return "internal error"
+		return "INTERNAL_ERROR"
 	}
 }
 

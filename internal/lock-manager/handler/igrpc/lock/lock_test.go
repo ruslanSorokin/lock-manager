@@ -110,7 +110,7 @@ func TestLock(t *testing.T) {
 			},
 
 			want: func() out {
-				err := status.Error(codes.InvalidArgument, "invalid resource id")
+				err := status.Error(codes.InvalidArgument, "INVALID_RESOURCE_ID")
 				return newOut(nil, err)
 			},
 
@@ -132,7 +132,7 @@ func TestLock(t *testing.T) {
 			},
 
 			want: func() out {
-				err := status.Error(codes.AlreadyExists, "resource already locked")
+				err := status.Error(codes.AlreadyExists, "RESOURCE_ALREADY_LOCKED")
 				return newOut(nil, err)
 			},
 
@@ -154,7 +154,7 @@ func TestLock(t *testing.T) {
 			},
 
 			want: func() out {
-				err := status.Error(codes.Internal, "internal error")
+				err := status.Error(codes.Internal, "INTERNAL_ERROR")
 				return newOut(nil, err)
 			},
 
