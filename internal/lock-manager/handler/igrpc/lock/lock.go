@@ -41,13 +41,13 @@ func errToCode(e error) codes.Code {
 func errToMsg(e error) string {
 	switch {
 	case errors.Is(e, service.ErrInvalidResourceID):
-		return "invalid resource id"
+		return "INVALID_RESOURCE_ID"
 
 	case errors.Is(e, provider.ErrLockAlreadyExists):
-		return "resource already locked"
+		return "RESOURCE_ALREADY_LOCKED"
 
 	default:
-		return "internal error"
+		return "INTERNAL_ERROR"
 	}
 }
 

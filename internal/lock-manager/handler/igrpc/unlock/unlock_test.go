@@ -113,7 +113,7 @@ func TestUnlock(t *testing.T) {
 			},
 
 			want: func() out {
-				err := status.Error(codes.InvalidArgument, "invalid resource id")
+				err := status.Error(codes.InvalidArgument, "INVALID_RESOURCE_ID")
 				return newOut(err)
 			},
 
@@ -136,7 +136,7 @@ func TestUnlock(t *testing.T) {
 			},
 
 			want: func() out {
-				err := status.Error(codes.InvalidArgument, "invalid token")
+				err := status.Error(codes.InvalidArgument, "INVALID_TOKEN")
 				return newOut(err)
 			},
 
@@ -159,7 +159,7 @@ func TestUnlock(t *testing.T) {
 			},
 
 			want: func() out {
-				err := status.Error(codes.InvalidArgument, "invalid resource id")
+				err := status.Error(codes.InvalidArgument, "INVALID_RESOURCE_ID")
 				return newOut(err)
 			},
 
@@ -185,7 +185,7 @@ func TestUnlock(t *testing.T) {
 			},
 
 			want: func() out {
-				err := status.Error(codes.InvalidArgument, "token doesn't fit")
+				err := status.Error(codes.InvalidArgument, "TOKEN_DOES_NOT_FIT")
 				return newOut(err)
 			},
 
@@ -208,7 +208,7 @@ func TestUnlock(t *testing.T) {
 			},
 
 			want: func() out {
-				err := status.Error(codes.NotFound, "resource not found")
+				err := status.Error(codes.NotFound, "RESOURCE_NOT_FOUND")
 				return newOut(err)
 			},
 
@@ -231,7 +231,7 @@ func TestUnlock(t *testing.T) {
 			},
 
 			want: func() out {
-				err := status.Error(codes.Internal, "internal error")
+				err := status.Error(codes.Internal, "INTERNAL_ERROR")
 				return newOut(err)
 			},
 
