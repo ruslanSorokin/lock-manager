@@ -31,7 +31,6 @@ func Wire(apputil.Env, logr.Logger, *Config) (*App, func(), error) {
 			"HTTPMetric",
 			"Ver",
 		),
-
 		New,
 
 		redisconn.WireProvideConn,
@@ -41,12 +40,12 @@ func Wire(apputil.Env, logr.Logger, *Config) (*App, func(), error) {
 		promutil.WireHandlerFromConfigSet,
 		promutil.WireRegistrySet,
 
-		ipromgrpc.WireRecoveryMetricSet,
-
 		grpcutil.WireInterceptorLoggerSet,
 		grpcutil.WirePanicRecoveryHandlerSet,
 		grpcutil.WireProcessingTimeHistogramSet,
 		grpcutil.WireHandlerFromConfigSet,
+
+		ipromgrpc.WireRecoveryMetricSet,
 
 		http.NewServeMux,
 
@@ -56,8 +55,10 @@ func Wire(apputil.Env, logr.Logger, *Config) (*App, func(), error) {
 		grpcutil.WireProvideServer,
 
 		service.WireFromConfigSet,
-		iredis.WireLockStorageSet,
 		ipromsvc.WireSet,
+
+		iredis.WireLockStorageSet,
+
 		igrpc.WireLockHandlerSet,
 	))
 }
