@@ -10,17 +10,19 @@ func (s LockService) Lock(
 	ctx context.Context,
 	rID string,
 ) (string, error) {
-	if err := s.validateResourceID(rID); err != nil {
+	if err := s.resourceIDValidator(rID); err != nil {
+		return "", Errorf(err)
+	}
+
+	l, err := model.NewLockWithToken(rID)
+	if err != nil {
 		return "", err
 	}
 
-	l := model.NewLockWithToken(rID)
-
-	err := s.lockProvider.Create(ctx, l)
-	if err != nil {
-		return "", Errf(err)
+	if err = s.lockProvider.Create(ctx, l); err != nil {
+		return "", Errorf(err)
 	}
 
 	s.mtr.IncLockedTotal()
-	return l.Token, nil
+	return l.Token(), nil
 }

@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/go-logr/logr"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/wire"
 
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/apputil"
@@ -27,12 +28,12 @@ func Wire(apputil.Env, logr.Logger, *Config) (*App, func(), error) {
 		wire.FieldsOf(new(*Config),
 			"Redis",
 			"GRPC",
-			"LockService",
 			"HTTPMetric",
 			"Ver",
 		),
 		New,
 
+		validator.New,
 		redisconn.WireProvideConn,
 
 		ipromapp.WireMetricSet,
@@ -54,7 +55,7 @@ func Wire(apputil.Env, logr.Logger, *Config) (*App, func(), error) {
 		grpcutil.WireProvideInterceptors,
 		grpcutil.WireProvideServer,
 
-		service.WireFromConfigSet,
+		service.WireSet,
 		ipromsvc.WireSet,
 
 		iredis.WireLockStorageSet,

@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/go-logr/logr"
-	"github.com/google/uuid"
+	"github.com/gofrs/uuid"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -62,7 +62,7 @@ func newRunner() func(unlock.Handler, in) out {
 }
 
 func TestUnlock(t *testing.T) {
-	t.Parallel()
+	// t.Parallel()
 	runner := newRunner()
 
 	mockValidResourceID := uuid.NewString()
@@ -250,7 +250,7 @@ func TestUnlock(t *testing.T) {
 	for _, tc := range tcs {
 		tc := tc
 		t.Run(tc.desc, func(t *testing.T) {
-			t.Parallel()
+			// t.Parallel()
 
 			svc := mock.NewLockService(t)
 			h := unlock.New(logr.Discard(), svc)

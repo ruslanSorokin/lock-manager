@@ -14,7 +14,7 @@ type LockProviderI interface {
 	//
 	// If `lock` already exists(by `lock`.ResourceID), then `ErrLockAlreadyExists`
 	// is returned.
-	Create(ctx context.Context, lock model.Lock) error
+	Create(ctx context.Context, lock *model.Lock) error
 
 	// Delete deletes lock with given `resourceID`.
 	//
@@ -26,7 +26,7 @@ type LockProviderI interface {
 	//
 	// If there is no such lock(by `lock`.ResourceID), then `ErrLockNotFound` is
 	// returned.
-	Get(ctx context.Context, resourceID string) (model.Lock, error)
+	Get(ctx context.Context, resourceID string) (*model.Lock, error)
 
 	// DeleteIfTokenMatches deletes lock with given `lock`.ResourceID only if
 	// `lock`.Token fits.
@@ -35,5 +35,5 @@ type LockProviderI interface {
 	// `ErrLockNotFound` is returned.
 	//
 	// If `lock`.Token doesn't fit, then `ErrWrongToken` is returned.
-	DeleteIfTokenMatches(ctx context.Context, lock model.Lock) error
+	DeleteIfTokenMatches(ctx context.Context, lock *model.Lock) error
 }

@@ -4,24 +4,17 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"os"
 	"testing"
 
 	"github.com/go-logr/logr"
-	"github.com/go-logr/zerologr"
 	"github.com/ory/dockertest"
-	"github.com/rs/zerolog"
+	"github.com/stretchr/testify/suite"
 
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/repository/iredis"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/test"
+	"github.com/ruslanSorokin/lock-manager/internal/pkg/dockerutil"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/redisconn"
 )
-
-//nolint:gochecknoglobals // Using global var in tests
-var redisCl *redisconn.Conn
-
-//nolint:gochecknoglobals // Using global var in tests
-var log logr.Logger
 
 const (
 	redisImageName    = "redis"
@@ -33,86 +26,88 @@ const (
 	redisPort = "6379/tcp"
 )
 
-func flushStorage(conn *redisconn.Conn) error {
-	return conn.DB.FlushAll(context.Background()).Err()
+type IntegrationSuite struct {
+	suite.Suite
+	*test.ProviderSuite
+
+	resource *dockertest.Resource
+	pool     *dockertest.Pool
+	conn     *redisconn.Conn
 }
 
-func TestMain(m *testing.M) {
-	zl := zerolog.New(os.Stdout)
-	zl = zl.With().Logger()
-
-	log = zerologr.New(&zl).V(3)
+func (s *IntegrationSuite) SetupSuite() {
+	t := s.T()
 
 	flag.Parse()
 	if testing.Short() {
-		os.Exit(m.Run())
+		t.Skip()
 	}
 
-	pool, err := dockertest.NewPool("")
+	p, err := dockerutil.NewPool()
 	if err != nil {
-		log.Error(err, "could not construct the pool")
+		t.Error(err)
 	}
+	s.pool = p
 
-	err = pool.Client.Ping()
+	r, err := LaunchRedisContainer(p, redisImageVersion)
 	if err != nil {
-		log.Error(err, "could not connect to Docker")
+		t.Error(err)
 	}
-
-	resource, err := pool.Run(
-		redisImageName, redisImageVersion, nil,
-	)
-	if err != nil {
-		log.Error(err, "could not start the resource")
-	}
+	s.resource = r
 
 	cfg := &redisconn.Config{
-		URI:      fmt.Sprintf("%s:%s", redisIP, resource.GetPort(redisPort)),
+		URI:      fmt.Sprintf("%s:%s", redisIP, r.GetPort(redisPort)),
 		Username: "",
 		Password: "",
 		DB:       0,
 	}
 
-	if err = pool.Retry(func() error {
-		redisCl, err = redisconn.NewConnFromConfig(cfg)
-		redisDB := redisCl.DB
-		if err != nil {
-			return err
-		}
-
-		return redisDB.Ping(context.TODO()).Err()
-	}); err != nil {
-		log.Error(err, "could not connect to Docker")
+	c, err := redisconn.NewConnFromConfig(cfg)
+	if err != nil {
+		t.Error(err)
 	}
+	s.conn = c
 
-	code := m.Run()
+	ls := iredis.NewLockStorage(logr.Discard(), c)
+	s.ProviderSuite = test.NewProviderSuite(s, ls)
 
-	if err = pool.Purge(resource); err != nil {
-		log.Error(err, "could not purge the resource")
+	s.ProviderSuite.Provider = ls
+}
+
+func (s *IntegrationSuite) TearDownSuite() {
+	t := s.T()
+
+	err := RemoveRedisContainer(s.pool, s.resource)
+	if err != nil {
+		t.Error(err)
 	}
+}
 
-	os.Exit(code)
+func (s *IntegrationSuite) TearDownTest() {
+	t := s.T()
+
+	err := s.conn.DB.FlushAll(context.TODO()).Err()
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+func LaunchRedisContainer(p *dockertest.Pool, tag string) (*dockertest.Resource, error) {
+	resource, err := p.Run(redisImageName, tag, nil)
+	if err != nil {
+		err = fmt.Errorf("%s: %w", "could not start the resource", err)
+		return nil, err
+	}
+	return resource, nil
+}
+
+func RemoveRedisContainer(p *dockertest.Pool, r *dockertest.Resource) error {
+	if err := p.Purge(r); err != nil {
+		return fmt.Errorf("%s: %w", "could not purge the resource", err)
+	}
+	return nil
 }
 
 func TestIntegrationRedisLockStorage(t *testing.T) {
-	if testing.Short() {
-		t.Skip()
-	}
-
-	lockStorageGetter := func() func() provider.LockProviderI {
-		return func() provider.LockProviderI {
-			return iredis.NewLockStorage(log, redisCl)
-		}
-	}()
-
-	dbFlusherGetter := func() func() error {
-		return func() error {
-			return flushStorage(redisCl)
-		}
-	}()
-
-	provider.RunLockStorageTests(
-		t,
-		lockStorageGetter,
-		dbFlusherGetter,
-	)
+	suite.Run(t, new(IntegrationSuite))
 }

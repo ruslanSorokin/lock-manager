@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/go-logr/logr"
+	"github.com/go-playground/validator/v10"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/imetric"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 )
@@ -32,49 +33,30 @@ type LockServiceI interface {
 }
 
 type LockService struct {
+	log       logr.Logger
+	validator *validator.Validate
+
 	mtr          imetric.ServiceMetricI
-	log          logr.Logger
 	lockProvider provider.LockProviderI
 
-	validateResourceID resourceIDValidator
-	validateToken      tokenValidator
+	resourceIDValidator resourceIDValidator
+	tokenValidator      tokenValidator
 }
 
 var _ LockServiceI = (*LockService)(nil)
 
 func New(
 	l logr.Logger,
+	v *validator.Validate,
 	lp provider.LockProviderI,
 	m imetric.ServiceMetricI,
-	rIDdMinLen, rIDMaxLen int,
 ) *LockService {
 	return &LockService{
-		mtr:                m,
-		log:                l,
-		lockProvider:       lp,
-		validateResourceID: newResourceIDValidator(rIDdMinLen, rIDMaxLen),
-		validateToken:      newTokenValidator(),
+		log:                 l,
+		validator:           v,
+		mtr:                 m,
+		lockProvider:        lp,
+		resourceIDValidator: newResourceIDValidator(v),
+		tokenValidator:      newTokenValidator(v),
 	}
-}
-
-func NewFromConfig(
-	l logr.Logger,
-	lp provider.LockProviderI,
-	m imetric.ServiceMetricI,
-	cfg *Config,
-) *LockService {
-	return New(
-		l, lp, m,
-		cfg.ResourceID.MinLen, cfg.ResourceID.MaxLen)
-}
-
-func Default(
-	l logr.Logger,
-	lp provider.LockProviderI,
-	m imetric.ServiceMetricI,
-) *LockService {
-	return New(
-		l, lp, m,
-		defaultResourceIDMinLen, defaultResourceIDMaxLen,
-	)
 }

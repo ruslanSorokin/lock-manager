@@ -8,6 +8,7 @@ package app
 
 import (
 	"github.com/go-logr/logr"
+	"github.com/go-playground/validator/v10"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/igrpc"
 	iprom2 "github.com/ruslanSorokin/lock-manager/internal/lock-manager/imetric/iprom"
@@ -40,10 +41,10 @@ func Wire(env apputil.Env, logger logr.Logger, config *Config) (*App, func(), er
 	v2 := grpcutil.WireProvideInterceptors(loggingLogger, v, serverMetrics)
 	grpcutilConfig := config.GRPC
 	grpcServer := grpcutil.WireProvideServer(v2, grpcutilConfig)
+	validate := validator.New()
 	lockStorage := iredis.NewLockStorage(logger, conn)
 	metric := iprom2.New(registry)
-	serviceConfig := config.LockService
-	lockService := service.NewFromConfig(logger, lockStorage, metric, serviceConfig)
+	lockService := service.New(logger, validate, lockStorage, metric)
 	handler := grpcutil.NewHandlerFromConfig(grpcServer, logger, grpcutilConfig)
 	lockHandler := igrpc.NewLockHandler(handler, logger, lockService)
 	promutilConfig := config.HTTPMetric

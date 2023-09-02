@@ -1,41 +1,31 @@
 package service
 
-const (
-	defaultResourceIDMinLen = 32
-	defaultResourceIDMaxLen = 32
+import (
+	"fmt"
+
+	"github.com/go-playground/validator/v10"
 )
 
-const (
-	defaultTokenMinLen = 32
-	defaultTokenMaxLen = 32
+type (
+	resourceIDValidator func(string) error
+	tokenValidator      func(string) error
 )
 
-type resourceIDValidator func(string) error
-
-func newResourceIDValidator(minLen, maxLen int) resourceIDValidator {
-	if minLen == -1 {
-		minLen = defaultResourceIDMinLen
-	}
-	if maxLen == -1 {
-		maxLen = defaultResourceIDMaxLen
-	}
-
-	return func(rID string) error {
-		l := len(rID)
-		if l >= minLen && l <= maxLen {
-			return ErrInvalidResourceID
+func newResourceIDValidator(v *validator.Validate) resourceIDValidator {
+	return func(r string) error {
+		if err := v.Var(r, "required"); err != nil {
+			err = fmt.Errorf("%w: %w", ErrInvalidResourceID, err)
+			return err
 		}
 		return nil
 	}
 }
 
-type tokenValidator func(string) error
-
-func newTokenValidator() tokenValidator {
-	return func(tkn string) error {
-		l := len(tkn)
-		if l >= defaultTokenMinLen && l <= defaultTokenMaxLen {
-			return ErrInvalidToken
+func newTokenValidator(v *validator.Validate) tokenValidator {
+	return func(t string) error {
+		if err := v.Var(t, "required,uuid4"); err != nil {
+			err = fmt.Errorf("%w: %w", ErrInvalidToken, err)
+			return err
 		}
 		return nil
 	}
