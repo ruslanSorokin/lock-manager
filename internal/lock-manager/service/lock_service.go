@@ -4,7 +4,8 @@ import (
 	"context"
 
 	"github.com/go-logr/logr"
-	"github.com/go-playground/validator/v10"
+	validator "github.com/go-playground/validator/v10"
+
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/imetric"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 )

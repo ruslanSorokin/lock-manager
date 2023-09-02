@@ -8,12 +8,13 @@ import (
 	promgrpc "github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus"
 	"github.com/oklog/run"
 	"github.com/prometheus/client_golang/prometheus"
+	"google.golang.org/grpc"
+
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/igrpc"
 	iservice "github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/apputil"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/promutil"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/redisconn"
-	"google.golang.org/grpc"
 )
 
 type (
