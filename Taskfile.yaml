@@ -44,3 +44,23 @@ tasks:
       - "lint:gofumpt"
       - "lint:go-vet"
       - "lint:golines"
+
+  gen:wire:
+    vars:
+      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+    sources:
+      - "{{.GO_SRC_PATH}}/**/*wire.go"
+    cmd: wire gen {{.GO_SRC_PATH}}/...
+
+  gen:mockery:
+    vars:
+      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+      CONFIG_FILE: '{{default ".config/.mockery.yaml" .CONFIG_FILE}}'
+    sources:
+      - "{{.GO_SRC_PATH}}/**/*.go"
+    cmd: GO_SRC_PATH={{.GO_SRC_PATH}} CONFIG_FILE={{.CONFIG_FILE}} ./script/mockery.sh
+
+  gen:
+    deps:
+      - "gen:wire"
+      - "gen:mockery"
