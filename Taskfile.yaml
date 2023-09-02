@@ -1,0 +1,46 @@
+version: "3"
+
+tasks:
+  lint:golangci:
+    vars:
+      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+    sources:
+      - "{{.GO_SRC_PATH}}/**/*.go"
+    cmd: cd {{.GO_SRC_PATH}} && golangci-lint run
+
+  lint:goimports-reviser:
+    vars:
+      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+      COMPANY_PREFIXES: "{{.COMPANY_PREFIXES}}"
+    sources:
+      - "{{.GO_SRC_PATH}}/**/*.go"
+    cmd: GO_SRC_PATH={{.GO_SRC_PATH}} COMPANY_PREFIXES={{.COMPANY_PREFIXES}} ./script/goimports-reviser.sh
+
+  lint:gofumpt:
+    vars:
+      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+    sources:
+      - "{{.GO_SRC_PATH}}/**/*.go"
+    cmd: gofumpt -l -w -extra {{.GO_SRC_PATH}}
+
+  lint:golines:
+    vars:
+      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+    sources:
+      - "{{.GO_SRC_PATH}}/**/*.go"
+    cmd: golines -w {{.GO_SRC_PATH}}
+
+  lint:go-vet:
+    vars:
+      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+    sources:
+      - "{{.GO_SRC_PATH}}/**/*.go"
+    cmd: go vet {{.GO_SRC_PATH}}/...
+
+  lint:
+    deps:
+      - "lint:golangci"
+      - "lint:goimports-reviser"
+      - "lint:gofumpt"
+      - "lint:go-vet"
+      - "lint:golines"
