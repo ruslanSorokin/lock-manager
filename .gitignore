@@ -18,8 +18,8 @@ vendor
 .vscode
 
 # Go workspace file
-go.work
-go.work.sum
+# go.work
+# go.work.sum
 
 # macOS
 .DS_Store
