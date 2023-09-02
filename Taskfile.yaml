@@ -1,5 +1,9 @@
 version: "3"
 
+vars:
+  MOCKERY_CONFIG_FILE: .config/.mockery.yaml
+  GOIMPORTS_REVISER_COMPANY_PREFIXES:
+
 tasks:
   lint:golangci:
     vars:
@@ -11,7 +15,7 @@ tasks:
   lint:goimports-reviser:
     vars:
       GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
-      COMPANY_PREFIXES: "{{.COMPANY_PREFIXES}}"
+      COMPANY_PREFIXES: '{{default "" .GOIMPORTS_REVISER_COMPANY_PREFIXES}}'
     sources:
       - "{{.GO_SRC_PATH}}/**/*.go"
     cmd: GO_SRC_PATH={{.GO_SRC_PATH}} COMPANY_PREFIXES={{.COMPANY_PREFIXES}} ./script/goimports-reviser.sh
@@ -55,7 +59,7 @@ tasks:
   gen:mockery:
     vars:
       GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
-      CONFIG_FILE: '{{default ".config/.mockery.yaml" .CONFIG_FILE}}'
+      CONFIG_FILE: '{{default "" .MOCKERY_CONFIG_FILE}}'
     sources:
       - "{{.GO_SRC_PATH}}/**/*.go"
     cmd: GO_SRC_PATH={{.GO_SRC_PATH}} CONFIG_FILE={{.CONFIG_FILE}} ./script/mockery.sh
