@@ -16,21 +16,27 @@ tools.install:
 	@cat  $(GO_TOOLS_FILE) | grep _ | awk -F'"' '{print $$2}' | xargs -tI % go install %
 	@cd docs && $(MAKE) --no-print-directory install-tools
 
-_lint_vet:
-	@(cd cmd && go vet ./...)
-	@(cd internal && go vet ./...)
-
-_lint_imports:
-	@goimports-reviser cmd internal
-
-_lint_golangci:
-	@golangci-lint run
-
 ###############################################################################
 
 .SILENT: lint
 
-lint: _lint_vet _lint_imports _lint_golangci
+_lint_gofumpt:
+	@gofumpt -l -w -extra .
+
+_lint_golines:
+	@golines -w .
+
+_lint_vet:
+	@go vet ./...
+
+_lint_imports:
+	@goimports-reviser .
+
+_lint_golangci:
+	@golangci-lint run
+
+
+lint: _lint_vet _lint_imports _lint_golangci _lint_gofumpt _lint_golines
 
 ###############################################################################
 

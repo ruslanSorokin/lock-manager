@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/go-logr/logr"
-	"github.com/google/uuid"
+	"github.com/gofrs/uuid"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -16,6 +16,7 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service/mock"
+	"github.com/ruslanSorokin/lock-manager/internal/pkg/testutil"
 )
 
 type (
@@ -61,12 +62,12 @@ func newRunner() func(lock.Handler, in) out {
 }
 
 func TestLock(t *testing.T) {
-	t.Parallel()
+	// t.Parallel()
 	runner := newRunner()
 
-	mockValidResourceID := uuid.NewString()
+	mockValidResourceID := testutil.Must(uuid.NewV4()).String()
 	mockInvalidResourceID := "invalid resource id"
-	mockValidToken := uuid.NewString()
+	mockValidToken := testutil.Must(uuid.NewV4()).String()
 
 	ctx := context.TODO()
 
@@ -172,7 +173,7 @@ func TestLock(t *testing.T) {
 	for _, tc := range tcs {
 		tc := tc
 		t.Run(tc.desc, func(t *testing.T) {
-			t.Parallel()
+			// t.Parallel()
 
 			svc := mock.NewLockService(t)
 			h := lock.New(logr.Discard(), svc)

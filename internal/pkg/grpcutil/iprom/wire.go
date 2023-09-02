@@ -1,6 +1,3 @@
-//go:build wireinject
-// +build wireinject
-
 package iprom
 
 import (
@@ -10,7 +7,7 @@ import (
 
 //nolint:gochecknoglobals // Wire Set
 var (
-	RecoveryMetricSet = wire.NewSet(NewRecoveryMetric, bind)
+	WireRecoveryMetricSet = wire.NewSet(NewRecoveryMetric, bind)
 
 	bind = wire.Bind(new(grpcutil.RecoveryMetricI), new(*RecoveryMetric))
 )

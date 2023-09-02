@@ -19,9 +19,10 @@ func start(e apputil.Env) error {
 	zl := zerolog.New(os.Stdout).With().Timestamp().Logger()
 	log := zerologr.New(&zl)
 
-	log.Info("environment", "env", e)
-
 	cfg := apputil.MustLoad[Config](e)
+
+	log.Info("application environment", "env", e)
+	log.Info("application version", "version", cfg.App.Version)
 
 	a, cleanup, err := app.Wire(e, log, cfg.ToAppConfig())
 	if err != nil {

@@ -1,14 +1,13 @@
 package service
 
 import (
+	"errors"
 	"fmt"
-
-	"github.com/pkg/errors"
 )
 
 const errPrefix = "lock service"
 
-func Errf(err error) error {
+func Errorf(err error) error {
 	return fmt.Errorf("%s: %w", errPrefix, err)
 }
 

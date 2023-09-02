@@ -97,22 +97,14 @@ func (a App) Run(ctx context.Context) error {
 	rg := run.Group{}
 
 	rg.Add(a.server.grpcHandler.Start,
-		func(e error) {
-			if e != nil {
-				a.log.Error(e, "grpc server")
-			}
-
+		func(_ error) {
 			a.server.grpcHandler.GracefulStop()
 		})
 
 	rg.Add(a.metric.httpHandler.Start,
-		func(e error) {
-			if e != nil {
-				a.log.Error(e, "http metric server")
-			}
-
+		func(_ error) {
 			if err := a.metric.httpHandler.GracefulStop(); err != nil {
-				a.log.Error(err, "http metric server shutdown")
+				a.log.Error(err, "http metric server shutdown error")
 			}
 		})
 

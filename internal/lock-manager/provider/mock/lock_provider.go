@@ -23,11 +23,11 @@ func (_m *LockProvider) EXPECT() *LockProvider_Expecter {
 }
 
 // Create provides a mock function with given fields: ctx, lock
-func (_m *LockProvider) Create(ctx context.Context, lock model.Lock) error {
+func (_m *LockProvider) Create(ctx context.Context, lock *model.Lock) error {
 	ret := _m.Called(ctx, lock)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, model.Lock) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *model.Lock) error); ok {
 		r0 = rf(ctx, lock)
 	} else {
 		r0 = ret.Error(0)
@@ -43,14 +43,14 @@ type LockProvider_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
-//   - lock model.Lock
+//   - lock *model.Lock
 func (_e *LockProvider_Expecter) Create(ctx interface{}, lock interface{}) *LockProvider_Create_Call {
 	return &LockProvider_Create_Call{Call: _e.mock.On("Create", ctx, lock)}
 }
 
-func (_c *LockProvider_Create_Call) Run(run func(ctx context.Context, lock model.Lock)) *LockProvider_Create_Call {
+func (_c *LockProvider_Create_Call) Run(run func(ctx context.Context, lock *model.Lock)) *LockProvider_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(model.Lock))
+		run(args[0].(context.Context), args[1].(*model.Lock))
 	})
 	return _c
 }
@@ -60,7 +60,7 @@ func (_c *LockProvider_Create_Call) Return(_a0 error) *LockProvider_Create_Call 
 	return _c
 }
 
-func (_c *LockProvider_Create_Call) RunAndReturn(run func(context.Context, model.Lock) error) *LockProvider_Create_Call {
+func (_c *LockProvider_Create_Call) RunAndReturn(run func(context.Context, *model.Lock) error) *LockProvider_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -109,11 +109,11 @@ func (_c *LockProvider_Delete_Call) RunAndReturn(run func(context.Context, strin
 }
 
 // DeleteIfTokenMatches provides a mock function with given fields: ctx, lock
-func (_m *LockProvider) DeleteIfTokenMatches(ctx context.Context, lock model.Lock) error {
+func (_m *LockProvider) DeleteIfTokenMatches(ctx context.Context, lock *model.Lock) error {
 	ret := _m.Called(ctx, lock)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, model.Lock) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *model.Lock) error); ok {
 		r0 = rf(ctx, lock)
 	} else {
 		r0 = ret.Error(0)
@@ -129,14 +129,14 @@ type LockProvider_DeleteIfTokenMatches_Call struct {
 
 // DeleteIfTokenMatches is a helper method to define mock.On call
 //   - ctx context.Context
-//   - lock model.Lock
+//   - lock *model.Lock
 func (_e *LockProvider_Expecter) DeleteIfTokenMatches(ctx interface{}, lock interface{}) *LockProvider_DeleteIfTokenMatches_Call {
 	return &LockProvider_DeleteIfTokenMatches_Call{Call: _e.mock.On("DeleteIfTokenMatches", ctx, lock)}
 }
 
-func (_c *LockProvider_DeleteIfTokenMatches_Call) Run(run func(ctx context.Context, lock model.Lock)) *LockProvider_DeleteIfTokenMatches_Call {
+func (_c *LockProvider_DeleteIfTokenMatches_Call) Run(run func(ctx context.Context, lock *model.Lock)) *LockProvider_DeleteIfTokenMatches_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(model.Lock))
+		run(args[0].(context.Context), args[1].(*model.Lock))
 	})
 	return _c
 }
@@ -146,24 +146,26 @@ func (_c *LockProvider_DeleteIfTokenMatches_Call) Return(_a0 error) *LockProvide
 	return _c
 }
 
-func (_c *LockProvider_DeleteIfTokenMatches_Call) RunAndReturn(run func(context.Context, model.Lock) error) *LockProvider_DeleteIfTokenMatches_Call {
+func (_c *LockProvider_DeleteIfTokenMatches_Call) RunAndReturn(run func(context.Context, *model.Lock) error) *LockProvider_DeleteIfTokenMatches_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Get provides a mock function with given fields: ctx, resourceID
-func (_m *LockProvider) Get(ctx context.Context, resourceID string) (model.Lock, error) {
+func (_m *LockProvider) Get(ctx context.Context, resourceID string) (*model.Lock, error) {
 	ret := _m.Called(ctx, resourceID)
 
-	var r0 model.Lock
+	var r0 *model.Lock
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (model.Lock, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*model.Lock, error)); ok {
 		return rf(ctx, resourceID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) model.Lock); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) *model.Lock); ok {
 		r0 = rf(ctx, resourceID)
 	} else {
-		r0 = ret.Get(0).(model.Lock)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.Lock)
+		}
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
@@ -194,12 +196,12 @@ func (_c *LockProvider_Get_Call) Run(run func(ctx context.Context, resourceID st
 	return _c
 }
 
-func (_c *LockProvider_Get_Call) Return(_a0 model.Lock, _a1 error) *LockProvider_Get_Call {
+func (_c *LockProvider_Get_Call) Return(_a0 *model.Lock, _a1 error) *LockProvider_Get_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *LockProvider_Get_Call) RunAndReturn(run func(context.Context, string) (model.Lock, error)) *LockProvider_Get_Call {
+func (_c *LockProvider_Get_Call) RunAndReturn(run func(context.Context, string) (*model.Lock, error)) *LockProvider_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }

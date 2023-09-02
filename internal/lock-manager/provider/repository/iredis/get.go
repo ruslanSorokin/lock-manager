@@ -10,21 +10,22 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 )
 
-func (s LockStorage) Get(ctx context.Context, resourceID string) (model.Lock, error) {
+func (s LockStorage) Get(ctx context.Context, resourceID string) (*model.Lock, error) {
 	res, err := s.conn.DB.Get(ctx, resourceID).Result()
 	if errors.Is(err, redis.Nil) {
 		err = provider.ErrLockNotFound
-		return model.Lock{}, provider.Errf(err)
+		return nil, provider.Errf(err)
 	}
 	if err != nil {
 		s.l.Error(err,
 			"resourceID", resourceID,
 		)
-		return model.Lock{}, provider.Errf(err)
+		return nil, provider.Errf(err)
 	}
 
-	return model.Lock{
-		ResourceID: resourceID,
-		Token:      res,
-	}, nil
+	l, err := model.NewLock(resourceID, res)
+	if err != nil {
+		return nil, err
+	}
+	return l, nil
 }

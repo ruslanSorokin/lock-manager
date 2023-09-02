@@ -5,7 +5,6 @@ import (
 	"net"
 
 	"github.com/go-logr/logr"
-	"github.com/google/wire"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -25,12 +24,6 @@ type Handler struct {
 }
 
 var _ HandlerI = (*Handler)(nil)
-
-//nolint:gochecknoglobals // Wire Sets
-var (
-	HandlerSet           = wire.NewSet(NewHandler)
-	HandlerFromConfigSet = wire.NewSet(NewHandlerFromConfig)
-)
 
 func NewHandler(
 	srv *grpc.Server,

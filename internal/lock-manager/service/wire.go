@@ -5,11 +5,9 @@ package service
 
 import "github.com/google/wire"
 
-//nolint:gochecknoglobals // Wire Sets
+//nolint:gochecknoglobals // Wire Set
 var (
-	Set           = wire.NewSet(New, bind)
-	FromConfigSet = wire.NewSet(NewFromConfig, bind)
-	DefaultSet    = wire.NewSet(Default, bind)
+	WireSet = wire.NewSet(New, bind)
 
 	bind = wire.Bind(new(LockServiceI), new(*LockService))
 )

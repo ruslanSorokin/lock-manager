@@ -1,43 +1,46 @@
-package provider
+package test
 
 import (
 	"context"
-	"testing"
 
+	"github.com/gofrs/uuid"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func testGet(t *testing.T, s LockProviderI) {
+func (s *ProviderSuite) TestGet() {
+	t := s.T()
+	p := s.Provider
 	assert := assert.New(t)
 	require := require.New(t)
 
 	tcs := []struct {
-		l model.Lock
+		l *model.Lock
 	}{
 		{
-			l: model.NewLock(
+			l: Must(model.NewLock(
 				"path/to/resource",
-				"token12345",
-			),
+				uuid.Must(uuid.NewV4()).String(),
+			)),
 		},
 		{
-			l: model.NewLock(
+			l: Must(model.NewLock(
 				"another/path/to/resource",
-				"token1234567890",
-			),
+				uuid.Must(uuid.NewV4()).String(),
+			)),
 		},
 	}
 	for _, tc := range tcs {
 		ctx := context.Background()
 
-		err := s.Create(ctx, tc.l)
+		err := p.Create(ctx, tc.l)
 		assert.NoError(err,
 			"should create lock without any error",
 		)
 
-		l, err := s.Get(ctx, tc.l.ResourceID)
+		l, err := p.Get(ctx, tc.l.ResourceID())
 		require.NoError(err,
 			"must return lock without any error",
 		)
@@ -47,32 +50,34 @@ func testGet(t *testing.T, s LockProviderI) {
 	}
 }
 
-func testGetErrLockNotFound(t *testing.T, s LockProviderI) {
+func (s *ProviderSuite) TestGetErrLockNotFound() {
+	t := s.T()
+	p := s.Provider
 	require := require.New(t)
 
 	tcs := []struct {
-		l model.Lock
+		l *model.Lock
 	}{
 		{
-			l: model.NewLock(
+			l: Must(model.NewLock(
 				"path/to/resource",
-				"token12345",
-			),
+				uuid.Must(uuid.NewV4()).String(),
+			)),
 		},
 		{
-			l: model.NewLock(
+			l: Must(model.NewLock(
 				"another/path/to/resource",
-				"token1234567890",
-			),
+				uuid.Must(uuid.NewV4()).String(),
+			)),
 		},
 	}
 	for _, tc := range tcs {
 		ctx := context.Background()
 
-		_, err := s.Get(ctx, tc.l.ResourceID)
-		require.ErrorIsf(err, ErrLockNotFound,
+		_, err := p.Get(ctx, tc.l.ResourceID())
+		require.ErrorIsf(err, provider.ErrLockNotFound,
 			"must return %w, as there is no such lock in the storage",
-			ErrLockNotFound,
+			provider.ErrLockNotFound,
 		)
 	}
 }

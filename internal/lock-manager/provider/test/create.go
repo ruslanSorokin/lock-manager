@@ -1,43 +1,46 @@
-package provider
+package test
 
 import (
 	"context"
-	"testing"
 
+	"github.com/gofrs/uuid"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func testCreate(t *testing.T, s LockProviderI) {
+func (s *ProviderSuite) TestCreate() {
+	t := s.T()
+	p := s.Provider
 	assert := assert.New(t)
 	require := require.New(t)
 
 	tcs := []struct {
-		l model.Lock
+		l *model.Lock
 	}{
 		{
-			l: model.NewLock(
+			l: Must(model.NewLock(
 				"path/to/resource",
-				"token12345",
-			),
+				uuid.Must(uuid.NewV4()).String(),
+			)),
 		},
 		{
-			l: model.NewLock(
+			l: Must(model.NewLock(
 				"another/path/to/resource",
-				"token1234567890",
-			),
+				uuid.Must(uuid.NewV4()).String(),
+			)),
 		},
 	}
 	for _, tc := range tcs {
 		ctx := context.Background()
 
-		err := s.Create(ctx, tc.l)
+		err := p.Create(ctx, tc.l)
 		require.NoError(err,
 			"should create lock without any error",
 		)
 
-		l, err := s.Get(ctx, tc.l.ResourceID)
+		l, err := p.Get(ctx, tc.l.ResourceID())
 		assert.NoError(err,
 			"must return lock without any error",
 		)
@@ -47,37 +50,39 @@ func testCreate(t *testing.T, s LockProviderI) {
 	}
 }
 
-func testCreateErrLockAlreadyExists(t *testing.T, s LockProviderI) {
+func (s *ProviderSuite) TestCreateErrLockAlreadyExists() {
+	t := s.T()
+	p := s.Provider
 	require := require.New(t)
 
 	tcs := []struct {
-		l model.Lock
+		l *model.Lock
 	}{
 		{
-			l: model.NewLock(
+			l: Must(model.NewLock(
 				"path/to/resource",
-				"token12345",
-			),
+				uuid.Must(uuid.NewV4()).String(),
+			)),
 		},
 		{
-			l: model.NewLock(
+			l: Must(model.NewLock(
 				"another/path/to/resource",
-				"token1234567890",
-			),
+				uuid.Must(uuid.NewV4()).String(),
+			)),
 		},
 	}
 	for _, tc := range tcs {
 		ctx := context.Background()
 
-		err := s.Create(ctx, tc.l)
+		err := p.Create(ctx, tc.l)
 		require.NoError(err,
 			"must insert without any error, as there is no such lock in the storage",
 		)
 
-		err = s.Create(ctx, tc.l)
-		require.ErrorIsf(err, ErrLockAlreadyExists,
+		err = p.Create(ctx, tc.l)
+		require.ErrorIsf(err, provider.ErrLockAlreadyExists,
 			"must return %w, as there is already such lock in the storage",
-			ErrLockAlreadyExists,
+			provider.ErrLockAlreadyExists,
 		)
 	}
 }

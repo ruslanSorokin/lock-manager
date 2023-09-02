@@ -7,15 +7,12 @@ import (
 	"net/http"
 
 	"github.com/go-logr/logr"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/wire"
-	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
-	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
-	"google.golang.org/grpc"
 
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/apputil"
 	ipromapp "github.com/ruslanSorokin/lock-manager/internal/pkg/apputil/iprom"
 
-	promgrpc "github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/igrpc"
 	ipromsvc "github.com/ruslanSorokin/lock-manager/internal/lock-manager/imetric/iprom"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/repository/iredis"
@@ -31,61 +28,42 @@ func Wire(apputil.Env, logr.Logger, *Config) (*App, func(), error) {
 		wire.FieldsOf(new(*Config),
 			"Redis",
 			"GRPC",
-			"LockService",
 			"HTTPMetric",
 			"Ver",
 		),
-
 		New,
 
-		redisconn.WireProvide,
+		validator.New,
+		redisconn.WireProvideConn,
 
-		ipromapp.MetricSet,
+		ipromapp.WireMetricSet,
 
-		promutil.HandlerFromConfigSet,
-		promutil.RegistrySet,
+		promutil.WireHandlerFromConfigSet,
+		promutil.WireRegistrySet,
 
-		ipromgrpc.RecoveryMetricSet,
+		grpcutil.WireInterceptorLoggerSet,
+		grpcutil.WirePanicRecoveryHandlerSet,
+		grpcutil.WireProcessingTimeHistogramSet,
+		grpcutil.WireHandlerFromConfigSet,
 
-		grpcutil.InterceptorLoggerSet,
-		grpcutil.PanicRecoveryHandlerSet,
-		grpcutil.ProcessingTimeHistogramSet,
+		ipromgrpc.WireRecoveryMetricSet,
 
 		http.NewServeMux,
 
 		provideHTTPServer,
-		provideGRPCServer,
 
-		grpcutil.HandlerFromConfigSet,
+		grpcutil.WireProvideInterceptors,
+		grpcutil.WireProvideServer,
 
-		service.FromConfigSet,
-		iredis.LockStorageSet,
-		ipromsvc.Set,
-		igrpc.LockHandlerSet,
+		service.WireSet,
+		ipromsvc.WireSet,
+
+		iredis.WireLockStorageSet,
+
+		igrpc.WireLockHandlerSet,
 	))
 }
 
 func provideHTTPServer() *http.Server {
 	return &http.Server{}
-}
-
-func provideGRPCServer(
-	log logging.Logger,
-	metric *promgrpc.ServerMetrics,
-	recoveryHandler func(any) error,
-) *grpc.Server {
-	unaryInters := []grpc.UnaryServerInterceptor{
-		metric.UnaryServerInterceptor(),
-		logging.UnaryServerInterceptor(log),
-		recovery.UnaryServerInterceptor(recovery.WithRecoveryHandler(recoveryHandler)),
-	}
-	streamInters := []grpc.StreamServerInterceptor{
-		metric.StreamServerInterceptor(),
-		logging.StreamServerInterceptor(log),
-		recovery.StreamServerInterceptor(recovery.WithRecoveryHandler(recoveryHandler)),
-	}
-
-	return grpc.NewServer(
-		grpc.ChainUnaryInterceptor(unaryInters...),
-		grpc.ChainStreamInterceptor(streamInters...))
 }
