@@ -1,8 +1,12 @@
 version: "3"
 
+includes:
+  tools: ./tools/Taskfile.yaml
+
 vars:
-  MOCKERY_CONFIG_FILE: .config/.mockery.yaml
-  GOIMPORTS_REVISER_COMPANY_PREFIXES:
+  MOCKERY_CONFIG_FILE: ./.config/.mockery.yaml
+  GOIMPORTS_REVISER_COMPANY_PREFIXES: ""
+  GO_TOOLS_FILE: ./tools/tools.go
 
 tasks:
   lint:golangci:

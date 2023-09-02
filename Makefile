@@ -7,17 +7,6 @@ docs.generate:
 
 ###############################################################################
 
-.SILENT: tools
-
-GO_TOOLS_FILE = tools/tools.go
-
-tools.install:
-	@go mod download
-	@cat  $(GO_TOOLS_FILE) | grep _ | awk -F'"' '{print $$2}' | xargs -tI % go install %
-	@cd docs && $(MAKE) --no-print-directory install-tools
-
-###############################################################################
-
 .SILENT: lint
 
 _lint_gofumpt:
