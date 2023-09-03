@@ -5,9 +5,22 @@ import (
 )
 
 type (
-	Env string
-	Ver string
+	Name string
+	Env  string
+	Ver  string
 )
+
+func (n Name) String() string {
+	return string(n)
+}
+
+func (e Env) String() string {
+	return string(e)
+}
+
+func (v Ver) String() string {
+	return string(v)
+}
 
 // ErrInvalidEnv returns if given string cannot be matched to env type.
 var ErrInvalidEnv = errors.New("invalid env")
