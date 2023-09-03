@@ -69,6 +69,6 @@ tasks:
     cmd: GO_SRC_PATH={{.GO_SRC_PATH}} CONFIG_FILE={{.CONFIG_FILE}} ./script/mockery.sh
 
   gen:
-    deps:
-      - "gen:wire"
-      - "gen:mockery"
+    cmds:
+      - task: "gen:mockery"
+      - task: "gen:wire"
