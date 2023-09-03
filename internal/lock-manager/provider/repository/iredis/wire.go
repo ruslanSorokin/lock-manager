@@ -5,6 +5,7 @@ package iredis
 
 import (
 	"github.com/google/wire"
+
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 )
 

@@ -2,6 +2,7 @@ package iprom
 
 import (
 	"github.com/prometheus/client_golang/prometheus"
+
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/imetric"
 )
 

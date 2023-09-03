@@ -1,0 +1,139 @@
+version: "3"
+
+includes:
+  tools: ./tools/Taskfile.yaml
+
+vars:
+  MOCKERY_CONFIG_FILE: ./.config/.mockery.yaml
+  GOIMPORTS_REVISER_COMPANY_PREFIXES: ""
+
+  GO_TOOLS_FILE: ./tools/tools.go
+
+  DOCKER_FILE: ./Dockerfile
+  DOCKER_IMAGE: lock-manager
+  DOCKER_TAG: v0.1.0
+
+  DOCKER_COMPOSE_ROOT: ./deploy/docker
+
+tasks:
+  lint:golangci:
+    vars:
+      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+    sources:
+      - "{{.GO_SRC_PATH}}/**/*.go"
+    dir: "{{.GO_SRC_PATH}}"
+    cmd: golangci-lint run
+
+  lint:goimports-reviser:
+    vars:
+      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+      COMPANY_PREFIXES: '{{default "" .GOIMPORTS_REVISER_COMPANY_PREFIXES}}'
+    sources:
+      - "{{.GO_SRC_PATH}}/**/*.go"
+    cmd: GO_SRC_PATH={{.GO_SRC_PATH}} COMPANY_PREFIXES={{.COMPANY_PREFIXES}} ./script/goimports-reviser.sh
+
+  lint:gofumpt:
+    vars:
+      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+    sources:
+      - "{{.GO_SRC_PATH}}/**/*.go"
+    cmd: gofumpt -l -w -extra {{.GO_SRC_PATH}}
+
+  lint:golines:
+    vars:
+      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+    sources:
+      - "{{.GO_SRC_PATH}}/**/*.go"
+    cmd: golines -w {{.GO_SRC_PATH}}
+
+  lint:go-vet:
+    vars:
+      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+    sources:
+      - "{{.GO_SRC_PATH}}/**/*.go"
+    cmd: go vet {{.GO_SRC_PATH}}/...
+
+  lint:
+    deps:
+      - "lint:golangci"
+      - "lint:goimports-reviser"
+      - "lint:gofumpt"
+      - "lint:go-vet"
+      - "lint:golines"
+    desc: Run all lint tasks in parallel
+
+  gen:wire:
+    vars:
+      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+    sources:
+      - "{{.GO_SRC_PATH}}/**/*wire.go"
+    cmd: wire gen {{.GO_SRC_PATH}}/...
+
+  gen:mockery:
+    vars:
+      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+      CONFIG_FILE: '{{default "" .MOCKERY_CONFIG_FILE}}'
+    sources:
+      - "{{.GO_SRC_PATH}}/**/*.go"
+    cmd: GO_SRC_PATH={{.GO_SRC_PATH}} CONFIG_FILE={{.CONFIG_FILE}} ./script/mockery.sh
+
+  gen:
+    cmds:
+      - task: "gen:mockery"
+      - task: "gen:wire"
+    desc: Run sequentially gen:mockery, gen:wire
+
+  docker:build:
+    vars:
+      DOCKER_FILE: '{{default "./Dockerfile" .DOCKER_FILE}}'
+      _DOCKER_IMAGE: '{{printf "%s:%s" .DOCKER_IMAGE .DOCKER_TAG}}'
+    requires:
+      vars:
+        - "DOCKER_IMAGE"
+        - "DOCKER_TAG"
+    cmd: >
+      docker build
+      --file {{.DOCKER_FILE}}
+      --tag {{._DOCKER_IMAGE}}
+      . {{.CLI_ARGS}}
+
+  docker-compose:up:
+    vars:
+      DOCKER_COMPOSE_ROOT: '{{default "." .DOCKER_COMPOSE_ROOT}}'
+      _DOCKER_IMAGE: '{{printf "%s:%s" .DOCKER_IMAGE .DOCKER_TAG}}'
+    dir: "{{.DOCKER_COMPOSE_ROOT}}"
+    requires:
+      vars:
+        - "DOCKER_IMAGE"
+        - "DOCKER_TAG"
+    cmd: >
+      docker-compose
+      -f docker-compose.yaml
+      -f infra/storage/redis/docker-compose.override.yaml
+      up
+      --build {{.DOCKER_IMAGE}}
+      -d
+    aliases:
+      - "dc:up"
+
+  docker-compose:down:
+    vars:
+      DOCKER_COMPOSE_ROOT: '{{default "." .DOCKER_COMPOSE_ROOT}}'
+    dir: "{{.DOCKER_COMPOSE_ROOT}}"
+    cmd: >
+      docker-compose
+      -f docker-compose.yaml
+      -f infra/storage/redis/docker-compose.override.yaml
+      down
+    aliases:
+      - "dc:down"
+
+  docker-compose:restart:
+    vars:
+      DOCKER_COMPOSE_ROOT: '{{default "." .DOCKER_COMPOSE_ROOT}}'
+    dir: "{{.DOCKER_COMPOSE_ROOT}}"
+    cmds:
+      - task: docker.up
+      - task: docker.down
+    aliases:
+      - "dc:restart"

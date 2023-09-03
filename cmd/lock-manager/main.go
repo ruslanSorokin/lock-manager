@@ -7,19 +7,30 @@ import (
 	"os"
 	"syscall"
 
+	"github.com/go-logr/logr"
 	"github.com/go-logr/zerologr"
 	"github.com/oklog/run"
 	"github.com/rs/zerolog"
 
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/app"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/apputil"
+	"github.com/ruslanSorokin/lock-manager/internal/pkg/configutil"
 )
 
-func start(e apputil.Env) error {
+const appName = "lock-manager"
+
+func newLogger() logr.Logger {
 	zl := zerolog.New(os.Stdout).With().Timestamp().Logger()
 	log := zerologr.New(&zl)
+	return log
+}
 
-	cfg := apputil.MustLoad[Config](e)
+func start(n apputil.Name, e apputil.Env, c configutil.File) error {
+	log := newLogger()
+
+	appEnvelope := configutil.NewConfig[Config](n)
+	appEnvelope.MustLoad(c)
+	cfg := appEnvelope.AppConfig()
 
 	log.Info("application environment", "env", e)
 	log.Info("application version", "version", cfg.App.Version)
@@ -46,13 +57,27 @@ func start(e apputil.Env) error {
 	return nil
 }
 
-func main() {
-	var envFlag string
-	flag.StringVar(&envFlag, "env", "dev", "app environment")
-	flag.Parse()
+func parseArgs() *arguments {
+	var env string
+	var configFile string
 
-	env := apputil.MustParseEnv(envFlag)
-	if err := start(env); err != nil {
+	flag.StringVar(&env, "env", "dev", "app environment")
+	flag.StringVar(&configFile, "config", "default.development.yaml", "app config file")
+
+	flag.Parse()
+	return &arguments{
+		Env:        env,
+		ConfigFile: configFile,
+	}
+}
+
+func main() {
+	args := parseArgs()
+
+	n := apputil.Name(appName)
+	e := apputil.MustParseEnv(args.Env)
+	c := configutil.File(args.ConfigFile)
+	if err := start(n, e, c); err != nil {
 		panic(err)
 	}
 }

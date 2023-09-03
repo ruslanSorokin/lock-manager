@@ -1,6 +1,6 @@
 repository:
   redis:
-    uri: "localhost:9090"
+    uri: "storage:6379"
     db: 0
     username:
     password:
@@ -16,11 +16,6 @@ handler:
       maxIdle: 5m
       maxAge: 5m
 
-service:
-  resourceID:
-    maxLength: 32
-    minLength: 32
-
 observability:
   pull:
     metric:
@@ -28,5 +23,5 @@ observability:
       readTimeOut: 5s
 
 application:
-  environment: "local"
+  environment: "dev"
   version: "v0.1.0"

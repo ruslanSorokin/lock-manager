@@ -2,6 +2,7 @@ package iprom
 
 import (
 	"github.com/google/wire"
+
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/grpcutil"
 )
 

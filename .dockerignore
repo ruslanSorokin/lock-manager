@@ -1,7 +1,7 @@
 *
 !internal
 !cmd
-!configs
+!config
 !go.mod
 !go.sum
 !Makefile

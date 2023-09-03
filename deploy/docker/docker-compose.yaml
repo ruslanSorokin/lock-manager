@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   lock-manager:
+    container_name: lock-manager
     build:
       context: "../../"
       dockerfile: "./Dockerfile"

@@ -4,10 +4,11 @@ import (
 	"context"
 
 	"github.com/gofrs/uuid"
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 )
 
 func (s *ProviderSuite) TestGet() {

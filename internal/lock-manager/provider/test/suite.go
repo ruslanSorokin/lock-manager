@@ -1,8 +1,9 @@
 package test
 
 import (
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 )
 
 type ProviderSuite struct {

@@ -3,6 +3,7 @@ package iprom
 import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
+
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/apputil"
 )
 
