@@ -6,7 +6,14 @@ includes:
 vars:
   MOCKERY_CONFIG_FILE: ./.config/.mockery.yaml
   GOIMPORTS_REVISER_COMPANY_PREFIXES: ""
+
   GO_TOOLS_FILE: ./tools/tools.go
+
+  DOCKER_FILE: ./Dockerfile
+  DOCKER_IMAGE: lock-manager
+  DOCKER_TAG: v0.1.0
+
+  DOCKER_COMPOSE_ROOT: ./deploy/docker
 
 tasks:
   lint:golangci:
@@ -14,7 +21,8 @@ tasks:
       GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
     sources:
       - "{{.GO_SRC_PATH}}/**/*.go"
-    cmd: cd {{.GO_SRC_PATH}} && golangci-lint run
+    dir: "{{.GO_SRC_PATH}}"
+    cmd: golangci-lint run
 
   lint:goimports-reviser:
     vars:
@@ -52,6 +60,7 @@ tasks:
       - "lint:gofumpt"
       - "lint:go-vet"
       - "lint:golines"
+    desc: Run all lint tasks in parallel
 
   gen:wire:
     vars:
@@ -72,3 +81,59 @@ tasks:
     cmds:
       - task: "gen:mockery"
       - task: "gen:wire"
+    desc: Run sequentially gen:mockery, gen:wire
+
+  docker:build:
+    vars:
+      DOCKER_FILE: '{{default "./Dockerfile" .DOCKER_FILE}}'
+      _DOCKER_IMAGE: '{{printf "%s:%s" .DOCKER_IMAGE .DOCKER_TAG}}'
+    requires:
+      vars:
+        - "DOCKER_IMAGE"
+        - "DOCKER_TAG"
+    cmd: >
+      docker build
+      --file {{.DOCKER_FILE}}
+      --tag {{._DOCKER_IMAGE}}
+      . {{.CLI_ARGS}}
+
+  docker-compose:up:
+    vars:
+      DOCKER_COMPOSE_ROOT: '{{default "." .DOCKER_COMPOSE_ROOT}}'
+      _DOCKER_IMAGE: '{{printf "%s:%s" .DOCKER_IMAGE .DOCKER_TAG}}'
+    dir: "{{.DOCKER_COMPOSE_ROOT}}"
+    requires:
+      vars:
+        - "DOCKER_IMAGE"
+        - "DOCKER_TAG"
+    cmd: >
+      docker-compose
+      -f docker-compose.yaml
+      -f infra/storage/redis/docker-compose.override.yaml
+      up
+      --build {{.DOCKER_IMAGE}}
+      -d
+    aliases:
+      - "dc:up"
+
+  docker-compose:down:
+    vars:
+      DOCKER_COMPOSE_ROOT: '{{default "." .DOCKER_COMPOSE_ROOT}}'
+    dir: "{{.DOCKER_COMPOSE_ROOT}}"
+    cmd: >
+      docker-compose
+      -f docker-compose.yaml
+      -f infra/storage/redis/docker-compose.override.yaml
+      down
+    aliases:
+      - "dc:down"
+
+  docker-compose:restart:
+    vars:
+      DOCKER_COMPOSE_ROOT: '{{default "." .DOCKER_COMPOSE_ROOT}}'
+    dir: "{{.DOCKER_COMPOSE_ROOT}}"
+    cmds:
+      - task: docker.up
+      - task: docker.down
+    aliases:
+      - "dc:restart"
