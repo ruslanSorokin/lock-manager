@@ -1,11 +1,6 @@
-###############################################################################
-
-.SILENT: docs
-
-docs.generate:
-	@cd docs && $(MAKE) --no-print-directory generate-uml
-
-###############################################################################
+.SILENT: install-gotask
+install-gotask:
+	@go install github.com/go-task/task/v3/cmd/task@latest
 
 .SILENT: app
 
@@ -21,4 +16,4 @@ app.build:
 	@go build -v -o main $(APP_ENTRYPOINT)
 
 app.run:
-	@go run $(APP_ENTRYPOINT) -config local
+	@go run $(APP_ENTRYPOINT)

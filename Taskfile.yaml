@@ -1,7 +1,12 @@
 version: "3"
 
 includes:
-  tools: tools/Taskfile.yaml
+  tools:
+    taskfile: tools/Taskfile.yaml
+    dir: tools
+  docs:
+    taskfile: docs/Taskfile.yaml
+    dir: docs
 
 vars:
   MOCKERY_CONFIG_FILE: .config/.mockery.yaml

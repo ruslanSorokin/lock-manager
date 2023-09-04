@@ -1,0 +1,37 @@
+version: "3"
+
+vars:
+  MMD_SRC_DIR: src
+  MMD_GEN_DIR: gen
+  MMD_CONFIG_FILE: src/config.json
+  MMD_STYLE_FILE: src/style.mmd.css
+
+tasks:
+  install-mmdc:
+    cmd: npm install
+    status:
+      - "npm ls mermaid-js/mermaid-cli"
+
+  gen:
+    vars:
+      SRC_DIR: "{{.MMD_SRC_DIR}}"
+      GEN_DIR: "{{.MMD_GEN_DIR}}"
+      CONFIG_FILE: '{{default "" .MMD_CONFIG_FILE}}'
+      STYLE_FILE: '{{default "" .MMD_STYLE_FILE}}'
+      _CONFIG_FILE_OPT: "{{if .CONFIG_FILE}}--configFile {{.CONFIG_FILE}}{{end}}"
+      _STYLE_FILE_OPT: "{{if .STYLE_FILE}}--cssFile {{.STYLE_FILE}}{{end}}"
+    requires:
+      vars:
+        - "MMD_SRC_DIR"
+        - "MMD_GEN_DIR"
+    deps: ["install-mmdc"]
+    sources:
+      - "{{.SRC_DIR}}/**/*.mmd"
+    cmds:
+      - for: sources
+        cmd: >
+          npx -p @mermaid-js/mermaid-cli mmdc
+          -i {{.ITEM}}
+          -o {{.GEN_DIR}}/{{trimSuffix (ext (base .ITEM)) (base .ITEM)}}.svg
+          {{._CONFIG_FILE_OPT}}
+          {{._STYLE_FILE_OPT}}
