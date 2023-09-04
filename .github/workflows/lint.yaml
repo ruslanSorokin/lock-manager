@@ -23,7 +23,7 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v3.7.0
@@ -45,7 +45,7 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run go fmt
         run: |
@@ -65,7 +65,7 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run go vet
         run: |
@@ -75,7 +75,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run typos
         uses: crate-ci/typos@v1.16.10
@@ -117,7 +117,7 @@ jobs:
           go install github.com/segmentio/golines@latest
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run ${{ matrix.hook_aliases }}
         uses: pre-commit/action@v3.0.0
