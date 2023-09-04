@@ -8,7 +8,7 @@ vars:
 
 tasks:
   install-mmdc:
-    cmd: npm install --only=dev
+    cmd: npm install
     status:
       - "npm ls mermaid-js/mermaid-cli"
 
