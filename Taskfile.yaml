@@ -1,57 +1,58 @@
 version: "3"
 
 includes:
-  tools: ./tools/Taskfile.yaml
+  tools: tools/Taskfile.yaml
 
 vars:
-  MOCKERY_CONFIG_FILE: ./.config/.mockery.yaml
+  MOCKERY_CONFIG_FILE: .config/.mockery.yaml
   GOIMPORTS_REVISER_COMPANY_PREFIXES: ""
 
-  GO_TOOLS_FILE: ./tools/tools.go
+  GO_SRC_DIR: .
+  GO_TOOLS_FILE: tools/tools.go
 
-  DOCKER_FILE: ./Dockerfile
+  DOCKER_FILE: Dockerfile
   DOCKER_IMAGE: lock-manager
   DOCKER_TAG: v0.1.0
 
-  DOCKER_COMPOSE_ROOT: ./deploy/docker
+  DOCKER_COMPOSE_ROOT: deploy/docker
 
 tasks:
   lint:golangci:
     vars:
-      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+      SRC_DIR: '{{default "." .GO_SRC_DIR}}'
     sources:
-      - "{{.GO_SRC_PATH}}/**/*.go"
-    dir: "{{.GO_SRC_PATH}}"
+      - "{{.SRC_DIR}}/**/*.go"
+    dir: "{{.SRC_DIR}}"
     cmd: golangci-lint run
 
   lint:goimports-reviser:
     vars:
-      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+      SRC_DIR: '{{default "." .GO_SRC_DIR}}'
       COMPANY_PREFIXES: '{{default "" .GOIMPORTS_REVISER_COMPANY_PREFIXES}}'
     sources:
-      - "{{.GO_SRC_PATH}}/**/*.go"
-    cmd: GO_SRC_PATH={{.GO_SRC_PATH}} COMPANY_PREFIXES={{.COMPANY_PREFIXES}} ./script/goimports-reviser.sh
+      - "{{.SRC_DIR}}/**/*.go"
+    cmd: GO_SRC_PATH={{.SRC_DIR}} COMPANY_PREFIXES={{.COMPANY_PREFIXES}} ./script/goimports-reviser.sh
 
   lint:gofumpt:
     vars:
-      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+      SRC_DIR: '{{default "." .GO_SRC_DIR}}'
     sources:
-      - "{{.GO_SRC_PATH}}/**/*.go"
-    cmd: gofumpt -l -w -extra {{.GO_SRC_PATH}}
+      - "{{.SRC_DIR}}/**/*.go"
+    cmd: gofumpt -l -w -extra {{.SRC_DIR}}
 
   lint:golines:
     vars:
-      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+      SRC_DIR: '{{default "." .GO_SRC_DIR}}'
     sources:
-      - "{{.GO_SRC_PATH}}/**/*.go"
-    cmd: golines -w {{.GO_SRC_PATH}}
+      - "{{.SRC_DIR}}/**/*.go"
+    cmd: golines -w {{.SRC_DIR}}
 
   lint:go-vet:
     vars:
-      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+      SRC_DIR: '{{default "." .GO_SRC_DIR}}'
     sources:
-      - "{{.GO_SRC_PATH}}/**/*.go"
-    cmd: go vet {{.GO_SRC_PATH}}/...
+      - "{{.SRC_DIR}}/**/*.go"
+    cmd: go vet {{.SRC_DIR}}/...
 
   lint:
     deps:
@@ -64,18 +65,18 @@ tasks:
 
   gen:wire:
     vars:
-      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+      SRC_DIR: '{{default "." .GO_SRC_DIR}}'
     sources:
-      - "{{.GO_SRC_PATH}}/**/*wire.go"
-    cmd: wire gen {{.GO_SRC_PATH}}/...
+      - "{{.SRC_DIR}}/**/*wire.go"
+    cmd: wire gen {{.SRC_DIR}}/...
 
   gen:mockery:
     vars:
-      GO_SRC_PATH: '{{default "." .GO_SRC_PATH}}'
+      SRC_DIR: '{{default "." .GO_SRC_DIR}}'
       CONFIG_FILE: '{{default "" .MOCKERY_CONFIG_FILE}}'
     sources:
-      - "{{.GO_SRC_PATH}}/**/*.go"
-    cmd: GO_SRC_PATH={{.GO_SRC_PATH}} CONFIG_FILE={{.CONFIG_FILE}} ./script/mockery.sh
+      - "{{.SRC_DIR}}/**/*.go"
+    cmd: GO_SRC_PATH={{.SRC_DIR}} CONFIG_FILE={{.CONFIG_FILE}} ./script/mockery.sh
 
   gen:
     cmds:
@@ -85,7 +86,7 @@ tasks:
 
   docker:build:
     vars:
-      DOCKER_FILE: '{{default "./Dockerfile" .DOCKER_FILE}}'
+      DOCKER_FILE: '{{default "Dockerfile" .DOCKER_FILE}}'
       _DOCKER_IMAGE: '{{printf "%s:%s" .DOCKER_IMAGE .DOCKER_TAG}}'
     requires:
       vars:
