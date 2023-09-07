@@ -7,21 +7,19 @@ on:
     branches: [main]
 
 env:
-  GO_VERSION: "stable"
+  GO_VERSION: 1.21
 
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
-      matrix:
-        go: ['stable']
 
     steps:
-      - name: Install Go
+      - name: Install golang
         uses: actions/setup-go@v4
         with:
-          go-version: ${{ matrix.go }}
+          go-version: ${{ env.GO_VERSION }}
 
       - name: Checkout code
         uses: actions/checkout@v4

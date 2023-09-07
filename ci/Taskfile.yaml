@@ -1,0 +1,14 @@
+version: "3"
+
+includes:
+  tools:
+    taskfile: "../tools/Taskfile.yaml"
+    internal: true
+    dir: "../tools"
+
+tasks:
+  pre-commit:install-tools:
+    deps:
+      - "tools:install-golines"
+      - "tools:install-gofumpt"
+      - "tools:install-goimports-reviser"
