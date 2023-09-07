@@ -3,7 +3,7 @@ quiet: true
 disable-version-string: true
 with-expecter: true
 case: underscore
-outpkg: mock
+outpkg: '{{.PackageName}}mock '
 filename: '{{trimSuffix .InterfaceNameSnake "_i"}}.go'
 dir: "{{.InterfaceDir}}/mock"
 mockname: '{{trimSuffix .InterfaceName "I"}}'

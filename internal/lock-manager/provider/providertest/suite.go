@@ -1,4 +1,4 @@
-package test
+package providertest
 
 import (
 	"github.com/stretchr/testify/suite"

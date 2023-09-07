@@ -15,7 +15,7 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/igrpc/unlock"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service/mock"
+	mock "github.com/ruslanSorokin/lock-manager/internal/lock-manager/service/mock"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/testutil"
 )
 
