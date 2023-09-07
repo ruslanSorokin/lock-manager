@@ -10,8 +10,8 @@ import (
 	"github.com/ory/dockertest"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/providertest"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/repository/iredis"
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/test"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/dockerutil"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/redisconn"
 )
@@ -28,7 +28,7 @@ const (
 
 type IntegrationSuite struct {
 	suite.Suite
-	*test.ProviderSuite
+	*providertest.ProviderSuite
 
 	resource *dockertest.Resource
 	pool     *dockertest.Pool
@@ -69,7 +69,7 @@ func (s *IntegrationSuite) SetupSuite() {
 	s.conn = c
 
 	ls := iredis.NewLockStorage(logr.Discard(), c)
-	s.ProviderSuite = test.NewProviderSuite(s, ls)
+	s.ProviderSuite = providertest.NewProviderSuite(s, ls)
 
 	s.ProviderSuite.Provider = ls
 }

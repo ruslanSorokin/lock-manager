@@ -1,4 +1,4 @@
-package test
+package providertest
 
 func Must[T any](t *T, u error) *T {
 	if u != nil {
