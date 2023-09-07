@@ -33,7 +33,7 @@ func Wire(apputil.Env, logr.Logger, *Config) (*App, func(), error) {
 		New,
 
 		validator.New,
-		redisconn.WireProvideConn,
+		redisconn.WireProvide,
 
 		ipromapp.WireMetricSet,
 

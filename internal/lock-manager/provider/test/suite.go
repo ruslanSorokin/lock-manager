@@ -6,14 +6,14 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 )
 
-type ProviderSuite struct {
+type PSuite struct {
 	suite.TestingSuite
 
 	Provider provider.LockProviderI
 }
 
-func NewProviderSuite(s suite.TestingSuite, p provider.LockProviderI) *ProviderSuite {
-	return &ProviderSuite{
+func NewSuite(s suite.TestingSuite, p provider.LockProviderI) *PSuite {
+	return &PSuite{
 		TestingSuite: s,
 		Provider:     p,
 	}

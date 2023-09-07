@@ -19,8 +19,8 @@ type Conn struct {
 	DB *redis.Client
 }
 
-// NewConn creates a new redis Conn.
-func NewConn(uri, uname, pword string, db uint) (*Conn, error) {
+// New creates a new redis Conn.
+func New(uri, uname, pword string, db uint) (*Conn, error) {
 	c := &Conn{
 		DB: redis.NewClient(
 			&redis.Options{
@@ -43,9 +43,9 @@ func NewConn(uri, uname, pword string, db uint) (*Conn, error) {
 	return c, nil
 }
 
-// NewConnFromConfig creates a new instance of redis client from config.
-func NewConnFromConfig(cfg *Config) (*Conn, error) {
-	return NewConn(cfg.URI, cfg.Username, cfg.Password, cfg.DB)
+// NewFromConfig creates a new instance of redis client from config.
+func NewFromConfig(cfg *Config) (*Conn, error) {
+	return New(cfg.URI, cfg.Username, cfg.Password, cfg.DB)
 }
 
 func (c Conn) HealthCheck() bool {

@@ -15,7 +15,7 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/igrpc/lock"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
-	mock "github.com/ruslanSorokin/lock-manager/internal/lock-manager/service/mock"
+	servicemock "github.com/ruslanSorokin/lock-manager/internal/lock-manager/service/mock"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/testutil"
 )
 
@@ -77,7 +77,7 @@ func TestLock(t *testing.T) {
 		want    func() out
 		mockIn  mockIn
 		mockOut mockOut
-		prepare func(*mock.LockService, mockIn, mockOut)
+		prepare func(*servicemock.LockService, mockIn, mockOut)
 		run     func(lock.Handler, in) out
 	}{
 		{
@@ -96,7 +96,7 @@ func TestLock(t *testing.T) {
 			mockIn:  mockIn{ctx: ctx, resID: mockValidResourceID},
 			mockOut: mockOut{tkn: mockValidToken, err: nil},
 
-			prepare: func(m *mock.LockService, i mockIn, o mockOut) {
+			prepare: func(m *servicemock.LockService, i mockIn, o mockOut) {
 				m.On("Lock", i.ctx, i.resID).Return(o.tkn, o.err)
 			},
 
@@ -118,7 +118,7 @@ func TestLock(t *testing.T) {
 			mockIn:  mockIn{ctx: ctx, resID: mockInvalidResourceID},
 			mockOut: mockOut{tkn: "", err: service.ErrInvalidResourceID},
 
-			prepare: func(m *mock.LockService, i mockIn, o mockOut) {
+			prepare: func(m *servicemock.LockService, i mockIn, o mockOut) {
 				m.On("Lock", i.ctx, i.resID).Return(o.tkn, o.err)
 			},
 
@@ -140,7 +140,7 @@ func TestLock(t *testing.T) {
 			mockIn:  mockIn{ctx: ctx, resID: mockValidResourceID},
 			mockOut: mockOut{tkn: "", err: provider.ErrLockAlreadyExists},
 
-			prepare: func(m *mock.LockService, i mockIn, o mockOut) {
+			prepare: func(m *servicemock.LockService, i mockIn, o mockOut) {
 				m.On("Lock", i.ctx, i.resID).Return(o.tkn, o.err)
 			},
 
@@ -162,7 +162,7 @@ func TestLock(t *testing.T) {
 			mockIn:  mockIn{ctx: ctx, resID: mockValidResourceID},
 			mockOut: mockOut{tkn: "", err: errors.New("unexpected error")},
 
-			prepare: func(m *mock.LockService, i mockIn, o mockOut) {
+			prepare: func(m *servicemock.LockService, i mockIn, o mockOut) {
 				m.On("Lock", i.ctx, i.resID).Return(o.tkn, o.err)
 			},
 
@@ -175,7 +175,7 @@ func TestLock(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			// t.Parallel()
 
-			svc := mock.NewLockService(t)
+			svc := servicemock.NewLockService(t)
 			h := lock.New(logr.Discard(), svc)
 
 			tc.prepare(svc, tc.mockIn, tc.mockOut)

@@ -27,7 +27,7 @@ import (
 
 func Wire(env apputil.Env, logger logr.Logger, config *Config) (*App, func(), error) {
 	redisconnConfig := config.Redis
-	conn, cleanup, err := redisconn.WireProvideConn(logger, redisconnConfig)
+	conn, cleanup, err := redisconn.WireProvide(logger, redisconnConfig)
 	if err != nil {
 		return nil, nil, err
 	}

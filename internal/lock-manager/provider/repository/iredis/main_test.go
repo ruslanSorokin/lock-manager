@@ -10,8 +10,8 @@ import (
 	"github.com/ory/dockertest"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/providertest"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/repository/iredis"
+	providertest "github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/test"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/dockerutil"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/redisconn"
 )
@@ -27,8 +27,8 @@ const (
 )
 
 type IntegrationSuite struct {
-	suite.Suite
-	*providertest.ProviderSuite
+	*suite.Suite
+	*providertest.PSuite
 
 	resource *dockertest.Resource
 	pool     *dockertest.Pool
@@ -62,16 +62,16 @@ func (s *IntegrationSuite) SetupSuite() {
 		DB:       0,
 	}
 
-	c, err := redisconn.NewConnFromConfig(cfg)
+	c, err := redisconn.NewFromConfig(cfg)
 	if err != nil {
 		t.Error(err)
 	}
 	s.conn = c
 
 	ls := iredis.NewLockStorage(logr.Discard(), c)
-	s.ProviderSuite = providertest.NewProviderSuite(s, ls)
+	s.PSuite = providertest.NewSuite(s, ls)
 
-	s.ProviderSuite.Provider = ls
+	s.PSuite.Provider = ls
 }
 
 func (s *IntegrationSuite) TearDownSuite() {
@@ -109,5 +109,7 @@ func RemoveRedisContainer(p *dockertest.Pool, r *dockertest.Resource) error {
 }
 
 func TestIntegrationRedisLockStorage(t *testing.T) {
-	suite.Run(t, new(IntegrationSuite))
+	suite.Run(t, &IntegrationSuite{
+		Suite: &suite.Suite{},
+	})
 }

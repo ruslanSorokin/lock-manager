@@ -11,7 +11,7 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 )
 
-func (s *ProviderSuite) TestDeleteIfTokenMatches() {
+func (s PSuite) TestDeleteIfTokenMatches() {
 	t := s.T()
 	p := s.Provider
 	assert := assert.New(t)
@@ -57,7 +57,7 @@ func (s *ProviderSuite) TestDeleteIfTokenMatches() {
 	}
 }
 
-func (s *ProviderSuite) TestDeleteIfTokenMatchesErrInvalidToken() {
+func (s PSuite) TestDeleteIfTokenMatchesErrInvalidToken() {
 	t := s.T()
 	p := s.Provider
 	assert := assert.New(t)
@@ -106,7 +106,7 @@ func (s *ProviderSuite) TestDeleteIfTokenMatchesErrInvalidToken() {
 	}
 }
 
-func (s *ProviderSuite) TestDeleteIfTokenMatchesErrLockNotFound() {
+func (s PSuite) TestDeleteIfTokenMatchesErrLockNotFound() {
 	t := s.T()
 	p := s.Provider
 	require := require.New(t)
