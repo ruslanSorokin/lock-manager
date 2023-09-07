@@ -11,7 +11,7 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 )
 
-func (s *ProviderSuite) TestDelete() {
+func (s PSuite) TestDelete() {
 	t := s.T()
 	p := s.Provider
 	assert := assert.New(t)
@@ -54,7 +54,7 @@ func (s *ProviderSuite) TestDelete() {
 	}
 }
 
-func (s *ProviderSuite) TestDeleteErrLockNotFound() {
+func (s PSuite) TestDeleteErrLockNotFound() {
 	t := s.T()
 	p := s.Provider
 	require := require.New(t)

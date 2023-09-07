@@ -11,7 +11,7 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 )
 
-func (s *ProviderSuite) TestCreate() {
+func (s PSuite) TestGet() {
 	t := s.T()
 	p := s.Provider
 	assert := assert.New(t)
@@ -37,12 +37,12 @@ func (s *ProviderSuite) TestCreate() {
 		ctx := context.Background()
 
 		err := p.Create(ctx, tc.l)
-		require.NoError(err,
+		assert.NoError(err,
 			"should create lock without any error",
 		)
 
 		l, err := p.Get(ctx, tc.l.ResourceID())
-		assert.NoError(err,
+		require.NoError(err,
 			"must return lock without any error",
 		)
 		require.Equal(l, tc.l,
@@ -51,7 +51,7 @@ func (s *ProviderSuite) TestCreate() {
 	}
 }
 
-func (s *ProviderSuite) TestCreateErrLockAlreadyExists() {
+func (s PSuite) TestGetErrLockNotFound() {
 	t := s.T()
 	p := s.Provider
 	require := require.New(t)
@@ -75,15 +75,10 @@ func (s *ProviderSuite) TestCreateErrLockAlreadyExists() {
 	for _, tc := range tcs {
 		ctx := context.Background()
 
-		err := p.Create(ctx, tc.l)
-		require.NoError(err,
-			"must insert without any error, as there is no such lock in the storage",
-		)
-
-		err = p.Create(ctx, tc.l)
-		require.ErrorIsf(err, provider.ErrLockAlreadyExists,
-			"must return %w, as there is already such lock in the storage",
-			provider.ErrLockAlreadyExists,
+		_, err := p.Get(ctx, tc.l.ResourceID())
+		require.ErrorIsf(err, provider.ErrLockNotFound,
+			"must return %w, as there is no such lock in the storage",
+			provider.ErrLockNotFound,
 		)
 	}
 }

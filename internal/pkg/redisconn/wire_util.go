@@ -2,8 +2,8 @@ package redisconn
 
 import "github.com/go-logr/logr"
 
-func WireProvideConn(log logr.Logger, cfg *Config) (*Conn, func(), error) {
-	conn, err := NewConnFromConfig(cfg)
+func WireProvide(log logr.Logger, cfg *Config) (*Conn, func(), error) {
+	conn, err := NewFromConfig(cfg)
 	if err != nil {
 		return nil, nil, err
 	}

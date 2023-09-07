@@ -8,6 +8,6 @@ import (
 )
 
 var (
-	WireSet       = wire.NewSet(NewConn)
-	WireConfigSet = wire.NewSet(NewConnFromConfig)
+	WireSet       = wire.NewSet(New)
+	WireConfigSet = wire.NewSet(NewFromConfig)
 )
