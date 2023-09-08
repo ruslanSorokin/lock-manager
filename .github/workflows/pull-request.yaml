@@ -1,0 +1,132 @@
+name: pull-request
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run typos
+        uses: crate-ci/typos@v1.16.11
+        with:
+          config: .config/.typos.toml
+
+  lint-go:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install golang
+      uses: actions/setup-go@v4
+      with:
+        go-version-file: go.mod
+        cache: true
+        cache-dependency-path: |
+          go.sum
+
+    - name: Run golangci-lint
+      uses: golangci/golangci-lint-action@v3.7.0
+      with:
+        version: latest
+        skip-build-cache: true
+        skip-pkg-cache: true
+
+    - name: Run go fmt
+      run: |
+        go fmt ./...
+        git diff --exit-code
+
+    - name: Run go vet
+      run: |
+        go vet ./...
+
+  lint-pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install golang
+      uses: actions/setup-go@v4
+      with:
+        go-version-file: go.mod
+        cache: true
+        cache-dependency-path: |
+          tools/go.sum
+
+    - name: Install Python
+      uses: actions/setup-python@v4
+
+    - name: Install go-task
+      run: make install-gotask
+
+    - name: Install tools
+      run: task pre-commit:install-tools
+      working-directory: ci
+
+    - name: Run pre-commit
+      uses: pre-commit/action@v3.0.0
+      with:
+        extra_args: --all-files
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install golang
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: go.mod
+          cache: true
+          cache-dependency-path: |
+            go.sum
+
+      - name: Check for missing dependencies
+        run: |
+          go mod tidy
+          git diff --exit-code
+
+      - name: Download dependencies
+        run: |
+          go mod download
+
+      - name: Verify dependencies
+        run: |
+          go mod verify
+
+      - name: Build code
+        run: |
+          go build -v ./...
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install golang
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: go.mod
+          cache: true
+          cache-dependency-path: |
+            go.sum
+
+      - name: Build code
+        run: go build -v ./...
+
+      - name: Run unit tests
+        run: make app.unit-test
+
+      - name: Run all tests
+        run: make app.test
