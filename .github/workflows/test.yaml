@@ -23,7 +23,6 @@ jobs:
           cache: true
           cache-dependency-path: |
             go.sum
-            tools/go.sum
 
       - name: Build code
         run: go build -v ./...
