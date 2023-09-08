@@ -13,6 +13,9 @@ jobs:
   golangci-lint:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Install golang
         uses: actions/setup-go@v4
         with:
@@ -21,9 +24,6 @@ jobs:
           cache-dependency-path: |
             go.sum
             tools/go.sum
-
-      - name: Checkout code
-        uses: actions/checkout@v4
 
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v3.7.0
@@ -35,6 +35,9 @@ jobs:
   go-fmt:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Install golang
         uses: actions/setup-go@v4
         with:
@@ -43,9 +46,6 @@ jobs:
           cache-dependency-path: |
             go.sum
             tools/go.sum
-
-      - name: Checkout code
-        uses: actions/checkout@v4
 
       - name: Run go fmt
         run: |
@@ -55,6 +55,9 @@ jobs:
   go-vet:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Install golang
         uses: actions/setup-go@v4
         with:
@@ -63,9 +66,6 @@ jobs:
           cache-dependency-path: |
             go.sum
             tools/go.sum
-
-      - name: Checkout code
-        uses: actions/checkout@v4
 
       - name: Run go vet
         run: |
@@ -98,6 +98,9 @@ jobs:
             golines,
           ]
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Install Python
         uses: actions/setup-python@v4
 
@@ -114,9 +117,6 @@ jobs:
         uses: arduino/setup-task@v1
         with:
           version: 3.x
-
-      - name: Checkout code
-        uses: actions/checkout@v4
 
       - name: Install tools
         run: task pre-commit:install-tools

@@ -16,6 +16,9 @@ jobs:
       fail-fast: true
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Install golang
         uses: actions/setup-go@v4
         with:
@@ -24,9 +27,6 @@ jobs:
           cache-dependency-path: |
             go.sum
             tools/go.sum
-
-      - name: Checkout code
-        uses: actions/checkout@v4
 
       - name: Build code
         run: go build -v ./...
