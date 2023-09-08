@@ -9,9 +9,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
