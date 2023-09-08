@@ -1,2 +1,6 @@
 [files]
 extend-exclude = ["**/gen"]
+
+[type.gowork]
+extend-glob = ["*.work.sum"]
+check-file = false
