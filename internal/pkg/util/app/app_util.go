@@ -41,11 +41,11 @@ func MustParseEnv(env string) Env {
 // Returns ErrInvalidEnv if env cannot be matched.
 func ParseEnv(env string) (Env, error) {
 	switch env {
-	case "local", "loc", "lcl", "l":
-		return Local, nil
-	case "development", "dev", "dvl", "d":
+	case "development", "dev", "d":
 		return Dev, nil
-	case "production", "prod", "prd", "p":
+	case "testing", "test", "t":
+		return Test, nil
+	case "production", "prod", "p":
 		return Prod, nil
 	default:
 		return "", errors.Wrap(ErrInvalidEnv, env)
@@ -54,7 +54,7 @@ func ParseEnv(env string) (Env, error) {
 
 // Environment type.
 const (
-	Local Env = "local"
-	Dev   Env = "development"
-	Prod  Env = "production"
+	Dev  Env = "development"
+	Test Env = "test"
+	Prod Env = "production"
 )

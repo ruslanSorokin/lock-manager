@@ -14,12 +14,12 @@ import (
 	ipromsvc "github.com/ruslanSorokin/lock-manager/internal/lock-manager/metric/iprom"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/repository/iredis"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/apputil"
-	ipromapp "github.com/ruslanSorokin/lock-manager/internal/pkg/apputil/iprom"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/grpcutil"
-	ipromgrpc "github.com/ruslanSorokin/lock-manager/internal/pkg/grpcutil/iprom"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/promutil"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/redisconn"
+	redisconn "github.com/ruslanSorokin/lock-manager/internal/pkg/conn/redis"
+	apputil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app"
+	ipromapp "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app/iprom"
+	grpcutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/grpc"
+	ipromgrpc "github.com/ruslanSorokin/lock-manager/internal/pkg/util/grpc/iprom"
+	promutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/prom"
 )
 
 func Wire(apputil.Env, logr.Logger, *Config) (*App, func(), error) {

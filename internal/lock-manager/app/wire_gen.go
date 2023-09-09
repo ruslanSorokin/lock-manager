@@ -14,12 +14,12 @@ import (
 	iprom2 "github.com/ruslanSorokin/lock-manager/internal/lock-manager/metric/iprom"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/repository/iredis"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/apputil"
-	iprom3 "github.com/ruslanSorokin/lock-manager/internal/pkg/apputil/iprom"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/grpcutil"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/grpcutil/iprom"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/promutil"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/redisconn"
+	"github.com/ruslanSorokin/lock-manager/internal/pkg/conn/redis"
+	"github.com/ruslanSorokin/lock-manager/internal/pkg/util/app"
+	iprom3 "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app/iprom"
+	"github.com/ruslanSorokin/lock-manager/internal/pkg/util/grpc"
+	"github.com/ruslanSorokin/lock-manager/internal/pkg/util/grpc/iprom"
+	"github.com/ruslanSorokin/lock-manager/internal/pkg/util/prom"
 	"net/http"
 )
 

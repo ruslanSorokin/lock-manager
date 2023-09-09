@@ -5,7 +5,7 @@ import (
 
 	"github.com/ilyakaznacheev/cleanenv"
 
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/apputil"
+	apputil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app"
 )
 
 const (

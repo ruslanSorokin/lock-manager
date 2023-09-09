@@ -3,7 +3,7 @@
 package apputilmock
 
 import (
-	apputil "github.com/ruslanSorokin/lock-manager/internal/pkg/apputil"
+	apputil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app"
 	mock "github.com/stretchr/testify/mock"
 )
 

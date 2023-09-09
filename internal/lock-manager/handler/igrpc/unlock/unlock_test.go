@@ -16,7 +16,7 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
 	servicemock "github.com/ruslanSorokin/lock-manager/internal/lock-manager/service/mock"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/testutil"
+	testutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/test"
 )
 
 type (

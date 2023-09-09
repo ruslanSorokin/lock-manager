@@ -12,8 +12,8 @@ import (
 
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/repository/iredis"
 	providertest "github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/test"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/dockerutil"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/redisconn"
+	redisconn "github.com/ruslanSorokin/lock-manager/internal/pkg/conn/redis"
+	dockerutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/docker"
 )
 
 const (

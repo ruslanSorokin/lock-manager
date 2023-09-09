@@ -13,8 +13,8 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/app"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/apputil"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/configutil"
+	apputil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app"
+	configutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/config"
 )
 
 const appName = "lock-manager"

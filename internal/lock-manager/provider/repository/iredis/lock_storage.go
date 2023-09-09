@@ -4,7 +4,7 @@ import (
 	"github.com/go-logr/logr"
 
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/redisconn"
+	redisconn "github.com/ruslanSorokin/lock-manager/internal/pkg/conn/redis"
 )
 
 // LockStorage stores logger & redis client.

@@ -6,7 +6,7 @@ package iprom
 import (
 	"github.com/google/wire"
 
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/apputil"
+	apputil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app"
 )
 
 //nolint:gochecknoglobals // Wire Set

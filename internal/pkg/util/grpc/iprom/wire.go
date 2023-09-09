@@ -2,8 +2,7 @@ package iprom
 
 import (
 	"github.com/google/wire"
-
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/grpcutil"
+	grpcutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/grpc"
 )
 
 //nolint:gochecknoglobals // Wire Set

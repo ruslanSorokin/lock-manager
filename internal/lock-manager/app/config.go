@@ -1,10 +1,10 @@
 package app
 
 import (
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/apputil"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/grpcutil"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/promutil"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/redisconn"
+	redisconn "github.com/ruslanSorokin/lock-manager/internal/pkg/conn/redis"
+	apputil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app"
+	grpcutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/grpc"
+	promutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/prom"
 )
 
 type Config struct {
