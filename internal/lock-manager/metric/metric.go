@@ -1,4 +1,4 @@
-package imetric
+package metric
 
 type ServiceMetricI interface {
 	IncLockedTotal()

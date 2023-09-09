@@ -3,7 +3,7 @@ package iprom
 import (
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/imetric"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/metric"
 )
 
 type Metric struct {
@@ -13,7 +13,7 @@ type Metric struct {
 	unlockedTotal prometheus.Counter
 }
 
-var _ imetric.ServiceMetricI = (*Metric)(nil)
+var _ metric.ServiceMetricI = (*Metric)(nil)
 
 func New(r prometheus.Registerer) *Metric {
 	m := &Metric{

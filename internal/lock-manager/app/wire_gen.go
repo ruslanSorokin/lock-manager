@@ -11,7 +11,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/igrpc"
-	iprom2 "github.com/ruslanSorokin/lock-manager/internal/lock-manager/imetric/iprom"
+	iprom2 "github.com/ruslanSorokin/lock-manager/internal/lock-manager/metric/iprom"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/repository/iredis"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/apputil"

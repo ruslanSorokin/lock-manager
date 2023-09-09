@@ -11,7 +11,7 @@ func (s LockService) Lock(
 	rID string,
 ) (string, error) {
 	if err := s.resourceIDValidator(rID); err != nil {
-		return "", Errorf(err)
+		return "", Errf(err)
 	}
 
 	l, err := model.NewLockWithToken(rID)
@@ -20,7 +20,7 @@ func (s LockService) Lock(
 	}
 
 	if err = s.lockProvider.Create(ctx, l); err != nil {
-		return "", Errorf(err)
+		return "", Errf(err)
 	}
 
 	s.mtr.IncLockedTotal()

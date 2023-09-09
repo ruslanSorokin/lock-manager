@@ -23,5 +23,5 @@ observability:
       readTimeOut: 5s
 
 application:
-  environment: "local"
+  environment: "test"
   version: "v0.1.0"

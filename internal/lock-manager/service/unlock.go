@@ -12,10 +12,10 @@ func (s LockService) Unlock(
 	tkn string,
 ) error {
 	if err := s.resourceIDValidator(rID); err != nil {
-		return Errorf(err)
+		return Errf(err)
 	}
 	if err := s.tokenValidator(tkn); err != nil {
-		return Errorf(err)
+		return Errf(err)
 	}
 
 	l, err := model.NewLock(rID, tkn)
@@ -24,7 +24,7 @@ func (s LockService) Unlock(
 	}
 
 	if err := s.lockProvider.DeleteIfTokenMatches(ctx, l); err != nil {
-		return Errorf(err)
+		return Errf(err)
 	}
 
 	s.mtr.IncUnlockedTotal()
