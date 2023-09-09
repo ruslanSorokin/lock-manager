@@ -143,3 +143,18 @@ tasks:
       - task: docker.down
     aliases:
       - "dc:restart"
+
+  build:
+    vars:
+      ENTRY_POINT: '{{default "." .ENTRY_POINT}}'
+    cmd: go build -v -o main ./cmd/lock-manager
+
+  test:unit:
+    vars:
+      ENTRY_POINT: '{{default "." .ENTRY_POINT}}'
+    cmd: go test ./... -count=1 -v -short
+
+  test:all:
+    vars:
+      ENTRY_POINT: '{{default "." .ENTRY_POINT}}'
+    cmd: go test ./... -count=1 -v
