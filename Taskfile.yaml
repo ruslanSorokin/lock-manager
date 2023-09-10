@@ -50,7 +50,8 @@ tasks:
       SRC_DIR: '{{default "." .GO_SRC_DIR}}'
     sources:
       - "{{.SRC_DIR}}/**/*.go"
-    cmd: golines -w {{.SRC_DIR}}
+    cmd: |
+      golines -w --reformat-tags --tab-len=2 --base-formatter=gofumpt --max-len=80 {{.SRC_DIR}}
 
   lint:go-vet:
     vars:
@@ -139,8 +140,8 @@ tasks:
       DOCKER_COMPOSE_ROOT: '{{default "." .DOCKER_COMPOSE_ROOT}}'
     dir: "{{.DOCKER_COMPOSE_ROOT}}"
     cmds:
-      - task: docker.up
-      - task: docker.down
+      - task: docker-compose:down
+      - task: docker-compose:up
     aliases:
       - "dc:restart"
 
