@@ -7,7 +7,6 @@ import (
 	redis "github.com/redis/go-redis/v9"
 
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 )
 
 //nolint:gosec // no credentials
@@ -29,7 +28,10 @@ const (
 	LockNotFoundExitCode = 0
 )
 
-func (s LockStorage) DeleteIfTokenMatches(ctx context.Context, lock *model.Lock) error {
+func (s LockStorage) DeleteIfTokenMatches(
+	ctx context.Context,
+	lock *model.Lock,
+) error {
 	script := redis.NewScript(deleteIfTokenMatchesScript)
 
 	ec, err := script.Run(ctx, s.conn.DB,
@@ -41,7 +43,7 @@ func (s LockStorage) DeleteIfTokenMatches(ctx context.Context, lock *model.Lock)
 			"resourceID", lock.ResourceID,
 			"token", lock.Token,
 		)
-		return provider.Errf(err)
+		return Errf(err)
 	}
 
 	exitCode, ok := ec.(int64)
@@ -52,16 +54,16 @@ func (s LockStorage) DeleteIfTokenMatches(ctx context.Context, lock *model.Lock)
 			"token", lock.Token,
 			"ec", ec,
 		)
-		return provider.Errf(err)
+		return Errf(err)
 	}
 	switch exitCode {
 	case InvalidTokenExitCode:
-		err = provider.ErrWrongToken
-		return provider.Errf(err)
+		err = ErrWrongToken
+		return Errf(err)
 
 	case LockNotFoundExitCode:
-		err = provider.ErrLockNotFound
-		return provider.Errf(err)
+		err = ErrLockNotFound
+		return Errf(err)
 
 	default:
 		return nil

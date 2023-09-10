@@ -9,4 +9,4 @@ else
   _CONFIG_FILE_OPT=""
 fi
 
-eval "cd $GO_SRC_PATH && mockery $_CONFIG_FILE_OPT"
+cd $GO_SRC_PATH && mockery $_CONFIG_FILE_OPT

@@ -9,7 +9,7 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/igrpc/lock"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/igrpc/unlock"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/grpcutil"
+	grpcutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/grpc"
 )
 
 type LockHandlerI interface {

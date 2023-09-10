@@ -7,7 +7,7 @@ import (
 
 const errPrefix = "lock service"
 
-func Errorf(err error) error {
+func Errf(err error) error {
 	return fmt.Errorf("%s: %w", errPrefix, err)
 }
 

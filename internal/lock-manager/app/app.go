@@ -12,20 +12,20 @@ import (
 
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/igrpc"
 	iservice "github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/apputil"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/promutil"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/redisconn"
+	redisconn "github.com/ruslanSorokin/lock-manager/internal/pkg/conn/redis"
+	apputil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app"
+	promutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/prom"
 )
 
 type (
-	repositoryComponent struct {
+	repo struct {
 		redisConn *redisconn.Conn
 	}
-	serverComponent struct {
+	srv struct {
 		grpcServer  *grpc.Server
 		grpcHandler igrpc.LockHandlerI
 	}
-	metricComponent struct {
+	mtr struct {
 		promReg     *prometheus.Registry
 		promGRPC    *promgrpc.ServerMetrics
 		httpSrv     *http.Server
@@ -39,10 +39,10 @@ type App struct {
 	cfg *Config
 	log logr.Logger
 
-	repository repositoryComponent
-	server     serverComponent
-	metric     metricComponent
-	service    iservice.LockServiceI
+	storage repo
+	server  srv
+	metric  mtr
+	service iservice.LockServiceI
 
 	environment apputil.Env
 	version     apputil.Ver
@@ -65,14 +65,14 @@ func New(
 	ver apputil.Ver,
 ) *App {
 	return &App{
-		cfg:        cfg,
-		log:        log,
-		repository: repositoryComponent{redisConn: redisConn},
-		server: serverComponent{
+		cfg:     cfg,
+		log:     log,
+		storage: repo{redisConn: redisConn},
+		server: srv{
 			grpcServer:  grpcSrv,
 			grpcHandler: grpcHandler,
 		},
-		metric: metricComponent{
+		metric: mtr{
 			promReg:     promReg,
 			promGRPC:    promGRPCMetric,
 			httpSrv:     httpSrv,
@@ -87,6 +87,9 @@ func New(
 }
 
 func (a App) prepare() {
+	a.log.Info("application environment", "env", a.environment.String())
+	a.log.Info("application version", "version", a.version.String())
+
 	a.metric.promGRPC.InitializeMetrics(a.server.grpcServer)
 
 	a.metric.app.SetVersion(a.version)

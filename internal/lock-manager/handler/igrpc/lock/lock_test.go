@@ -16,7 +16,7 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
 	servicemock "github.com/ruslanSorokin/lock-manager/internal/lock-manager/service/mock"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/testutil"
+	util "github.com/ruslanSorokin/lock-manager/internal/pkg/util"
 )
 
 type (
@@ -65,9 +65,9 @@ func TestLock(t *testing.T) {
 	// t.Parallel()
 	runner := newRunner()
 
-	mockValidResourceID := testutil.Must(uuid.NewV4()).String()
+	mockValidResourceID := util.Must(uuid.NewV4()).String()
 	mockInvalidResourceID := "invalid resource id"
-	mockValidToken := testutil.Must(uuid.NewV4()).String()
+	mockValidToken := util.Must(uuid.NewV4()).String()
 
 	ctx := context.TODO()
 

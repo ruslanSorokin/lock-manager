@@ -6,7 +6,7 @@ import (
 	"github.com/go-logr/logr"
 	validator "github.com/go-playground/validator/v10"
 
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/imetric"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/metric"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 )
 
@@ -37,7 +37,7 @@ type LockService struct {
 	log       logr.Logger
 	validator *validator.Validate
 
-	mtr          imetric.ServiceMetricI
+	mtr          metric.ServiceMetricI
 	lockProvider provider.LockProviderI
 
 	resourceIDValidator resourceIDValidator
@@ -50,7 +50,7 @@ func New(
 	l logr.Logger,
 	v *validator.Validate,
 	lp provider.LockProviderI,
-	m imetric.ServiceMetricI,
+	m metric.ServiceMetricI,
 ) *LockService {
 	return &LockService{
 		log:                 l,

@@ -2,8 +2,6 @@ package iredis
 
 import (
 	"context"
-
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 )
 
 func (s LockStorage) Delete(ctx context.Context, resourceID string) error {
@@ -13,11 +11,11 @@ func (s LockStorage) Delete(ctx context.Context, resourceID string) error {
 			err,
 			"resourceID", resourceID,
 		)
-		return provider.Errf(err)
+		return Errf(err)
 	}
 	if delCount != 1 {
-		err = provider.ErrLockNotFound
-		return provider.Errf(err)
+		err = ErrLockNotFound
+		return Errf(err)
 	}
 
 	return nil

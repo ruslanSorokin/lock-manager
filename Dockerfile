@@ -13,7 +13,9 @@ COPY go.mod go.sum ./
 RUN --mount=type=cache,target=${GOMODCACHE} \
   go mod download
 
-COPY . .
+COPY internal internal
+COPY cmd cmd
+COPY Makefile Makefile
 
 RUN make app.build
 
@@ -27,7 +29,7 @@ RUN apk add --no-cache tzdata && \
 
 WORKDIR /app
 
-COPY config/ config/
+COPY config config
 
 COPY --from=builder /app/main .
 

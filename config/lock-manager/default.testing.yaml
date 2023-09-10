@@ -1,6 +1,6 @@
 storage:
   redis:
-    uri: "storage:6379"
+    uri: "localhost:9090"
     db: 0
     username:
     password:
@@ -22,5 +22,5 @@ metric:
     readTimeout: 5s
 
 application:
-  environment: "dev"
+  environment: "test"
   version: "v0.1.0"

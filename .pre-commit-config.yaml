@@ -55,9 +55,19 @@ repos:
         name: goimports-reviser
         alias: goimports-reviser
         exclude: tools|wire_gen.go|mock
-        args: [goimports-reviser, .]
+        args:
+          [goimports-reviser, ., -format, -set-alias, -rm-unused, -use-cache]
       - id: my-cmd
         name: golines
         alias: golines
         exclude: tools|wire_gen.go|mock
-        args: [golines, ., -w]
+        args:
+          [
+            golines,
+            -w,
+            --reformat-tags,
+            --tab-len=2,
+            --base-formatter=gofumpt,
+            --max-len=80,
+            .,
+          ]

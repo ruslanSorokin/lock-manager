@@ -50,7 +50,7 @@ tasks:
       SRC_DIR: '{{default "." .GO_SRC_DIR}}'
     sources:
       - "{{.SRC_DIR}}/**/*.go"
-    cmd: golines -w {{.SRC_DIR}}
+    cmd: SRC_PATH={{.SRC_DIR}} ./script/golines.sh
 
   lint:go-vet:
     vars:
@@ -139,7 +139,22 @@ tasks:
       DOCKER_COMPOSE_ROOT: '{{default "." .DOCKER_COMPOSE_ROOT}}'
     dir: "{{.DOCKER_COMPOSE_ROOT}}"
     cmds:
-      - task: docker.up
-      - task: docker.down
+      - task: docker-compose:down
+      - task: docker-compose:up
     aliases:
       - "dc:restart"
+
+  build:
+    vars:
+      ENTRY_POINT: '{{default "." .ENTRY_POINT}}'
+    cmd: go build -v -o main ./cmd/lock-manager
+
+  test:unit:
+    vars:
+      ENTRY_POINT: '{{default "." .ENTRY_POINT}}'
+    cmd: go test ./... -count=1 -v -short
+
+  test:all:
+    vars:
+      ENTRY_POINT: '{{default "." .ENTRY_POINT}}'
+    cmd: go test ./... -count=1 -v
