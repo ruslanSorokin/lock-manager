@@ -123,7 +123,11 @@ linters-settings:
         - github.com/satori/go.uuid:
             recommendations:
               - github.com/google/uuid
-            reason: "satori's package is not maintained"
+            reason: "package is not maintained"
+        - github.com/pkg/errors:
+            recommendations:
+              - errors
+            reason: "package is not maintained"
 
   govet:
     # Enable all analyzers.
