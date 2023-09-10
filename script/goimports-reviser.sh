@@ -9,4 +9,4 @@ else
   _COMPANY_PREFIXES_OPT=""
 fi
 
-eval goimports-reviser "$GO_SRC_PATH/..." $_COMPANY_PREFIXES_OPT -format -set-alias -rm-unused -use-cache
+goimports-reviser "$GO_SRC_PATH/..." $_COMPANY_PREFIXES_OPT -format -set-alias -rm-unused -use-cache
