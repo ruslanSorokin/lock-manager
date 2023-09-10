@@ -60,4 +60,13 @@ repos:
         name: golines
         alias: golines
         exclude: tools|wire_gen.go|mock
-        args: [golines, ., -w]
+        args:
+          [
+            golines,
+            -w,
+            --reformat-tags,
+            --tab-len=2,
+            --base-formatter=gofumpt,
+            --max-len=80,
+            .,
+          ]
