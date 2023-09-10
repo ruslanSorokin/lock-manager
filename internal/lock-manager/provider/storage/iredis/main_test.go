@@ -10,7 +10,7 @@ import (
 	"github.com/ory/dockertest"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/repository/iredis"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/storage/iredis"
 	providertest "github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/test"
 	redisconn "github.com/ruslanSorokin/lock-manager/internal/pkg/conn/redis"
 	util "github.com/ruslanSorokin/lock-manager/internal/pkg/util"
