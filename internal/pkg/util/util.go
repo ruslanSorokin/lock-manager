@@ -1,10 +1,17 @@
-package dockerutil
+package util
 
 import (
 	"fmt"
 
 	"github.com/ory/dockertest"
 )
+
+func Must[T any](t T, u error) T {
+	if u != nil {
+		panic(u)
+	}
+	return t
+}
 
 func NewPool() (*dockertest.Pool, error) {
 	pool, err := dockertest.NewPool("")

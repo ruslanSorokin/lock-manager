@@ -16,7 +16,7 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
 	servicemock "github.com/ruslanSorokin/lock-manager/internal/lock-manager/service/mock"
-	testutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/test"
+	util "github.com/ruslanSorokin/lock-manager/internal/pkg/util"
 )
 
 type (
@@ -66,9 +66,9 @@ func TestUnlock(t *testing.T) {
 	// t.Parallel()
 	runner := newRunner()
 
-	mockValidResourceID := testutil.Must(uuid.NewV4()).String()
+	mockValidResourceID := util.Must(uuid.NewV4()).String()
 	mockInvalidResourceID := "invalid resource id"
-	mockValidToken := testutil.Must(uuid.NewV4()).String()
+	mockValidToken := util.Must(uuid.NewV4()).String()
 	mockInvalidToken := "invalid token"
 
 	ctx := context.TODO()
@@ -95,7 +95,11 @@ func TestUnlock(t *testing.T) {
 				return newOut(nil)
 			},
 
-			mockIn:  mockIn{ctx: ctx, resID: mockValidResourceID, tkn: mockValidToken},
+			mockIn: mockIn{
+				ctx:   ctx,
+				resID: mockValidResourceID,
+				tkn:   mockValidToken,
+			},
 			mockOut: mockOut{err: nil},
 
 			prepare: func(m *servicemock.LockService, i mockIn, o mockOut) {
@@ -118,7 +122,11 @@ func TestUnlock(t *testing.T) {
 				return newOut(err)
 			},
 
-			mockIn:  mockIn{ctx: ctx, resID: mockInvalidResourceID, tkn: mockValidToken},
+			mockIn: mockIn{
+				ctx:   ctx,
+				resID: mockInvalidResourceID,
+				tkn:   mockValidToken,
+			},
 			mockOut: mockOut{err: service.ErrInvalidResourceID},
 
 			prepare: func(m *servicemock.LockService, i mockIn, o mockOut) {
@@ -141,7 +149,11 @@ func TestUnlock(t *testing.T) {
 				return newOut(err)
 			},
 
-			mockIn:  mockIn{ctx: ctx, resID: mockValidResourceID, tkn: mockInvalidToken},
+			mockIn: mockIn{
+				ctx:   ctx,
+				resID: mockValidResourceID,
+				tkn:   mockInvalidToken,
+			},
 			mockOut: mockOut{err: service.ErrInvalidToken},
 
 			prepare: func(m *servicemock.LockService, i mockIn, o mockOut) {
@@ -164,7 +176,11 @@ func TestUnlock(t *testing.T) {
 				return newOut(err)
 			},
 
-			mockIn: mockIn{ctx: ctx, resID: mockInvalidResourceID, tkn: mockInvalidToken},
+			mockIn: mockIn{
+				ctx:   ctx,
+				resID: mockInvalidResourceID,
+				tkn:   mockInvalidToken,
+			},
 			mockOut: mockOut{
 				err: errors.Join(
 					service.ErrInvalidResourceID, service.ErrInvalidToken),
@@ -190,7 +206,11 @@ func TestUnlock(t *testing.T) {
 				return newOut(err)
 			},
 
-			mockIn:  mockIn{ctx: ctx, resID: mockValidResourceID, tkn: mockValidToken},
+			mockIn: mockIn{
+				ctx:   ctx,
+				resID: mockValidResourceID,
+				tkn:   mockValidToken,
+			},
 			mockOut: mockOut{err: provider.ErrWrongToken},
 
 			prepare: func(m *servicemock.LockService, i mockIn, o mockOut) {
@@ -213,7 +233,11 @@ func TestUnlock(t *testing.T) {
 				return newOut(err)
 			},
 
-			mockIn:  mockIn{ctx: ctx, resID: mockValidResourceID, tkn: mockValidToken},
+			mockIn: mockIn{
+				ctx:   ctx,
+				resID: mockValidResourceID,
+				tkn:   mockValidToken,
+			},
 			mockOut: mockOut{err: provider.ErrLockNotFound},
 
 			prepare: func(m *servicemock.LockService, i mockIn, o mockOut) {
@@ -236,7 +260,11 @@ func TestUnlock(t *testing.T) {
 				return newOut(err)
 			},
 
-			mockIn:  mockIn{ctx: ctx, resID: mockValidResourceID, tkn: mockValidToken},
+			mockIn: mockIn{
+				ctx:   ctx,
+				resID: mockValidResourceID,
+				tkn:   mockValidToken,
+			},
 			mockOut: mockOut{err: errors.New("unexpected error")},
 
 			prepare: func(m *servicemock.LockService, i mockIn, o mockOut) {

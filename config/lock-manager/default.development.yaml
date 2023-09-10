@@ -1,4 +1,4 @@
-repository:
+storage:
   redis:
     uri: "storage:6379"
     db: 0
@@ -16,11 +16,10 @@ handler:
       maxIdle: 5m
       maxAge: 5m
 
-observability:
+metric:
   pull:
-    metric:
-      port: "8084"
-      readTimeOut: 5s
+    port: "8084"
+    readTimeout: 5s
 
 application:
   environment: "dev"

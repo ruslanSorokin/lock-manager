@@ -9,7 +9,10 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/model"
 )
 
-func (s LockStorage) Get(ctx context.Context, resourceID string) (*model.Lock, error) {
+func (s LockStorage) Get(
+	ctx context.Context,
+	resourceID string,
+) (*model.Lock, error) {
 	res, err := s.conn.DB.Get(ctx, resourceID).Result()
 	if errors.Is(err, redis.Nil) {
 		err = ErrLockNotFound

@@ -15,23 +15,23 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/repository/iredis"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
 	redisconn "github.com/ruslanSorokin/lock-manager/internal/pkg/conn/redis"
-	apputil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app"
 	ipromapp "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app/iprom"
 	grpcutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/grpc"
 	ipromgrpc "github.com/ruslanSorokin/lock-manager/internal/pkg/util/grpc/iprom"
 	promutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/prom"
 )
 
-func Wire(apputil.Env, logr.Logger, *Config) (*App, func(), error) {
+func Wire(logr.Logger, *Config) (*App, func(), error) {
 	panic(wire.Build(
-		wire.FieldsOf(new(*Config),
+		toWireConfig,
+		wire.FieldsOf(new(*wireConfig),
 			"Redis",
 			"GRPC",
-			"HTTPMetric",
-			"Ver",
+			"Pull",
+			"Environment",
+			"Version",
 		),
 		New,
-
 		validator.New,
 		redisconn.WireProvide,
 

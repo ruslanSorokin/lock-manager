@@ -13,7 +13,7 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/repository/iredis"
 	providertest "github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/test"
 	redisconn "github.com/ruslanSorokin/lock-manager/internal/pkg/conn/redis"
-	dockerutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/docker"
+	util "github.com/ruslanSorokin/lock-manager/internal/pkg/util"
 )
 
 const (
@@ -43,7 +43,7 @@ func (s *IntegrationSuite) SetupSuite() {
 		t.Skip()
 	}
 
-	p, err := dockerutil.NewPool()
+	p, err := util.NewPool()
 	if err != nil {
 		t.Error(err)
 	}
@@ -92,7 +92,10 @@ func (s *IntegrationSuite) TearDownTest() {
 	}
 }
 
-func LaunchRedisContainer(p *dockertest.Pool, tag string) (*dockertest.Resource, error) {
+func LaunchRedisContainer(
+	p *dockertest.Pool,
+	tag string,
+) (*dockertest.Resource, error) {
 	resource, err := p.Run(redisImageName, tag, nil)
 	if err != nil {
 		err = fmt.Errorf("%s: %w", "could not start the resource", err)

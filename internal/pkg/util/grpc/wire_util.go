@@ -16,13 +16,17 @@ func WireProvideInterceptors(
 	unaryInters := []grpc.UnaryServerInterceptor{
 		metric.UnaryServerInterceptor(),
 		logging.UnaryServerInterceptor(log),
-		recovery.UnaryServerInterceptor(recovery.WithRecoveryHandler(recoveryHandler)),
+		recovery.UnaryServerInterceptor(
+			recovery.WithRecoveryHandler(recoveryHandler),
+		),
 	}
 
 	streamInters := []grpc.StreamServerInterceptor{
 		metric.StreamServerInterceptor(),
 		logging.StreamServerInterceptor(log),
-		recovery.StreamServerInterceptor(recovery.WithRecoveryHandler(recoveryHandler)),
+		recovery.StreamServerInterceptor(
+			recovery.WithRecoveryHandler(recoveryHandler),
+		),
 	}
 
 	opts := []grpc.ServerOption{

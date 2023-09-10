@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"flag"
 	"os"
 	"syscall"
 
@@ -14,7 +13,7 @@ import (
 
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/app"
 	apputil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app"
-	configutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/config"
+	cfgutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/config"
 )
 
 const appName = "lock-manager"
@@ -25,17 +24,13 @@ func newLogger() logr.Logger {
 	return log
 }
 
-func start(n apputil.Name, e apputil.Env, c configutil.File) error {
+func start(appName apputil.Name, file cfgutil.File) error {
 	log := newLogger()
 
-	appEnvelope := configutil.NewConfig[Config](n)
-	appEnvelope.MustLoad(c)
-	cfg := appEnvelope.AppConfig()
+	cfg := &app.Config{}
+	cfgutil.MustLoad(cfg, appName, file)
 
-	log.Info("application environment", "env", e)
-	log.Info("application version", "version", cfg.App.Version)
-
-	a, cleanup, err := app.Wire(e, log, cfg.ToAppConfig())
+	a, cleanup, err := app.Wire(log, cfg)
 	if err != nil {
 		return err
 	}
@@ -57,27 +52,13 @@ func start(n apputil.Name, e apputil.Env, c configutil.File) error {
 	return nil
 }
 
-func parseArgs() *arguments {
-	var env string
-	var configFile string
-
-	flag.StringVar(&env, "env", "dev", "app environment")
-	flag.StringVar(&configFile, "config", "default.development.yaml", "app config file")
-
-	flag.Parse()
-	return &arguments{
-		Env:        env,
-		ConfigFile: configFile,
-	}
-}
-
 func main() {
 	args := parseArgs()
 
-	n := apputil.Name(appName)
-	e := apputil.MustParseEnv(args.Env)
-	c := configutil.File(args.ConfigFile)
-	if err := start(n, e, c); err != nil {
+	a := apputil.Name(appName)
+	c := cfgutil.File(args.Config)
+
+	if err := start(a, c); err != nil {
 		panic(err)
 	}
 }

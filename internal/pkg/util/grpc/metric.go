@@ -5,7 +5,9 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-func NewProcessingTimeHistogram(r prometheus.Registerer) *promgrpc.ServerMetrics {
+func NewProcessingTimeHistogram(
+	r prometheus.Registerer,
+) *promgrpc.ServerMetrics {
 	m := promgrpc.NewServerMetrics(
 		promgrpc.WithServerHandlingTimeHistogram(
 			promgrpc.WithHistogramBuckets(

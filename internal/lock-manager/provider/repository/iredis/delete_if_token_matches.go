@@ -28,7 +28,10 @@ const (
 	LockNotFoundExitCode = 0
 )
 
-func (s LockStorage) DeleteIfTokenMatches(ctx context.Context, lock *model.Lock) error {
+func (s LockStorage) DeleteIfTokenMatches(
+	ctx context.Context,
+	lock *model.Lock,
+) error {
 	script := redis.NewScript(deleteIfTokenMatchesScript)
 
 	ec, err := script.Run(ctx, s.conn.DB,

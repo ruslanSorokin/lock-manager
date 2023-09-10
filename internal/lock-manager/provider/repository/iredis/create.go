@@ -8,7 +8,8 @@ import (
 )
 
 func (s LockStorage) Create(ctx context.Context, l *model.Lock) error {
-	didSet, err := s.conn.DB.SetNX(ctx, l.ResourceID(), l.Token(), 0*time.Second).Result()
+	didSet, err := s.conn.DB.SetNX(ctx, l.ResourceID(), l.Token(), 0*time.Second).
+		Result()
 	if err != nil {
 		s.l.Error(err,
 			"lock", l)

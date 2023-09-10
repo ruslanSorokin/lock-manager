@@ -15,7 +15,6 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/repository/iredis"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/conn/redis"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/util/app"
 	iprom3 "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app/iprom"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/util/grpc"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/util/grpc/iprom"
@@ -25,8 +24,12 @@ import (
 
 // Injectors from wire.go:
 
-func Wire(env apputil.Env, logger logr.Logger, config *Config) (*App, func(), error) {
-	redisconnConfig := config.Redis
+func Wire(logger logr.Logger, config *Config) (*App, func(), error) {
+	appWireConfig, err := toWireConfig(config)
+	if err != nil {
+		return nil, nil, err
+	}
+	redisconnConfig := appWireConfig.Redis
 	conn, cleanup, err := redisconn.WireProvide(logger, redisconnConfig)
 	if err != nil {
 		return nil, nil, err
@@ -39,20 +42,21 @@ func Wire(env apputil.Env, logger logr.Logger, config *Config) (*App, func(), er
 	recoveryMetric := iprom.NewRecoveryMetric(registry)
 	v := grpcutil.NewPanicRecoveryHandler(logger, recoveryMetric)
 	v2 := grpcutil.WireProvideInterceptors(loggingLogger, v, serverMetrics)
-	grpcutilConfig := config.GRPC
+	grpcutilConfig := appWireConfig.GRPC
 	grpcServer := grpcutil.WireProvideServer(v2, grpcutilConfig)
 	validate := validator.New()
 	lockStorage := iredis.NewLockStorage(logger, conn)
-	metric := iprom2.New(registry)
-	lockService := service.New(logger, validate, lockStorage, metric)
-	handler := grpcutil.NewHandlerFromConfig(grpcServer, logger, grpcutilConfig)
-	lockHandler := igrpc.NewLockHandler(handler, logger, lockService)
-	promutilConfig := config.HTTPMetric
+	ipromMetric := iprom2.New(registry)
+	lockService := service.New(logger, validate, lockStorage, ipromMetric)
+	grpcutilHandler := grpcutil.NewHandlerFromConfig(grpcServer, logger, grpcutilConfig)
+	lockHandler := igrpc.NewLockHandler(grpcutilHandler, logger, lockService)
+	promutilConfig := appWireConfig.Pull
 	promutilHandler := promutil.NewHandlerFromConfig(logger, registry, serveMux, promutilConfig)
-	ipromMetric := iprom3.New(registry)
-	ver := config.Ver
-	app := New(config, logger, conn, registry, serverMetrics, serveMux, server, grpcServer, lockService, lockHandler, promutilHandler, ipromMetric, env, ver)
-	return app, func() {
+	metric2 := iprom3.New(registry)
+	env := appWireConfig.Environment
+	ver := appWireConfig.Version
+	appApp := New(config, logger, conn, registry, serverMetrics, serveMux, server, grpcServer, lockService, lockHandler, promutilHandler, metric2, env, ver)
+	return appApp, func() {
 		cleanup()
 	}, nil
 }
