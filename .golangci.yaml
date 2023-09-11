@@ -311,3 +311,5 @@ issues:
       linters: [govet]
     - text: "odd number of arguments passed as key-value pairs for logging"
       linters: [loggercheck]
+    - text: "replacement are not allowed: github.com/oklog/run"
+      linters: [gomoddirectives]

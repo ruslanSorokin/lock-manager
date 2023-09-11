@@ -22,6 +22,7 @@ require (
 	google.golang.org/grpc v1.57.0
 )
 
+//nolint: gomoddirectives // my own fork
 replace github.com/oklog/run v1.1.0 => github.com/ruslanSorokin/run v1.2.0
 
 require (
