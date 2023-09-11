@@ -40,7 +40,7 @@ services:
     expose: [ 9094 ]
     ports: ["9094:3000"]
     profiles: [ "default" ]
-    image: grafana/grafana
+    image: grafana/grafana:9.3.0
     volumes:
       - "./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yml"
       - "metric-aggregator_data:/var/lib/grafana"
