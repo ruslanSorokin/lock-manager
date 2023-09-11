@@ -98,7 +98,9 @@ func (a App) prepare() {
 
 func (a App) Run(ctx context.Context) error {
 	a.prepare()
+
 	rg := run.Group{}
+	rg.Add(run.ContextHandler(ctx))
 
 	rg.Add(a.server.grpcHandler.Start,
 		func(_ error) {
@@ -106,13 +108,11 @@ func (a App) Run(ctx context.Context) error {
 		})
 
 	rg.Add(a.metric.httpHandler.Start,
-		func(_ error) {
+		func(err error) {
 			if err := a.metric.httpHandler.GracefulStop(); err != nil {
 				a.log.Error(err, "http metric server shutdown error")
 			}
 		})
-
-	rg.Add(run.SignalHandler(ctx))
 
 	return rg.Run()
 }

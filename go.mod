@@ -22,6 +22,8 @@ require (
 	google.golang.org/grpc v1.57.0
 )
 
+replace github.com/oklog/run v1.1.0 => github.com/ruslanSorokin/run v1.2.0
+
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161 // indirect
 	github.com/BurntSushi/toml v1.2.1 // indirect

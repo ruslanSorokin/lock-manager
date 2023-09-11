@@ -26,6 +26,8 @@ func newLogger() logr.Logger {
 
 func start(appName apputil.Name, file cfgutil.File) error {
 	log := newLogger()
+	log.Info("config",
+		"filename", file.String())
 
 	cfg := &app.Config{}
 	cfgutil.MustLoad(cfg, appName, file)
@@ -41,10 +43,11 @@ func start(appName apputil.Name, file cfgutil.File) error {
 	ctx, cancel := context.WithCancel(context.TODO())
 
 	rg.Add(func() error { return a.Run(ctx) },
-		func(err error) { cancel() })
+		func(_ error) { cancel() })
 
 	rg.Add(run.SignalHandler(context.TODO(),
-		syscall.SIGINT, syscall.SIGTERM))
+		syscall.SIGINT,
+		syscall.SIGTERM))
 
 	if err := rg.Run(); !errors.As(err, &run.SignalError{}) {
 		return err

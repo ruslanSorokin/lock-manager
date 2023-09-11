@@ -1,6 +1,9 @@
 package main
 
-import "flag"
+import (
+	"flag"
+	"os"
+)
 
 type args struct {
 	Config string
@@ -8,11 +11,16 @@ type args struct {
 
 func parseArgs() *args {
 	var config string
+	args := &args{}
 
-	flag.StringVar(&config, "config", "default.development.yaml", "config file")
-
+	flag.StringVar(&config, "config", "default.testing.yaml", "config file")
 	flag.Parse()
-	return &args{
-		Config: config,
+	args.Config = config
+
+	config, isSet := os.LookupEnv("LOCK_MANAGER_CONFIG_FILE")
+	if isSet {
+		args.Config = config
 	}
+
+	return args
 }
