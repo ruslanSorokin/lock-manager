@@ -1,6 +1,6 @@
 storage:
   redis:
-    uri: "localhost:9090"
+    uri: "storage:6379"
     db: 0
     username:
     password:

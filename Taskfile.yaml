@@ -20,6 +20,7 @@ vars:
   DOCKER_TAG: v0.1.0
 
   DOCKER_COMPOSE_ROOT: deploy/docker
+  DOCKER_COMPOSE_PROJECT_NAME: lock-manager
 
 tasks:
   lint:golangci:
@@ -103,21 +104,36 @@ tasks:
       --tag {{._DOCKER_IMAGE}}
       . {{.CLI_ARGS}}
 
-  docker-compose:up:
+  docker-compose:build:
     vars:
       DOCKER_COMPOSE_ROOT: '{{default "." .DOCKER_COMPOSE_ROOT}}'
-      _DOCKER_IMAGE: '{{printf "%s:%s" .DOCKER_IMAGE .DOCKER_TAG}}'
+      DOCKER_IMAGE: "{{.DOCKER_IMAGE}}"
     dir: "{{.DOCKER_COMPOSE_ROOT}}"
     requires:
       vars:
         - "DOCKER_IMAGE"
-        - "DOCKER_TAG"
+    cmd: >
+      docker-compose
+      build
+      {{.DOCKER_IMAGE}}
+    aliases:
+      - "dc:build"
+
+  docker-compose:up:
+    deps: ["docker-compose:build"]
+    vars:
+      DOCKER_COMPOSE_ROOT: '{{default "." .DOCKER_COMPOSE_ROOT}}'
+      DOCKER_IMAGE: "{{.DOCKER_IMAGE}}"
+    dir: "{{.DOCKER_COMPOSE_ROOT}}"
+    requires:
+      vars:
+        - "DOCKER_IMAGE"
     cmd: >
       docker-compose
       -f docker-compose.yaml
-      -f infra/storage/redis/docker-compose.override.yaml
+      --project-name {{ .DOCKER_COMPOSE_PROJECT_NAME }}
+      --profile default
       up
-      --build {{.DOCKER_IMAGE}}
       -d
     aliases:
       - "dc:up"
@@ -129,7 +145,8 @@ tasks:
     cmd: >
       docker-compose
       -f docker-compose.yaml
-      -f infra/storage/redis/docker-compose.override.yaml
+      --project-name {{ .DOCKER_COMPOSE_PROJECT_NAME }}
+      --profile default
       down
     aliases:
       - "dc:down"

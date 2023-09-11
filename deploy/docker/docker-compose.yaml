@@ -1,16 +1,46 @@
 version: "3.9"
 
+volumes:
+  storage_data:
+  metric-aggregator_data:
+
 services:
   lock-manager:
     container_name: lock-manager
+    depends_on: ["storage"]
+    expose: [8082, 8084]
+    ports: ["8082:8082", "8084:8084"]
+    profiles: [ "default" ]
     build:
       context: "../../"
       dockerfile: "./Dockerfile"
-    depends_on: ["storage"]
-    restart: "always"
-    expose: [8082, 8084]
-    ports: ["8082:8082", "8084:8084"]
 
   storage:
-    expose:
-      - 9090
+    container_name: storage
+    restart: always
+    expose: [ 9090 ]
+    ports: ["9090:6379"]
+    profiles: [ "default" ]
+    image: redis:7.0.12
+    volumes: ["storage_data:/data"]
+
+  metric-puller:
+    container_name: metric-puller
+    depends_on: ["lock-manager"]
+    expose: [ 9092 ]
+    ports: ["9092:9090"]
+    profiles: [ "default" ]
+    image: prom/prometheus:v2.40.4
+    volumes: ["./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yml"]
+
+  metric-aggregator:
+    container_name: metric-aggregator
+    depends_on: ["metric-puller"]
+    env_file: [./grafana/.env]
+    expose: [ 9094 ]
+    ports: ["9094:3000"]
+    profiles: [ "default" ]
+    image: grafana/grafana
+    volumes:
+      - "./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yml"
+      - "metric-aggregator_data:/var/lib/grafana"
