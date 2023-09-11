@@ -34,3 +34,5 @@ COPY config config
 COPY --from=builder /app/main .
 
 ENTRYPOINT [ "./main" ]
+
+CMD [ "./main -config default.testing.yaml" ]

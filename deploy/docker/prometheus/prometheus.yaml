@@ -1,0 +1,14 @@
+---
+global:
+  scrape_interval: "5s"
+  scrape_timeout: "3s"
+  evaluation_interval: "10s"
+
+alerting:
+
+rule_files:
+
+scrape_configs:
+  - job_name: lock-manager
+    static_configs:
+      - targets: ["lock-manager:8084"]

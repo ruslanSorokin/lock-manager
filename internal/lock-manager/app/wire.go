@@ -12,7 +12,7 @@ import (
 
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/igrpc"
 	ipromsvc "github.com/ruslanSorokin/lock-manager/internal/lock-manager/metric/iprom"
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/repository/iredis"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/storage/iredis"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
 	redisconn "github.com/ruslanSorokin/lock-manager/internal/pkg/conn/redis"
 	ipromapp "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app/iprom"

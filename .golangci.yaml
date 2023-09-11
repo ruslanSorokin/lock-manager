@@ -123,7 +123,11 @@ linters-settings:
         - github.com/satori/go.uuid:
             recommendations:
               - github.com/google/uuid
-            reason: "satori's package is not maintained"
+            reason: "package is not maintained"
+        - github.com/pkg/errors:
+            recommendations:
+              - errors
+            reason: "package is not maintained"
 
   govet:
     # Enable all analyzers.
@@ -307,3 +311,5 @@ issues:
       linters: [govet]
     - text: "odd number of arguments passed as key-value pairs for logging"
       linters: [loggercheck]
+    - text: "replacement are not allowed: github.com/oklog/run"
+      linters: [gomoddirectives]

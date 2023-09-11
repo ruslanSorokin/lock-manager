@@ -1,7 +1,8 @@
 package apputil
 
 import (
-	"github.com/pkg/errors"
+	"errors"
+	"fmt"
 )
 
 type (
@@ -48,7 +49,7 @@ func ParseEnv(env string) (Env, error) {
 	case "production", "prod", "p":
 		return Prod, nil
 	default:
-		return "", errors.Wrap(ErrInvalidEnv, env)
+		return "", fmt.Errorf("%w: %s", ErrInvalidEnv, env)
 	}
 }
 

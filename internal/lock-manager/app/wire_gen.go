@@ -12,7 +12,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/igrpc"
 	iprom2 "github.com/ruslanSorokin/lock-manager/internal/lock-manager/metric/iprom"
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/repository/iredis"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/storage/iredis"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/conn/redis"
 	iprom3 "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app/iprom"

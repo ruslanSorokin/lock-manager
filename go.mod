@@ -13,7 +13,6 @@ require (
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/oklog/run v1.1.0
 	github.com/ory/dockertest v3.3.5+incompatible
-	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.16.0
 	github.com/redis/go-redis/v9 v9.1.0
 	github.com/rs/zerolog v1.30.0
@@ -22,6 +21,9 @@ require (
 	golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63
 	google.golang.org/grpc v1.57.0
 )
+
+//nolint: gomoddirectives // my own fork
+replace github.com/oklog/run v1.1.0 => github.com/ruslanSorokin/run v1.2.0
 
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161 // indirect
@@ -51,6 +53,7 @@ require (
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.0.2 // indirect
 	github.com/opencontainers/runc v1.1.9 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_model v0.3.0 // indirect
 	github.com/prometheus/common v0.42.0 // indirect
