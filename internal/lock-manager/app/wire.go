@@ -18,6 +18,7 @@ import (
 	ipromapp "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app/iprom"
 	grpcutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/grpc"
 	ipromgrpc "github.com/ruslanSorokin/lock-manager/internal/pkg/util/grpc/iprom"
+	httputil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/http"
 	promutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/prom"
 )
 
@@ -37,8 +38,9 @@ func Wire(logr.Logger, *Config) (*App, func(), error) {
 
 		ipromapp.WireMetricSet,
 
-		promutil.WireHandlerFromConfigSet,
 		promutil.WireRegistrySet,
+
+		httputil.WireHandlerFromConfigSet,
 
 		grpcutil.WireInterceptorLoggerSet,
 		grpcutil.WirePanicRecoveryHandlerSet,

@@ -14,6 +14,7 @@ import (
 	iservice "github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
 	redisconn "github.com/ruslanSorokin/lock-manager/internal/pkg/conn/redis"
 	apputil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app"
+	httputil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/http"
 	promutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/prom"
 )
 
@@ -30,7 +31,7 @@ type (
 		promGRPC    *promgrpc.ServerMetrics
 		httpSrv     *http.Server
 		mux         *http.ServeMux
-		httpHandler *promutil.Handler
+		httpHandler *httputil.Handler
 		app         apputil.MetricI
 	}
 )
@@ -59,7 +60,7 @@ func New(
 	grpcSrv *grpc.Server,
 	svc iservice.LockServiceI,
 	grpcHandler igrpc.LockHandlerI,
-	httpMtrHandler *promutil.Handler,
+	httpMtrHandler *httputil.Handler,
 	app apputil.MetricI,
 	env apputil.Env,
 	ver apputil.Ver,
@@ -87,12 +88,15 @@ func New(
 }
 
 func (a App) prepare() {
+	mux := a.metric.httpHandler.Mux()
+	promutil.Register(mux, a.metric.promReg)
+
+	grpcSrv := a.server.grpcHandler.Server()
+	a.metric.promGRPC.InitializeMetrics(grpcSrv)
+
 	a.log.Info("application environment", "env", a.environment.String())
-	a.log.Info("application version", "version", a.version.String())
-
-	a.metric.promGRPC.InitializeMetrics(a.server.grpcServer)
-
 	a.metric.app.SetVersion(a.version)
+	a.log.Info("application version", "version", a.version.String())
 	a.metric.app.SetEnvironment(a.environment)
 }
 

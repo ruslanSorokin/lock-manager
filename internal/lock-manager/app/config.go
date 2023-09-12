@@ -4,7 +4,7 @@ import (
 	redisconn "github.com/ruslanSorokin/lock-manager/internal/pkg/conn/redis"
 	apputil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app"
 	grpcutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/grpc"
-	promutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/prom"
+	httputil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/http"
 )
 
 type (
@@ -15,7 +15,7 @@ type (
 		GRPC grpcutil.Config `yaml:"grpc" env-prefix:"GRPC_"`
 	}
 	metric struct {
-		Pull promutil.Config `yaml:"pull" env-prefix:"PULL_"`
+		Pull httputil.Config `yaml:"pull" env-prefix:"PULL_"`
 	}
 
 	app struct {
@@ -48,7 +48,7 @@ func toWireConfig(c *Config) (*wireConfig, error) {
 type wireConfig struct {
 	Redis       *redisconn.Config
 	GRPC        *grpcutil.Config
-	Pull        *promutil.Config
+	Pull        *httputil.Config
 	Version     apputil.Ver
 	Environment apputil.Env
 }

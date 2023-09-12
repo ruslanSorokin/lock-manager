@@ -18,7 +18,7 @@ import (
 	iprom3 "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app/iprom"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/util/grpc"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/util/grpc/iprom"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/util/prom"
+	"github.com/ruslanSorokin/lock-manager/internal/pkg/util/http"
 	"net/http"
 )
 
@@ -50,12 +50,12 @@ func Wire(logger logr.Logger, config *Config) (*App, func(), error) {
 	lockService := service.New(logger, validate, lockStorage, ipromMetric)
 	grpcutilHandler := grpcutil.NewHandlerFromConfig(grpcServer, logger, grpcutilConfig)
 	lockHandler := igrpc.NewLockHandler(grpcutilHandler, logger, lockService)
-	promutilConfig := appWireConfig.Pull
-	promutilHandler := promutil.NewHandlerFromConfig(logger, registry, serveMux, promutilConfig)
+	httputilConfig := appWireConfig.Pull
+	httputilHandler := httputil.NewHandlerFromConfig(logger, server, serveMux, httputilConfig)
 	metric2 := iprom3.New(registry)
 	env := appWireConfig.Environment
 	ver := appWireConfig.Version
-	appApp := New(config, logger, conn, registry, serverMetrics, serveMux, server, grpcServer, lockService, lockHandler, promutilHandler, metric2, env, ver)
+	appApp := New(config, logger, conn, registry, serverMetrics, serveMux, server, grpcServer, lockService, lockHandler, httputilHandler, metric2, env, ver)
 	return appApp, func() {
 		cleanup()
 	}, nil

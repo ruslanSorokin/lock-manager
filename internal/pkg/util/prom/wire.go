@@ -9,9 +9,7 @@ import (
 )
 
 var (
-	WireHandlerSet           = wire.NewSet(NewHandler)
-	WireHandlerFromConfigSet = wire.NewSet(NewHandlerFromConfig)
-	WireRegistrySet          = wire.NewSet(prometheus.NewRegistry, bind)
+	WireRegistrySet = wire.NewSet(prometheus.NewRegistry, bind)
 
 	bind = wire.Bind(new(prometheus.Registerer), new(*prometheus.Registry))
 )

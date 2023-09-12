@@ -1,4 +1,4 @@
-package promutil
+package httputil
 
 import "time"
 
