@@ -22,7 +22,7 @@ require (
 )
 
 //nolint: gomoddirectives // my own fork
-replace github.com/oklog/run v1.1.0 => github.com/ruslanSorokin/run v1.2.0
+replace github.com/oklog/run v1.1.0 => github.com/ruslanSorokin/run v1.2.1
 
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161 // indirect
