@@ -2,7 +2,6 @@ package lock
 
 import (
 	"context"
-	"errors"
 
 	"github.com/go-logr/logr"
 	"golang.org/x/exp/slices"
@@ -22,31 +21,37 @@ const (
 
 type Handler func(context.Context, *pb.LockReq) (*pb.LockRes, error)
 
-func errToCode(e error) codes.Code {
-	switch {
-	case errors.Is(e, nil):
-		return codes.OK
+type (
+	errToCodeFunc func(error) codes.Code
+	errToMsgFunc  func(error) string
+)
 
-	case errors.Is(e, service.ErrInvalidResourceID):
-		return codes.InvalidArgument
+func newErrToCodeMapper() errToCodeFunc {
+	errToCodeMapper := map[error]codes.Code{
+		nil:                           codes.OK,
+		service.ErrInvalidResourceID:  codes.InvalidArgument,
+		provider.ErrLockAlreadyExists: codes.AlreadyExists,
+	}
 
-	case errors.Is(e, provider.ErrLockAlreadyExists):
-		return codes.AlreadyExists
-
-	default:
+	return func(e error) codes.Code {
+		if code, ok := errToCodeMapper[e]; ok {
+			return code
+		}
 		return codes.Internal
 	}
 }
 
-func errToMsg(e error) string {
-	switch {
-	case errors.Is(e, service.ErrInvalidResourceID):
-		return "INVALID_RESOURCE_ID"
+func newErrToMsgMapper() errToMsgFunc {
+	errToCodeMapper := map[error]string{
+		nil:                           "OK",
+		service.ErrInvalidResourceID:  "INVALID_RESOURCE_ID",
+		provider.ErrLockAlreadyExists: "RESOURCE_ALREADY_LOCKED",
+	}
 
-	case errors.Is(e, provider.ErrLockAlreadyExists):
-		return "RESOURCE_ALREADY_LOCKED"
-
-	default:
+	return func(e error) string {
+		if code, ok := errToCodeMapper[e]; ok {
+			return code
+		}
 		return "INTERNAL_ERROR"
 	}
 }
@@ -57,15 +62,6 @@ func newPBRes(tkn *string) *pb.LockRes {
 	}
 }
 
-func response(
-	e error,
-	tkn *string,
-) (*pb.LockRes, error) {
-	code := errToCode(e)
-	msg := errToMsg(e)
-	return newPBRes(tkn), status.Error(code, msg)
-}
-
 func New(
 	log logr.Logger,
 	svc service.LockServiceI,
@@ -74,6 +70,8 @@ func New(
 		service.ErrInvalidResourceID,
 		provider.ErrLockAlreadyExists,
 	}
+	errToCode := newErrToCodeMapper()
+	errToMsg := newErrToMsgMapper()
 
 	return func(
 		ctx context.Context,
@@ -81,24 +79,27 @@ func New(
 	) (*pb.LockRes, error) {
 		rID := req.GetResourceId()
 		tkn, err := svc.Lock(ctx, rID)
+
 		code := errToCode(err)
+		msg := errToMsg(err)
+
 		switch {
 		case err == nil:
-			return response(err, &tkn)
+			return newPBRes(&tkn), nil
 
 		case slices.Contains(logicalErrs, err):
 			log.Error(err, "bad attempt to lock resource",
 				LogKeyResourceID, rID,
 				LogKeyToken, tkn,
 				LogKeyGRPCCode, code)
-			return response(err, nil)
+			return newPBRes(nil), status.Error(code, msg)
 
 		default:
 			log.Error(err, "internal error during attempt to lock resource",
 				LogKeyResourceID, rID,
 				LogKeyToken, tkn,
 				LogKeyGRPCCode, code)
-			return response(err, nil)
+			return newPBRes(nil), status.Error(code, msg)
 		}
 	}
 }

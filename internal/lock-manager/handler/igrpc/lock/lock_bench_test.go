@@ -17,32 +17,36 @@ func BenchmarkErrToCode(b *testing.B) {
 
 func benchmarkNil(b *testing.B) {
 	var e error // nil
+	msgMapper := newErrToCodeMapper()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		errToCode(e)
+		msgMapper(e)
 	}
 }
 
 func benchmarkErrInvalidResourceID(b *testing.B) {
 	e := service.ErrInvalidResourceID
+	msgMapper := newErrToCodeMapper()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		errToCode(e)
+		msgMapper(e)
 	}
 }
 
 func benchmarkErrLockAlreadyExists(b *testing.B) {
 	e := provider.ErrLockAlreadyExists
+	msgMapper := newErrToCodeMapper()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		errToCode(e)
+		msgMapper(e)
 	}
 }
 
 func benchmarkUnexpected(b *testing.B) {
 	e := errors.New("unexpectedError")
+	msgMapper := newErrToCodeMapper()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		errToCode(e)
+		msgMapper(e)
 	}
 }
