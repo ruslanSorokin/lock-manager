@@ -2,7 +2,6 @@ package unlock
 
 import (
 	"context"
-	"errors"
 
 	"github.com/go-logr/logr"
 	"golang.org/x/exp/slices"
@@ -22,60 +21,47 @@ const (
 
 type Handler func(context.Context, *pb.UnlockReq) (*pb.UnlockRes, error)
 
-func errToCode(e error) codes.Code {
-	switch {
-	case errors.Is(e, nil):
-		return codes.OK
+type (
+	errToCodeFunc func(error) codes.Code
+	errToMsgFunc  func(error) string
+)
 
-	case errors.Is(e, service.ErrInvalidResourceID):
-		return codes.InvalidArgument
+func newErrToCodeMapper() errToCodeFunc {
+	errToCodeMapper := map[error]codes.Code{
+		nil:                          codes.OK,
+		service.ErrInvalidResourceID: codes.InvalidArgument,
+		service.ErrInvalidToken:      codes.InvalidArgument,
+		provider.ErrWrongToken:       codes.InvalidArgument,
+		provider.ErrLockNotFound:     codes.NotFound,
+	}
 
-	case errors.Is(e, service.ErrInvalidToken):
-		return codes.InvalidArgument
-
-	case errors.Is(e, provider.ErrWrongToken):
-		return codes.InvalidArgument
-
-	case errors.Is(e, provider.ErrLockNotFound):
-		return codes.NotFound
-
-	default:
+	return func(e error) codes.Code {
+		if code, ok := errToCodeMapper[e]; ok {
+			return code
+		}
 		return codes.Internal
 	}
 }
 
-func errToMsg(e error) string {
-	switch {
-	case errors.Is(e, nil):
-		return "RESOURCE_HAS_BEEN_UNLOCKED"
+func newErrToMsgMapper() errToMsgFunc {
+	errToCodeMapper := map[error]string{
+		nil:                          "OK",
+		service.ErrInvalidResourceID: "INVALID_RESOURCE_ID",
+		service.ErrInvalidToken:      "INVALID_TOKEN",
+		provider.ErrWrongToken:       "TOKEN_DOES_NOT_FIT",
+		provider.ErrLockNotFound:     "RESOURCE_NOT_FOUND",
+	}
 
-	case errors.Is(e, service.ErrInvalidResourceID):
-		return "INVALID_RESOURCE_ID"
-
-	case errors.Is(e, service.ErrInvalidToken):
-		return "INVALID_TOKEN"
-
-	case errors.Is(e, provider.ErrWrongToken):
-		return "TOKEN_DOES_NOT_FIT"
-
-	case errors.Is(e, provider.ErrLockNotFound):
-		return "RESOURCE_NOT_FOUND"
-
-	default:
+	return func(e error) string {
+		if code, ok := errToCodeMapper[e]; ok {
+			return code
+		}
 		return "INTERNAL_ERROR"
 	}
 }
 
 func newPBRes() *pb.UnlockRes {
 	return &pb.UnlockRes{}
-}
-
-func response(
-	e error,
-) (*pb.UnlockRes, error) {
-	code := errToCode(e)
-	msg := errToMsg(e)
-	return newPBRes(), status.Error(code, msg)
 }
 
 func New(log logr.Logger, svc service.LockServiceI) Handler {
@@ -86,6 +72,9 @@ func New(log logr.Logger, svc service.LockServiceI) Handler {
 		provider.ErrLockNotFound,
 	}
 
+	errToCode := newErrToCodeMapper()
+	errToMsg := newErrToMsgMapper()
+
 	return func(
 		ctx context.Context,
 		req *pb.UnlockReq,
@@ -94,23 +83,27 @@ func New(log logr.Logger, svc service.LockServiceI) Handler {
 		tkn := req.GetToken()
 
 		err := svc.Unlock(ctx, rID, tkn)
+
+		code := errToCode(err)
+		msg := errToMsg(err)
+
 		switch {
 		case err == nil:
-			return response(err)
+			return newPBRes(), nil
 
 		case slices.Contains(logicalErrs, err):
 			log.Error(err, "bad attempt to unlock resource",
 				LogKeyResourceID, rID,
 				LogKeyToken, tkn,
-				LogKeyGRPCCode, errToCode(err))
-			return response(err)
+				LogKeyGRPCCode, code)
+			return newPBRes(), status.Error(code, msg)
 
 		default:
 			log.Error(err, "internal error during attempt to unlock resource",
 				LogKeyResourceID, rID,
 				LogKeyToken, tkn,
-				LogKeyGRPCCode, errToCode(err))
-			return response(err)
+				LogKeyGRPCCode, code)
+			return newPBRes(), status.Error(code, msg)
 		}
 	}
 }
