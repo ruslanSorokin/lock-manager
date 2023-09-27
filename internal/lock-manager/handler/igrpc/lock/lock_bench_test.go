@@ -1,4 +1,4 @@
-package lock
+package lock //nolint: testpackage //Need internal func of package
 
 import (
 	"errors"
