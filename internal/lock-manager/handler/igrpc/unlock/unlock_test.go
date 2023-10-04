@@ -229,7 +229,7 @@ func TestUnlock(t *testing.T) {
 			},
 
 			want: func() out {
-				err := status.Error(codes.NotFound, "RESOURCE_NOT_FOUND")
+				err := status.Error(codes.NotFound, "LOCK_NOT_FOUND")
 				return newOut(err)
 			},
 
