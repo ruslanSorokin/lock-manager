@@ -1,8 +1,9 @@
 package service
 
 import (
-	"errors"
 	"fmt"
+
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/ierror"
 )
 
 const errPrefix = "lock service"
@@ -12,6 +13,12 @@ func Errf(err error) error {
 }
 
 var (
-	ErrInvalidResourceID = errors.New("invalid resource ID")
-	ErrInvalidToken      = errors.New("invalid token")
+	ErrInvalidResourceID = ierror.NewInvalidArgument(
+		"invalid resource ID",
+		"INVALID_RESOURCE_ID",
+	)
+	ErrInvalidToken = ierror.NewInvalidArgument(
+		"invalid token",
+		"INVALID_TOKEN",
+	)
 )

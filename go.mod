@@ -18,7 +18,6 @@ require (
 	github.com/rs/zerolog v1.30.0
 	github.com/ruslanSorokin/lock-manager-api v0.0.0-20230715112900-02bd87ce70e3
 	github.com/stretchr/testify v1.8.4
-	golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63
 	google.golang.org/grpc v1.57.0
 )
 

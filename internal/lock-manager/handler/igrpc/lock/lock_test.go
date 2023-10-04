@@ -133,7 +133,7 @@ func TestLock(t *testing.T) {
 			},
 
 			want: func() out {
-				err := status.Error(codes.AlreadyExists, "RESOURCE_ALREADY_LOCKED")
+				err := status.Error(codes.AlreadyExists, "LOCK_ALREADY_EXISTS")
 				return newOut(nil, err)
 			},
 

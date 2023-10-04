@@ -1,17 +1,27 @@
 package provider
 
 import (
-	"errors"
 	"fmt"
+
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/ierror"
 )
 
 const errPrefix = "lock storage"
 
 // Errors of LockProviderI.
 var (
-	ErrLockAlreadyExists = errors.New("lock already exists")
-	ErrLockNotFound      = errors.New("lock is not found")
-	ErrWrongToken        = errors.New("wrong token")
+	ErrLockAlreadyExists = ierror.NewAlreadyExists(
+		"lock already exists",
+		"LOCK_ALREADY_EXISTS",
+	)
+	ErrLockNotFound = ierror.NewNotFound(
+		"lock is not found",
+		"LOCK_NOT_FOUND",
+	)
+	ErrWrongToken = ierror.NewInvalidArgument(
+		"wrong token",
+		"TOKEN_DOES_NOT_FIT",
+	)
 )
 
 func Errf(err error) error {

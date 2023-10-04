@@ -162,37 +162,36 @@ func TestUnlock(t *testing.T) {
 
 			run: runner,
 		},
-		// TODO: use logical error class
-		// {
-		// 	desc: "InvalidArgument ErrInvalidResourceID ErrInvalidToken",
+		{
+			desc: "InvalidArgument ErrInvalidResourceID ErrInvalidToken",
 
-		// 	args: func() in {
-		// 		rID := mockInvalidResourceID
-		// 		t := mockInvalidToken
-		// 		return newIn(ctx, &rID, &t)
-		// 	},
+			args: func() in {
+				rID := mockInvalidResourceID
+				t := mockInvalidToken
+				return newIn(ctx, &rID, &t)
+			},
 
-		// 	want: func() out {
-		// 		err := status.Error(codes.InvalidArgument, "INVALID_RESOURCE_ID")
-		// 		return newOut(err)
-		// 	},
+			want: func() out {
+				err := status.Error(codes.InvalidArgument, "INVALID_RESOURCE_ID")
+				return newOut(err)
+			},
 
-		// 	mockIn: mockIn{
-		// 		ctx:   ctx,
-		// 		resID: mockInvalidResourceID,
-		// 		tkn:   mockInvalidToken,
-		// 	},
-		// 	mockOut: mockOut{
-		// 		err: errors.Join(
-		// 			service.ErrInvalidResourceID, service.ErrInvalidToken),
-		// 	},
+			mockIn: mockIn{
+				ctx:   ctx,
+				resID: mockInvalidResourceID,
+				tkn:   mockInvalidToken,
+			},
+			mockOut: mockOut{
+				err: errors.Join(
+					service.ErrInvalidResourceID, service.ErrInvalidToken),
+			},
 
-		// 	prepare: func(m *servicemock.LockService, i mockIn, o mockOut) {
-		// 		m.On("Unlock", i.ctx, i.resID, i.tkn).Return(o.err)
-		// 	},
+			prepare: func(m *servicemock.LockService, i mockIn, o mockOut) {
+				m.On("Unlock", i.ctx, i.resID, i.tkn).Return(o.err)
+			},
 
-		// 	run: runner,
-		// },
+			run: runner,
+		},
 		{
 			desc: "InvalidArgument ErrWrongToken",
 
@@ -230,7 +229,7 @@ func TestUnlock(t *testing.T) {
 			},
 
 			want: func() out {
-				err := status.Error(codes.NotFound, "RESOURCE_NOT_FOUND")
+				err := status.Error(codes.NotFound, "LOCK_NOT_FOUND")
 				return newOut(err)
 			},
 
