@@ -8,7 +8,7 @@ require (
 	github.com/incu6us/goimports-reviser/v3 v3.4.5
 	github.com/segmentio/golines v0.11.0
 	github.com/vektra/mockery/v2 v2.34.2
-	golang.org/x/tools v0.13.0
+	golang.org/x/tools v0.14.0
 	mvdan.cc/gofumpt v0.5.0
 )
 
@@ -185,9 +185,9 @@ require (
 	golang.org/x/crypto v0.12.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
 	golang.org/x/exp/typeparams v0.0.0-20230817173708-d852ddb80c63 // indirect
-	golang.org/x/mod v0.12.0 // indirect
-	golang.org/x/sync v0.3.0 // indirect
-	golang.org/x/sys v0.12.0 // indirect
+	golang.org/x/mod v0.13.0 // indirect
+	golang.org/x/sync v0.4.0 // indirect
+	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/term v0.11.0 // indirect
 	golang.org/x/text v0.12.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
