@@ -1,60 +1,61 @@
 package unlock
 
 import (
-	"context"
 	"errors"
+	"net/http"
 
 	"github.com/go-logr/logr"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/utils"
 
-	pb "github.com/ruslanSorokin/lock-manager-api/gen/grpc/go"
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/igrpc/shared"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/ifiber/shared"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/ilog"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
 )
 
-type Handler func(context.Context, *pb.UnlockReq) (*pb.UnlockRes, error)
-
-func newPBRes() *pb.UnlockRes {
-	return &pb.UnlockRes{}
-}
+type (
+	Handler func(*fiber.Ctx) error
+)
 
 func New(log logr.Logger, svc service.LockServiceI) Handler {
 	const internalErrLogMsg = "internal error during attempt to unlock resource"
 	const badAttemptLogMsg = "bad attempt to unlock resource"
-	return func(
-		ctx context.Context,
-		req *pb.UnlockReq,
-	) (*pb.UnlockRes, error) {
-		rID := req.GetResourceId()
-		tkn := req.GetToken()
 
-		err := svc.Unlock(ctx, rID, tkn)
+	return func(
+		c *fiber.Ctx,
+	) error {
+		rID := c.Params(shared.PathParamNameResourceID)
+		rID = utils.CopyString(rID)
+		tkn := c.Query(shared.QueryParamNameToken)
+		tkn = utils.CopyString(tkn)
+
+		err := svc.Unlock(c.Context(), rID, tkn)
 		if err == nil {
-			return newPBRes(), nil
+			return c.SendStatus(http.StatusOK)
 		}
 
 		var t interface {
 			error
-			GRPCStatusCode() codes.Code
+			HTTPStatusCode() int
 			APIStatusCode() string
 		}
 		logMsg := internalErrLogMsg
-		code := codes.Internal
+		code := http.StatusInternalServerError
 		apiStCode := shared.APIStCodeInternalError
 
 		if errors.As(err, &t) {
 			logMsg = badAttemptLogMsg
-			code = t.GRPCStatusCode()
+			code = t.HTTPStatusCode()
 			apiStCode = t.APIStatusCode()
 		}
 
 		log.Error(err, logMsg,
 			ilog.TagResourceID, rID,
 			ilog.TagToken, tkn,
-			ilog.TagGRPCStCode, code)
+			ilog.TagHTTPStCode, code)
 
-		return newPBRes(), status.Error(code, apiStCode)
+		return c.Status(code).JSON(fiber.Map{
+			"error": apiStCode,
+		})
 	}
 }

@@ -15,10 +15,18 @@ handler:
     conn:
       maxIdle: 5m
       maxAge: 5m
+  http:
+    port: "8084"
+    prefork: false
+    concurrency: 262144
+    disableKeepAlive: false
+    readTimeout: 5s
+    writeTimeout: 5s
+    idleTimeout: 10s
 
 metric:
   pull:
-    port: "8084"
+    port: "8086"
     readTimeout: 5s
 
 application:

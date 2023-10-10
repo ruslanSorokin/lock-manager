@@ -8,12 +8,10 @@ services:
   lock-manager:
     container_name: lock-manager
     depends_on: ["storage"]
-    expose: [8082, 8084]
-    ports: ["8082:8082", "8084:8084"]
+    expose: [8082, 8084, 8086]
+    ports: ["8082:8082", "8084:8084", "8086:8086"]
     profiles: [ "default" ]
-    build:
-      context: "../../"
-      dockerfile: "./Dockerfile"
+    image: lock-manager:v0.1.0
 
   storage:
     container_name: storage

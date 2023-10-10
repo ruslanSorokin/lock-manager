@@ -12,7 +12,7 @@ import (
 type HandlerI interface {
 	Start() error
 	GracefulStop() error
-	Stop() error
+	Stop()
 
 	Server() *http.Server
 	Mux() *http.ServeMux
@@ -68,12 +68,14 @@ func (h Handler) Start() error {
 	return h.srv.ListenAndServe()
 }
 
-func (h Handler) Stop() error {
-	return h.srv.Shutdown(context.TODO())
-}
-
 func (h Handler) GracefulStop() error {
 	return h.srv.Close()
+}
+
+func (h Handler) Stop() {
+	if err := h.srv.Shutdown(context.TODO()); err != nil {
+		h.log.Error(err, "http metric server shutdown error")
+	}
 }
 
 func (h Handler) Server() *http.Server {

@@ -3,6 +3,7 @@ package app
 import (
 	redisconn "github.com/ruslanSorokin/lock-manager/internal/pkg/conn/redis"
 	apputil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app"
+	fiberutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/fiber"
 	grpcutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/grpc"
 	httputil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/http"
 )
@@ -12,7 +13,8 @@ type (
 		Redis redisconn.Config `yaml:"redis" env-prefix:"REDIS_"`
 	}
 	handler struct {
-		GRPC grpcutil.Config `yaml:"grpc" env-prefix:"GRPC_"`
+		GRPC grpcutil.Config  `yaml:"grpc" env-prefix:"GRPC_"`
+		HTTP fiberutil.Config `yaml:"http" env-prefix:"HTTP_"`
 	}
 	metric struct {
 		Pull httputil.Config `yaml:"pull" env-prefix:"PULL_"`
@@ -39,6 +41,7 @@ func toWireConfig(c *Config) (*wireConfig, error) {
 	return &wireConfig{
 		Redis:       &c.Storage.Redis,
 		GRPC:        &c.Handler.GRPC,
+		HTTP:        &c.Handler.HTTP,
 		Pull:        &c.Metric.Pull,
 		Version:     apputil.Ver(c.App.Version),
 		Environment: env,
@@ -47,6 +50,7 @@ func toWireConfig(c *Config) (*wireConfig, error) {
 
 type wireConfig struct {
 	Redis       *redisconn.Config
+	HTTP        *fiberutil.Config
 	GRPC        *grpcutil.Config
 	Pull        *httputil.Config
 	Version     apputil.Ver
