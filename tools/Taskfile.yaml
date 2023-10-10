@@ -1,39 +1,45 @@
 version: "3"
 
 tasks:
-  download-tools: go mod download
+  download: go mod download
 
   install-golines:
-    deps: ["download-tools"]
+    deps: ["download"]
     cmd: go install github.com/segmentio/golines
     status:
       - "which golines"
 
   install-gofumpt:
-    deps: ["download-tools"]
+    deps: ["download"]
     cmd: go install mvdan.cc/gofumpt
     status:
       - "which gofumpt"
 
   install-goimports-reviser:
-    deps: ["download-tools"]
+    deps: ["download"]
     cmd: go install github.com/incu6us/goimports-reviser/v3
     status:
       - "which goimports-reviser"
 
   install-wire:
-    deps: ["download-tools"]
+    deps: ["download"]
     cmd: go install github.com/google/wire/cmd/wire
     status:
       - "which wire"
 
   install-golangci-lint:
-    deps: ["download-tools"]
+    deps: ["download"]
     cmd: go install github.com/golangci/golangci-lint/cmd/golangci-lint
     status:
       - "which golangci-lint"
 
-  install-tools:
+  install:
+    deps: ["download"]
+    cmd:
+      task: "_install"
+
+  _install:
+    internal: true
     deps:
       - "install-golines"
       - "install-gofumpt"

@@ -14,164 +14,389 @@ vars:
 
   GO_SRC_DIR: .
   GO_TOOLS_FILE: tools/tools.go
+  GO_ENTRY_POINT: cmd/lock-manager
 
-  DOCKER_FILE: Dockerfile
-  DOCKER_IMAGE: lock-manager
-  DOCKER_TAG: v0.1.0
+  CONTAINER_FILE: Dockerfile
+  CONTAINER_NAME: lock-manager
+  CONTAINER_VERSION: v0.1.0
 
   DOCKER_COMPOSE_ROOT: deploy/docker
   DOCKER_COMPOSE_PROJECT_NAME: lock-manager
 
 tasks:
-  lint:golangci:
+  # ---------------------------------------------------------------------------- #
+  #                                    Actions                                   #
+  # ---------------------------------------------------------------------------- #
+
+  # ----------------------------------- lint ----------------------------------- #
+  lint:
+    desc: "Lint and format source code"
+    aliases: ["l"]
     vars:
       SRC_DIR: '{{default "." .GO_SRC_DIR}}'
-    sources:
-      - "{{.SRC_DIR}}/**/*.go"
+      COMPANY_PREFIXES: '{{default "" .GOIMPORTS_REVISER_COMPANY_PREFIXES}}'
+    cmd:
+      task: _lint
+      vars:
+        SRC_DIR: "{{.SRC_DIR}}"
+        COMPANY_PREFIXES: "{{.COMPANY_PREFIXES}}"
+
+  # ------------------------------------ gen ----------------------------------- #
+  gen:
+    desc: "Generate source code"
+    aliases: ["g"]
+    vars:
+      SRC_DIR: '{{default "." .GO_SRC_DIR}}'
+      CONFIG_FILE: '{{default "" .MOCKERY_CONFIG_FILE}}'
+    cmd:
+      task: _gen
+      vars:
+        SRC_DIR: "{{.SRC_DIR}}"
+        CONFIG_FILE: "{{.CONFIG_FILE}}"
+
+  # ----------------------------------- build ---------------------------------- #
+  build:
+    desc: "Build source code into executable"
+    aliases: ["b"]
+    vars:
+      SRC_DIR: '{{default "." .GO_SRC_DIR}}'
+      _ENTRY_POINT: '{{default "./" .GO_ENTRY_POINT}}'
+      ENTRY_POINT: '{{if (not (hasPrefix "./" ._ENTRY_POINT))}}{{(printf "./%s" ._ENTRY_POINT)}}{{else}}{{._ENTRY_POINT}}{{end}}'
+    cmd:
+      task: _build
+      vars:
+        SRC_DIR: "{{.SRC_DIR}}"
+        ENTRY_POINT: "{{.ENTRY_POINT}}"
+
+  build:dry:
+    desc: "Try to build the application without creating any executables"
+    aliases: ["bd"]
+    cmd:
+      task: _build:dry
+
+  # ----------------------------------- test ----------------------------------- #
+  test:
+    desc: "Run tests"
+    aliases: ["t"]
+    cmd:
+      task: _test
+
+  # ------------------------------- containerize ------------------------------- #
+  containerize:
+    desc: "Build image of the application"
+    aliases: ["c"]
+    vars:
+      CONTAINER_FILE: '{{default "Dockerfile" .CONTAINER_FILE}}'
+      IMAGE_TAG: '{{printf "%s:%s" .CONTAINER_NAME .CONTAINER_VERSION}}'
+    cmd:
+      task: _containerize
+      vars:
+        CONTAINER_FILE: "{{.CONTAINER_FILE}}"
+        IMAGE_TAG: "{{.IMAGE_TAG}}"
+
+  # ---------------------------------- deploy ---------------------------------- #
+  deploy:up:
+    desc: "Set up all needed infrastructure and application itself locally"
+    aliases: ["du"]
+    vars:
+      DOCKER_COMPOSE_ROOT: '{{default "." .DOCKER_COMPOSE_ROOT}}'
+      DOCKER_COMPOSE_PROJECT_NAME: "{{.DOCKER_COMPOSE_PROJECT_NAME}}"
+    cmd:
+      task: _deploy:up
+      vars:
+        ROOT: "{{.DOCKER_COMPOSE_ROOT}}"
+        PROJECT_NAME: "{{.DOCKER_COMPOSE_PROJECT_NAME}}"
+
+  deploy:down:
+    desc: "Tear down infrastructure and application itself"
+    aliases: ["dd"]
+    vars:
+      DOCKER_COMPOSE_ROOT: '{{default "." .DOCKER_COMPOSE_ROOT}}'
+      DOCKER_COMPOSE_PROJECT_NAME: "{{.DOCKER_COMPOSE_PROJECT_NAME}}"
+    cmd:
+      task: _deploy:down
+      vars:
+        ROOT: "{{.DOCKER_COMPOSE_ROOT}}"
+        PROJECT_NAME: "{{.DOCKER_COMPOSE_PROJECT_NAME}}"
+
+  deploy:restart:
+    desc: "Restart all needed infrastructure and application itself"
+    aliases: ["dr"]
+    cmd:
+      task: _deploy:restart
+
+  # ---------------------------------------------------------------------------- #
+  #                                  Lint action                                 #
+  # ---------------------------------------------------------------------------- #
+  lint:golangci:
+    internal: true
+    requires:
+      vars: ["SRC_DIR"]
     dir: "{{.SRC_DIR}}"
     cmd: golangci-lint run
 
   lint:goimports-reviser:
-    vars:
-      SRC_DIR: '{{default "." .GO_SRC_DIR}}'
-      COMPANY_PREFIXES: '{{default "" .GOIMPORTS_REVISER_COMPANY_PREFIXES}}'
-    sources:
-      - "{{.SRC_DIR}}/**/*.go"
+    internal: true
+    requires:
+      vars: ["SRC_DIR", "COMPANY_PREFIXES"]
     cmd: GO_SRC_PATH={{.SRC_DIR}} COMPANY_PREFIXES={{.COMPANY_PREFIXES}} ./script/goimports-reviser.sh
 
   lint:gofumpt:
-    vars:
-      SRC_DIR: '{{default "." .GO_SRC_DIR}}'
-    sources:
-      - "{{.SRC_DIR}}/**/*.go"
+    internal: true
+    requires:
+      vars: ["SRC_DIR"]
     cmd: gofumpt -l -w -extra {{.SRC_DIR}}
 
   lint:golines:
-    vars:
-      SRC_DIR: '{{default "." .GO_SRC_DIR}}'
-    sources:
-      - "{{.SRC_DIR}}/**/*.go"
+    internal: true
+    requires:
+      vars: ["SRC_DIR"]
     cmd: SRC_PATH={{.SRC_DIR}} ./script/golines.sh
 
   lint:go-vet:
-    vars:
-      SRC_DIR: '{{default "." .GO_SRC_DIR}}'
-    sources:
-      - "{{.SRC_DIR}}/**/*.go"
+    internal: true
+    requires:
+      vars: ["SRC_DIR"]
     cmd: go vet {{.SRC_DIR}}/...
 
-  lint:
+  __lint:
+    internal: true
+    requires:
+      vars: ["SRC_DIR", "COMPANY_PREFIXES"]
     deps:
-      - "lint:golangci"
-      - "lint:goimports-reviser"
-      - "lint:gofumpt"
-      - "lint:go-vet"
-      - "lint:golines"
-    desc: Run all lint tasks in parallel
+      - task: "lint:golangci"
+        vars:
+          SRC_DIR: "{{.SRC_DIR}}"
+      - task: "lint:goimports-reviser"
+        vars:
+          SRC_DIR: "{{.SRC_DIR}}"
+          COMPANY_PREFIXES: "{{.COMPANY_PREFIXES}}"
+      - task: "lint:gofumpt"
+        vars:
+          SRC_DIR: "{{.SRC_DIR}}"
+      - task: "lint:go-vet"
+        vars:
+          SRC_DIR: "{{.SRC_DIR}}"
+      - task: "lint:golines"
+        vars:
+          SRC_DIR: "{{.SRC_DIR}}"
 
-  gen:wire:
-    vars:
-      SRC_DIR: '{{default "." .GO_SRC_DIR}}'
+  _lint:
+    internal: true
+    requires:
+      vars: ["SRC_DIR", "COMPANY_PREFIXES"]
     sources:
-      - "{{.SRC_DIR}}/**/*wire.go"
+      - "{{.SRC_DIR}}/**/*.go"
+    cmd:
+      task: __lint
+      vars:
+        SRC_DIR: "{{.SRC_DIR}}"
+        COMPANY_PREFIXES: "{{.COMPANY_PREFIXES}}"
+
+  # ---------------------------------------------------------------------------- #
+  #                                  Gen action                                  #
+  # ---------------------------------------------------------------------------- #
+  gen:wire:
+    internal: true
+    requires:
+      vars: ["SRC_DIR"]
+    generates:
+      - "{{.SRC_DIR}}/**/wire_gen.go"
     cmd: wire gen {{.SRC_DIR}}/...
 
   gen:mockery:
-    vars:
-      SRC_DIR: '{{default "." .GO_SRC_DIR}}'
-      CONFIG_FILE: '{{default "" .MOCKERY_CONFIG_FILE}}'
-    sources:
-      - "{{.SRC_DIR}}/**/*.go"
+    internal: true
+    requires:
+      vars: ["SRC_DIR", "CONFIG_FILE"]
+    generates:
+      - "{{.SRC_DIR}}/**/mock/*.go"
     cmd: GO_SRC_PATH={{.SRC_DIR}} CONFIG_FILE={{.CONFIG_FILE}} ./script/mockery.sh
 
-  gen:
+  __gen:
+    internal: true
+    requires:
+      vars: ["SRC_DIR", "CONFIG_FILE"]
     cmds:
       - task: "gen:mockery"
+        vars:
+          SRC_DIR: "{{.SRC_DIR}}"
+          CONFIG_FILE: "{{.CONFIG_FILE}}"
       - task: "gen:wire"
-    desc: Run sequentially gen:mockery, gen:wire
+        vars:
+          SRC_DIR: "{{.SRC_DIR}}"
 
-  docker:build:
-    vars:
-      DOCKER_FILE: '{{default "Dockerfile" .DOCKER_FILE}}'
-      _DOCKER_IMAGE: '{{printf "%s:%s" .DOCKER_IMAGE .DOCKER_TAG}}'
+  _gen:
+    internal: true
     requires:
+      vars: ["SRC_DIR", "CONFIG_FILE"]
+    sources:
+      - "{{.SRC_DIR}}/**/*.go"
+    cmd:
+      task: "__gen"
       vars:
-        - "DOCKER_IMAGE"
-        - "DOCKER_TAG"
-    cmd: >
-      docker build
-      --file {{.DOCKER_FILE}}
-      --tag {{._DOCKER_IMAGE}}
-      . {{.CLI_ARGS}}
+        SRC_DIR: "{{.SRC_DIR}}"
+        CONFIG_FILE: "{{.CONFIG_FILE}}"
 
-  docker-compose:build:
-    vars:
-      DOCKER_COMPOSE_ROOT: '{{default "." .DOCKER_COMPOSE_ROOT}}'
-      DOCKER_IMAGE: "{{.DOCKER_IMAGE}}"
-    dir: "{{.DOCKER_COMPOSE_ROOT}}"
+  # ---------------------------------------------------------------------------- #
+  #                                 Build action                                 #
+  # ---------------------------------------------------------------------------- #
+  _build:
+    internal: true
     requires:
-      vars:
-        - "DOCKER_IMAGE"
-    cmd: >
-      docker-compose
-      build
-      {{.DOCKER_IMAGE}}
-    aliases:
-      - "dc:build"
+      vars: ["ENTRY_POINT"]
+    generates:
+      - "main"
+    sources:
+      - "{{.SRC_DIR}}/**/*.go"
+    cmd: go build -v -o main {{.ENTRY_POINT}}
 
-  docker-compose:up:
-    deps: ["docker-compose:build"]
-    vars:
-      DOCKER_COMPOSE_ROOT: '{{default "." .DOCKER_COMPOSE_ROOT}}'
-      DOCKER_IMAGE: "{{.DOCKER_IMAGE}}"
-    dir: "{{.DOCKER_COMPOSE_ROOT}}"
-    requires:
-      vars:
-        - "DOCKER_IMAGE"
-    cmd: >
-      docker-compose
-      -f docker-compose.yaml
-      --project-name {{ .DOCKER_COMPOSE_PROJECT_NAME }}
-      --profile default
-      up
-      -d
-    aliases:
-      - "dc:up"
+  _build:dry:
+    internal: true
+    cmd: go build -v ./...
 
-  docker-compose:down:
-    vars:
-      DOCKER_COMPOSE_ROOT: '{{default "." .DOCKER_COMPOSE_ROOT}}'
-    dir: "{{.DOCKER_COMPOSE_ROOT}}"
-    cmd: >
-      docker-compose
-      -f docker-compose.yaml
-      --project-name {{ .DOCKER_COMPOSE_PROJECT_NAME }}
-      --profile default
-      down
-    aliases:
-      - "dc:down"
-
-  docker-compose:restart:
-    vars:
-      DOCKER_COMPOSE_ROOT: '{{default "." .DOCKER_COMPOSE_ROOT}}'
-    dir: "{{.DOCKER_COMPOSE_ROOT}}"
-    cmds:
-      - task: docker-compose:down
-      - task: docker-compose:up
-    aliases:
-      - "dc:restart"
-
-  build:
-    vars:
-      ENTRY_POINT: '{{default "." .ENTRY_POINT}}'
-    cmd: go build -v -o main ./cmd/lock-manager
-
+  # ---------------------------------------------------------------------------- #
+  #                                  Test action                                 #
+  # ---------------------------------------------------------------------------- #
   test:unit:
-    vars:
-      ENTRY_POINT: '{{default "." .ENTRY_POINT}}'
+    internal: true
     cmd: go test ./... -count=1 -v -short
 
   test:all:
-    vars:
-      ENTRY_POINT: '{{default "." .ENTRY_POINT}}'
+    internal: true
     cmd: go test ./... -count=1 -v
+
+  _test:
+    internal: true
+    deps: ["test:all"]
+
+  # ---------------------------------------------------------------------------- #
+  #                              Containerize action                             #
+  # ---------------------------------------------------------------------------- #
+  _containerize:
+    internal: true
+    requires:
+      vars: ["IMAGE_TAG", "CONTAINER_FILE"]
+    cmd:
+      task: docker:build
+      vars:
+        CONTAINER_FILE: "{{.CONTAINER_FILE}}"
+        IMAGE_TAG: "{{.IMAGE_TAG}}"
+
+  # ---------------------------------- Docker ---------------------------------- #
+  docker:build:
+    internal: true
+    requires:
+      vars: ["IMAGE_TAG", "CONTAINER_FILE"]
+    cmd: >
+      docker build
+      --file {{.CONTAINER_FILE}}
+      --tag {{.IMAGE_TAG}}
+      . {{.CLI_ARGS}}
+
+  # ---------------------------------------------------------------------------- #
+  #                                 Deploy action                                #
+  # ---------------------------------------------------------------------------- #
+  _deploy:up:
+    internal: true
+    requires:
+      vars: ["DOCKER_COMPOSE_ROOT", "DOCKER_COMPOSE_PROJECT_NAME"]
+    cmd:
+      task: docker-compose:up
+      vars:
+        ROOT: "{{.DOCKER_COMPOSE_ROOT}}"
+        PROJECT_NAME: "{{.DOCKER_COMPOSE_PROJECT_NAME}}"
+
+  _deploy:down:
+    internal: true
+    requires:
+      vars: ["DOCKER_COMPOSE_ROOT", "DOCKER_COMPOSE_PROJECT_NAME"]
+    cmd:
+      task: docker-compose:down
+      vars:
+        ROOT: "{{.DOCKER_COMPOSE_ROOT}}"
+        PROJECT_NAME: "{{.DOCKER_COMPOSE_PROJECT_NAME}}"
+
+  _deploy:restart:
+    internal: true
+    cmd:
+      task: docker-compose:restart
+
+  # ------------------------------ Docker-compose ------------------------------ #
+  docker-compose:up:
+    internal: true
+    requires:
+      vars: ["ROOT", "PROJECT_NAME"]
+    dir: "{{.ROOT}}"
+    cmd: >
+      docker-compose
+      -f docker-compose.yaml
+      --project-name {{ .PROJECT_NAME }}
+      --profile default
+      up
+      -d
+
+  docker-compose:down:
+    internal: true
+    requires:
+      vars: ["ROOT", "PROJECT_NAME"]
+    dir: "{{.ROOT}}"
+    cmd: >
+      docker-compose
+      -f docker-compose.yaml
+      --project-name {{ .PROJECT_NAME }}
+      --profile default
+      down
+
+  docker-compose:restart:
+    internal: true
+    cmds:
+      - task: docker-compose:down
+      - task: docker-compose:up
+
+  # ---------------------------------------------------------------------------- #
+  #                                Staged actions                                #
+  # ---------------------------------------------------------------------------- #
+  stage:lint:
+    aliases: ["sl"]
+    cmd:
+      task: lint
+
+  stage:gen:
+    aliases: ["sg"]
+    deps: ["stage:lint"]
+    cmd:
+      task: gen
+
+  stage:build:
+    aliases: ["sb"]
+    deps: ["stage:gen"]
+    cmd:
+      task: build:dry
+
+  stage:test:
+    aliases: ["st"]
+    deps: ["stage:build"]
+    cmd:
+      task: test
+
+  stage:containerize:
+    aliases: ["sc"]
+    deps: ["stage:test"]
+    cmd:
+      task: containerize
+
+  stage:deploy:up:
+    aliases: ["sdu"]
+    deps: ["stage:containerize"]
+    cmd:
+      task: deploy:up
+
+  stage:deploy:down:
+    aliases: ["sdd"]
+    cmd:
+      task: deploy:down
+
+  stage:deploy:restart:
+    aliases: ["sdr"]
+    cmd:
+      task: deploy:restart
