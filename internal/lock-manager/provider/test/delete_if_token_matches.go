@@ -3,7 +3,7 @@ package providertest
 import (
 	"context"
 
-	"github.com/gofrs/uuid"
+	"github.com/gofrs/uuid/v5"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -21,13 +21,13 @@ func (s PSuite) TestDeleteIfTokenMatches() {
 		l *model.Lock
 	}{
 		{
-			l: Must(model.NewLock(
+			l: Must(model.ReinstateLock(
 				"path/to/resource",
 				uuid.Must(uuid.NewV4()).String(),
 			)),
 		},
 		{
-			l: Must(model.NewLock(
+			l: Must(model.ReinstateLock(
 				"another/path/to/resource",
 				uuid.Must(uuid.NewV4()).String(),
 			)),
@@ -67,13 +67,13 @@ func (s PSuite) TestDeleteIfTokenMatchesErrInvalidToken() {
 		l *model.Lock
 	}{
 		{
-			l: Must(model.NewLock(
+			l: Must(model.ReinstateLock(
 				"path/to/resource",
 				uuid.Must(uuid.NewV4()).String(),
 			)),
 		},
 		{
-			l: Must(model.NewLock(
+			l: Must(model.ReinstateLock(
 				"another/path/to/resource",
 				uuid.Must(uuid.NewV4()).String(),
 			)),
@@ -94,7 +94,7 @@ func (s PSuite) TestDeleteIfTokenMatchesErrInvalidToken() {
 
 		err = p.DeleteIfTokenMatches(
 			ctx,
-			Must(model.NewLock(
+			Must(model.ReinstateLock(
 				tc.l.ResourceID(),
 				wrongToken,
 			)),
@@ -116,13 +116,13 @@ func (s PSuite) TestDeleteIfTokenMatchesErrLockNotFound() {
 		l *model.Lock
 	}{
 		{
-			l: Must(model.NewLock(
+			l: Must(model.ReinstateLock(
 				"path/to/resource",
 				uuid.Must(uuid.NewV4()).String(),
 			)),
 		},
 		{
-			l: Must(model.NewLock(
+			l: Must(model.ReinstateLock(
 				"another/path/to/resource",
 				uuid.Must(uuid.NewV4()).String(),
 			)),

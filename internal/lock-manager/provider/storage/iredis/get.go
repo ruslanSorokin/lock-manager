@@ -25,7 +25,7 @@ func (s LockStorage) Get(
 		return nil, Errf(err)
 	}
 
-	l, err := model.NewLock(resourceID, res)
+	l, err := model.ReinstateLock(resourceID, res)
 	if err != nil {
 		return nil, err
 	}

@@ -62,7 +62,7 @@ func (s *IntegrationSuite) SetupSuite() {
 		DB:       0,
 	}
 
-	c, err := redisconn.NewFromConfig(cfg)
+	c, err := redisconn.New(cfg)
 	if err != nil {
 		t.Error(err)
 	}
