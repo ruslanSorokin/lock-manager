@@ -7,7 +7,7 @@ require (
 	github.com/google/wire v0.5.0
 	github.com/incu6us/goimports-reviser/v3 v3.5.5
 	github.com/segmentio/golines v0.11.0
-	github.com/vektra/mockery/v2 v2.35.4
+	github.com/vektra/mockery/v2 v2.36.0
 	golang.org/x/tools v0.14.0
 	mvdan.cc/gofumpt v0.5.0
 )
