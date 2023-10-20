@@ -94,6 +94,18 @@ tasks:
         CONTAINER_FILE: "{{.CONTAINER_FILE}}"
         IMAGE_TAG: "{{.IMAGE_TAG}}"
 
+  # ------------------------------------ run ----------------------------------- #
+  run:
+    desc: "Run application locally"
+    aliases: ["r"]
+    vars:
+      _ENTRY_POINT: '{{default "./" .GO_ENTRY_POINT}}'
+      ENTRY_POINT: '{{if (not (hasPrefix "./" ._ENTRY_POINT))}}{{(printf "./%s" ._ENTRY_POINT)}}{{else}}{{._ENTRY_POINT}}{{end}}'
+    cmd:
+      task: _run
+      vars:
+        ENTRY_POINT: "{{.ENTRY_POINT}}"
+
   # ---------------------------------- deploy ---------------------------------- #
   deploy:up:
     desc: "Set up all needed infrastructure and application itself locally"
@@ -294,6 +306,15 @@ tasks:
       . {{.CLI_ARGS}}
 
   # ---------------------------------------------------------------------------- #
+  #                                      Run                                     #
+  # ---------------------------------------------------------------------------- #
+  _run:
+    internal: true
+    requires:
+      vars: ["ENTRY_POINT"]
+    cmd: go run {{.ENTRY_POINT}} -config default.development.yaml
+
+  # ---------------------------------------------------------------------------- #
   #                                 Deploy action                                #
   # ---------------------------------------------------------------------------- #
   _deploy:up:
@@ -384,6 +405,12 @@ tasks:
     deps: ["stage:test"]
     cmd:
       task: containerize
+
+  stage:run:
+    aliases: ["sr"]
+    deps: ["stage:test"]
+    cmd:
+      task: run
 
   stage:deploy:up:
     aliases: ["sdu"]
