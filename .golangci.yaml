@@ -65,6 +65,11 @@ linters-settings:
       - "^golang.org/x/tools/go/analysis.Analyzer$"
       - "^google.golang.org/protobuf/.+Options$"
       - "^gopkg.in/yaml.v3.Node$"
+      - "^github.com/redis/go-redis/v9.Options$"
+      - "^github.com/gofiber/fiber/v2.Config$"
+      - "^google.golang.org/grpc.KeepaliveParams$"
+      - "^github.com/gofiber/fiber/v2/middleware/monitor.Config$"
+      - "^github.com/gofiber/fiber/v2/middleware/recover.Config$"
 
   funlen:
     # Checks the number of lines in a function.
@@ -242,17 +247,16 @@ linters:
     - whitespace # detects leading and trailing whitespace
 
     ## you may want to enable
-    #- decoder # checks declaration order and count of types, constants, variables and functions
-    #- exhaustruct # [highly recommend to enable] checks if all structure fields are initialized
-    #- gci # controls golang package import order and makes it always deterministic
-    #- ginkgolinter # [if you use ginkgo/gomega] enforces standards of using ginkgo and gomega
-    #- godox # detects FIXME, TODO and other comment keywords
-    #- goheader # checks is file header matches to pattern
-    #- interfacebloat # checks the number of methods inside an interface
-    #- ireturn # accept interfaces, return concrete types
-    #- prealloc # [premature optimization, but can be used in some cases] finds slice declarations that could potentially be preallocated
-    #- varnamelen # [great idea, but too many false positives] checks that the length of a variable's name matches its scope
-    #- wrapcheck # checks that errors returned from external packages are wrapped
+    - exhaustruct # [highly recommend to enable] checks if all structure fields are initialized
+    # - gci # controls golang package import order and makes it always deterministic
+    # - ginkgolinter # [if you use ginkgo/gomega] enforces standards of using ginkgo and gomega
+    # - godox # detects FIXME, TODO and other comment keywords
+    # - goheader # checks is file header matches to pattern
+    # - interfacebloat # checks the number of methods inside an interface
+    # - ireturn # accept interfaces, return concrete types
+    # - prealloc # [premature optimization, but can be used in some cases] finds slice declarations that could potentially be preallocated
+    # - varnamelen # [great idea, but too many false positives] checks that the length of a variable's name matches its scope
+    # - wrapcheck # checks that errors returned from external packages are wrapped
 
     ## disabled
     #- containedctx # detects struct contained context.Context field
@@ -286,6 +290,7 @@ linters:
     #- scopelint # [deprecated, replaced by exportloopref] checks for unpinned variables in go programs
     #- structcheck # [deprecated, replaced by unused] finds unused struct fields
     #- varcheck # [deprecated, replaced by unused] finds unused global variables and constants
+    #- decoder # [deprecated] declaration order and count of types, constants, variables and functions
 
 issues:
   # Maximum count of issues with the same text.
@@ -311,5 +316,5 @@ issues:
       linters: [govet]
     - text: "odd number of arguments passed as key-value pairs for logging"
       linters: [loggercheck]
-    - text: "replacement are not allowed: github.com/oklog/run"
+    - text: "replacement are not allowed: (.*)"
       linters: [gomoddirectives]
