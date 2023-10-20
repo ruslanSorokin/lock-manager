@@ -3,7 +3,11 @@
 # Golang-Build container
 FROM golang:1.21.0-alpine3.18 as builder
 
-RUN apk add git make bash build-base && \
+RUN apk add --no-cache \
+  make=4.4.1-r1 \
+  git=2.40.1-r0 \
+  bash=5.2.15-r5 \
+  build-base=0.5-r3 && \
   mkdir /app
 
 WORKDIR /app
@@ -24,7 +28,8 @@ FROM alpine:3.18
 
 LABEL maintainer="Ruslan Sorokin strawberryladder@gmail.com"
 
-RUN apk add --no-cache tzdata && \
+RUN apk add --no-cache \
+  tzdata=2023c-r1 && \
   mkdir /app
 
 WORKDIR /app
@@ -35,4 +40,4 @@ COPY --from=builder /app/main .
 
 ENTRYPOINT [ "./main" ]
 
-CMD [ "./main -config default.testing.yaml" ]
+CMD [ "-config", "default.testing.yaml" ]
