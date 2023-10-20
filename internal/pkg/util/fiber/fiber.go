@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/go-logr/logr"
-	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -24,17 +23,8 @@ type Handler struct {
 	srv *fiber.App
 }
 
-func NewHandlerFromConfig(log logr.Logger, c *Config) *Handler {
-	fc := c.toFiberConfig()
-
-	fc.JSONDecoder = json.Unmarshal
-	fc.JSONEncoder = json.Marshal
-
-	return &Handler{
-		srv: fiber.New(fc),
-		log: log,
-		cfg: c,
-	}
+func NewHandler(app *fiber.App, log logr.Logger, c *Config) *Handler {
+	return &Handler{srv: app, log: log, cfg: c}
 }
 
 func (h Handler) Start() error {
@@ -43,9 +33,7 @@ func (h Handler) Start() error {
 	return h.srv.Listen(addr)
 }
 
-func (h Handler) GracefulStop() error {
-	return h.srv.Shutdown()
-}
+func (h Handler) GracefulStop() error { return h.srv.Shutdown() }
 
 func (h Handler) Stop() {
 	ctx, cancel := context.WithTimeout(context.TODO(), 0)
@@ -53,6 +41,4 @@ func (h Handler) Stop() {
 	_ = h.srv.ShutdownWithContext(ctx)
 }
 
-func (h Handler) Router() fiber.Router {
-	return h.srv
-}
+func (h Handler) Router() fiber.Router { return h.srv }

@@ -7,16 +7,16 @@ import (
 )
 
 type invalidArgumentError struct {
-	*logicalError
+	*apiError
 }
 
-var _ errorI = (*invalidArgumentError)(nil)
+var _ apiErrorI = (*invalidArgumentError)(nil)
 
 // NewInvalidArgument creates a new invalidArgumentError with corresponding HTTP
 // and GRPC status codes.
 func NewInvalidArgument(msg, apiStCode string) error {
 	return &invalidArgumentError{
-		logicalError: &logicalError{
+		apiError: &apiError{
 			msg:  msg,
 			grpc: codes.InvalidArgument,
 			http: http.StatusBadRequest,

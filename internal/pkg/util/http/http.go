@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/go-logr/logr"
 )
@@ -33,21 +32,6 @@ func NewHandler(
 	log logr.Logger,
 	srv *http.Server,
 	mux *http.ServeMux,
-	port string,
-	readTO time.Duration,
-) *Handler {
-	return &Handler{
-		log: log,
-		srv: srv,
-		mux: mux,
-		cfg: &Config{Port: port, ReadTimeOut: readTO},
-	}
-}
-
-func NewHandlerFromConfig(
-	log logr.Logger,
-	srv *http.Server,
-	mux *http.ServeMux,
 	cfg *Config,
 ) *Handler {
 	return &Handler{
@@ -68,9 +52,7 @@ func (h Handler) Start() error {
 	return h.srv.ListenAndServe()
 }
 
-func (h Handler) GracefulStop() error {
-	return h.srv.Close()
-}
+func (h Handler) GracefulStop() error { return h.srv.Close() }
 
 func (h Handler) Stop() {
 	if err := h.srv.Shutdown(context.TODO()); err != nil {
@@ -78,10 +60,6 @@ func (h Handler) Stop() {
 	}
 }
 
-func (h Handler) Server() *http.Server {
-	return h.srv
-}
+func (h Handler) Server() *http.Server { return h.srv }
 
-func (h Handler) Mux() *http.ServeMux {
-	return h.mux
-}
+func (h Handler) Mux() *http.ServeMux { return h.mux }

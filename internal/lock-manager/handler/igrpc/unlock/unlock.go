@@ -17,7 +17,7 @@ import (
 type Handler func(context.Context, *pb.UnlockReq) (*pb.UnlockRes, error)
 
 func newPBRes() *pb.UnlockRes {
-	return &pb.UnlockRes{}
+	return &pb.UnlockRes{Errors: nil}
 }
 
 func New(log logr.Logger, svc service.LockServiceI) Handler {

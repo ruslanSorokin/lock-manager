@@ -19,15 +19,15 @@ type Conn struct {
 	DB *redis.Client
 }
 
-// New creates a new redis Conn.
-func New(uri, uname, pword string, db uint) (*Conn, error) {
+// New creates a new instance of redis client from config.
+func New(cfg *Config) (*Conn, error) {
 	c := &Conn{
 		DB: redis.NewClient(
 			&redis.Options{
-				Addr:     uri,
-				Username: uname,
-				Password: pword,
-				DB:       int(db),
+				Addr:     cfg.URI,
+				Username: cfg.Username,
+				Password: cfg.Password,
+				DB:       int(cfg.DB),
 			},
 		),
 	}
@@ -43,11 +43,6 @@ func New(uri, uname, pword string, db uint) (*Conn, error) {
 	return c, nil
 }
 
-// NewFromConfig creates a new instance of redis client from config.
-func NewFromConfig(cfg *Config) (*Conn, error) {
-	return New(cfg.URI, cfg.Username, cfg.Password, cfg.DB)
-}
-
 func (c Conn) HealthCheck() bool {
 	ctx, cancel := context.WithTimeout(context.Background(), _connTimeout)
 	defer cancel()
@@ -56,6 +51,4 @@ func (c Conn) HealthCheck() bool {
 	return err == nil
 }
 
-func (c Conn) Close() error {
-	return c.DB.Close()
-}
+func (c Conn) Close() error { return c.DB.Close() }

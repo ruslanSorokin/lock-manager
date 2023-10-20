@@ -38,11 +38,12 @@ func NewLockHandler(
 	svc service.LockServiceI,
 ) LockHandler {
 	lh := LockHandler{
-		Handler: h,
-		log:     log,
-		svc:     svc,
-		lock:    lock.New(log, svc),
-		unlock:  unlock.New(log, svc),
+		UnimplementedLockManagerServiceServer: pb.UnimplementedLockManagerServiceServer{},
+		Handler:                               h,
+		log:                                   log,
+		svc:                                   svc,
+		lock:                                  lock.New(log, svc),
+		unlock:                                unlock.New(log, svc),
 	}
 
 	pb.RegisterLockManagerServiceServer(h.Server(), lh)

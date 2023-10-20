@@ -22,6 +22,4 @@ func NewRecoveryMetric(r prometheus.Registerer) *RecoveryMetric {
 	}
 }
 
-func (m RecoveryMetric) Inc() {
-	m.mtr.Inc()
-}
+func (m RecoveryMetric) Inc() { m.mtr.Inc() }

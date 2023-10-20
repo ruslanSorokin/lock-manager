@@ -29,6 +29,7 @@ func start(appName apputil.Name, file cfgutil.File) error {
 	log.Info("config",
 		"filename", file.String())
 
+	//nolint:exhaustruct // Will be filled on the next line
 	cfg := &app.Config{}
 	cfgutil.MustLoad(cfg, appName, file)
 
@@ -49,7 +50,8 @@ func start(appName apputil.Name, file cfgutil.File) error {
 		syscall.SIGINT,
 		syscall.SIGTERM))
 
-	if err := rg.Run(); !errors.As(err, &run.SignalError{}) {
+	t := run.SignalError{Signal: nil}
+	if err := rg.Run(); !errors.As(err, &t) {
 		return err
 	}
 	return nil

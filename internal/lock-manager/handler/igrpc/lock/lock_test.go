@@ -49,7 +49,7 @@ func newIn(ctx context.Context, rID *string) in {
 
 func newOut(tkn *string, err error) out {
 	return out{
-		res: &pb.LockRes{Token: tkn},
+		res: &pb.LockRes{Token: tkn, Errors: nil},
 		err: err,
 	}
 }

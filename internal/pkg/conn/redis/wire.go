@@ -7,7 +7,4 @@ import (
 	"github.com/google/wire"
 )
 
-var (
-	WireSet       = wire.NewSet(New)
-	WireConfigSet = wire.NewSet(NewFromConfig)
-)
+var WireSet = wire.NewSet(New)

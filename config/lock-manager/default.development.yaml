@@ -13,8 +13,9 @@ handler:
       after: 10m
       timeout: 15s
     conn:
-      maxIdle: 5m
+      maxIdle: 1m
       maxAge: 5m
+      Grace: 10s
   http:
     port: "8084"
     prefork: false

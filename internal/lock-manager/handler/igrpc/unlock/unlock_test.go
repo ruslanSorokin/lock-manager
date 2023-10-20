@@ -50,7 +50,7 @@ func newIn(ctx context.Context, rID, tkn *string) in {
 
 func newOut(err error) out {
 	return out{
-		res: &pb.UnlockRes{},
+		res: &pb.UnlockRes{Errors: nil},
 		err: err,
 	}
 }

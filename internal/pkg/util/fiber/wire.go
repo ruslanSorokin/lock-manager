@@ -5,8 +5,9 @@ package fiberutil
 
 import "github.com/google/wire"
 
+//nolint:gochecknoglobals // Wire Sets
 var (
-	WireHandlerFromConfigSet = wire.NewSet(NewHandlerFromConfig, bind)
+	WireHandlerSet = wire.NewSet(NewHandler, bind)
 
 	bind = wire.Bind(new(HandlerI), new(*Handler))
 )

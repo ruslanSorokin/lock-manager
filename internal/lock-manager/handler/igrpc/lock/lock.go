@@ -18,7 +18,8 @@ type Handler func(context.Context, *pb.LockReq) (*pb.LockRes, error)
 
 func newPBRes(tkn *string) *pb.LockRes {
 	return &pb.LockRes{
-		Token: tkn,
+		Token:  tkn,
+		Errors: nil,
 	}
 }
 

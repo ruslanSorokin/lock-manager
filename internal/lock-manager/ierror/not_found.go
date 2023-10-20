@@ -7,16 +7,16 @@ import (
 )
 
 type notFoundError struct {
-	*logicalError
+	*apiError
 }
 
-var _ errorI = (*notFoundError)(nil)
+var _ apiErrorI = (*notFoundError)(nil)
 
 // NewNotFound creates a new notFoundError with corresponding HTTP
 // and GRPC status codes.
 func NewNotFound(msg, apiStCode string) error {
 	return &notFoundError{
-		logicalError: &logicalError{
+		apiError: &apiError{
 			msg:  msg,
 			grpc: codes.NotFound,
 			http: http.StatusNotFound,
