@@ -8,8 +8,9 @@ type (
 		Timeout time.Duration `yaml:"timeout" env:"TIMEOUT" env-default:"15s"`
 	}
 	conn struct {
-		MaxIdle time.Duration `yaml:"maxIdle" env-default:"5m"`
+		MaxIdle time.Duration `yaml:"maxIdle" env-default:"1m"`
 		MaxAge  time.Duration `yaml:"maxAge"  env-default:"5m"`
+		Grace   time.Duration `yaml:"Grace"   env-default:"10s"`
 	}
 	Config struct {
 		Port           string `yaml:"port"           env:"PORT"            env-required:"true"`

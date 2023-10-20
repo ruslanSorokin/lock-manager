@@ -7,10 +7,7 @@ import "github.com/google/wire"
 
 //nolint:gochecknoglobals // Wire Sets
 var (
-	WireHandlerSet           = wire.NewSet(NewHandler)
-	WireHandlerFromConfigSet = wire.NewSet(NewHandlerFromConfig)
+	WireHandlerSet = wire.NewSet(NewHandler, bind)
 
-	WireInterceptorLoggerSet       = wire.NewSet(NewInterceptorLogger)
-	WirePanicRecoveryHandlerSet    = wire.NewSet(NewPanicRecoveryHandler)
-	WireProcessingTimeHistogramSet = wire.NewSet(NewProcessingTimeHistogram)
+	bind = wire.Bind(new(HandlerI), new(*Handler))
 )

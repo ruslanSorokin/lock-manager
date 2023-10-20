@@ -18,7 +18,7 @@ func (s LockService) Unlock(
 		return Errf(err)
 	}
 
-	l, err := model.NewLock(rID, tkn)
+	l, err := model.ReinstateLock(rID, tkn)
 	if err != nil {
 		return err
 	}

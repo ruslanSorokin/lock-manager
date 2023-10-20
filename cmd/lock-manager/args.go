@@ -10,17 +10,16 @@ type args struct {
 }
 
 func parseArgs() *args {
-	var config string
-	args := &args{}
+	var cfg string
+	var a args
 
-	flag.StringVar(&config, "config", "default.testing.yaml", "config file")
+	flag.StringVar(&cfg, "config", "default.testing.yaml", "config file")
 	flag.Parse()
-	args.Config = config
+	a.Config = cfg
 
-	config, isSet := os.LookupEnv("LOCK_MANAGER_CONFIG_FILE")
-	if isSet {
-		args.Config = config
+	if c, ok := os.LookupEnv("LOCK_MANAGER_CONFIG_FILE"); ok {
+		a.Config = c
 	}
 
-	return args
+	return &a
 }

@@ -11,13 +11,14 @@ import (
 
 type HandlerI interface {
 	Start() error
-	Server() *grpc.Server
 	GracefulStop()
 	Stop()
+
+	Server() *grpc.Server
 }
 
 type Handler struct {
-	cfg Config
+	cfg *Config
 
 	srv *grpc.Server
 	log logr.Logger
@@ -28,21 +29,13 @@ var _ HandlerI = (*Handler)(nil)
 func NewHandler(
 	srv *grpc.Server,
 	log logr.Logger,
-	port string, withReflection bool,
+	cfg *Config,
 ) *Handler {
 	return &Handler{
-		cfg: Config{Port: port, WithReflection: withReflection},
+		cfg: cfg,
 		srv: srv,
 		log: log,
 	}
-}
-
-func NewHandlerFromConfig(
-	srv *grpc.Server,
-	log logr.Logger,
-	cfg *Config,
-) *Handler {
-	return NewHandler(srv, log, cfg.Port, cfg.WithReflection)
 }
 
 func (h Handler) Start() error {
@@ -63,14 +56,8 @@ func (h Handler) Start() error {
 	return h.srv.Serve(lst)
 }
 
-func (h Handler) Server() *grpc.Server {
-	return h.srv
-}
+func (h Handler) Server() *grpc.Server { return h.srv }
 
-func (h Handler) GracefulStop() {
-	h.srv.GracefulStop()
-}
+func (h Handler) GracefulStop() { h.srv.GracefulStop() }
 
-func (h Handler) Stop() {
-	h.srv.Stop()
-}
+func (h Handler) Stop() { h.srv.Stop() }

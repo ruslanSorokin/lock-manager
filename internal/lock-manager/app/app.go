@@ -10,28 +10,37 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"google.golang.org/grpc"
 
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/ifiber"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/igrpc"
 	iservice "github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
 	redisconn "github.com/ruslanSorokin/lock-manager/internal/pkg/conn/redis"
 	apputil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app"
+	httputil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/http"
 	promutil "github.com/ruslanSorokin/lock-manager/internal/pkg/util/prom"
 )
 
 type (
-	repo struct {
-		redisConn *redisconn.Conn
+	lockStorageComp struct {
+		redis *redisconn.Conn
 	}
-	srv struct {
-		grpcServer  *grpc.Server
-		grpcHandler igrpc.LockHandlerI
+	grpcLockHandlerComp struct {
+		server      *grpc.Server
+		lockHandler igrpc.LockHandlerI
 	}
-	mtr struct {
-		promReg     *prometheus.Registry
-		promGRPC    *promgrpc.ServerMetrics
-		httpSrv     *http.Server
-		mux         *http.ServeMux
-		httpHandler *promutil.Handler
-		app         apputil.MetricI
+	fiberLockHandlerComp struct {
+		lockHandler *ifiber.LockHandler
+	}
+	lockHandlerComp struct {
+		grpc grpcLockHandlerComp
+		http fiberLockHandlerComp
+	}
+	metricComp struct {
+		handler  httputil.HandlerI
+		server   *http.Server
+		mux      *http.ServeMux
+		promReg  *prometheus.Registry
+		promGRPC *promgrpc.ServerMetrics
+		app      apputil.MetricI
 	}
 )
 
@@ -39,9 +48,9 @@ type App struct {
 	cfg *Config
 	log logr.Logger
 
-	storage repo
-	server  srv
-	metric  mtr
+	storage lockStorageComp
+	handler lockHandlerComp
+	metric  metricComp
 	service iservice.LockServiceI
 
 	environment apputil.Env
@@ -51,48 +60,52 @@ type App struct {
 func New(
 	cfg *Config,
 	log logr.Logger,
-	redisConn *redisconn.Conn,
-	promReg *prometheus.Registry,
-	promGRPCMetric *promgrpc.ServerMetrics,
-	mux *http.ServeMux,
-	httpSrv *http.Server,
+	service iservice.LockServiceI,
+	redis *redisconn.Conn,
 	grpcSrv *grpc.Server,
-	svc iservice.LockServiceI,
-	grpcHandler igrpc.LockHandlerI,
-	httpMtrHandler *promutil.Handler,
-	app apputil.MetricI,
-	env apputil.Env,
-	ver apputil.Ver,
+	grpcLockHandler igrpc.LockHandlerI,
+	fiberLockHandler *ifiber.LockHandler,
+	httpMetricServer *http.Server,
+	httpMetricMux *http.ServeMux,
+	httpMetricHandler httputil.HandlerI,
+	appMetric apputil.MetricI,
+	promReg *prometheus.Registry,
+	promGRPCMetrics *promgrpc.ServerMetrics,
+	environment apputil.Env,
+	version apputil.Ver,
 ) *App {
 	return &App{
 		cfg:     cfg,
 		log:     log,
-		storage: repo{redisConn: redisConn},
-		server: srv{
-			grpcServer:  grpcSrv,
-			grpcHandler: grpcHandler,
+		storage: lockStorageComp{redis: redis},
+		handler: lockHandlerComp{
+			grpc: grpcLockHandlerComp{server: grpcSrv, lockHandler: grpcLockHandler},
+			http: fiberLockHandlerComp{lockHandler: fiberLockHandler},
 		},
-		metric: mtr{
-			promReg:     promReg,
-			promGRPC:    promGRPCMetric,
-			httpSrv:     httpSrv,
-			mux:         mux,
-			httpHandler: httpMtrHandler,
-			app:         app,
+		metric: metricComp{
+			server:   httpMetricServer,
+			mux:      httpMetricMux,
+			handler:  httpMetricHandler,
+			promReg:  promReg,
+			promGRPC: promGRPCMetrics,
+			app:      appMetric,
 		},
-		service:     svc,
-		environment: env,
-		version:     ver,
+		service:     service,
+		environment: environment,
+		version:     version,
 	}
 }
 
 func (a App) prepare() {
+	mux := a.metric.handler.Mux()
+	promutil.Register(mux, a.metric.promReg)
+
+	grpcSrv := a.handler.grpc.lockHandler.Server()
+	a.metric.promGRPC.InitializeMetrics(grpcSrv)
+
 	a.log.Info("application environment", "env", a.environment.String())
-	a.log.Info("application version", "version", a.version.String())
-
-	a.metric.promGRPC.InitializeMetrics(a.server.grpcServer)
-
 	a.metric.app.SetVersion(a.version)
+	a.log.Info("application version", "version", a.version.String())
 	a.metric.app.SetEnvironment(a.environment)
 }
 
@@ -102,15 +115,31 @@ func (a App) Run(ctx context.Context) error {
 	rg := run.Group{}
 	rg.Add(run.ContextHandler(ctx))
 
-	rg.Add(a.server.grpcHandler.Start,
+	grpcSrv := a.handler.grpc.lockHandler
+	rg.Add(grpcSrv.Start,
+		func(_ error) { grpcSrv.GracefulStop() })
+
+	httpSrv := a.handler.http.lockHandler
+	rg.Add(httpSrv.Start,
 		func(_ error) {
-			a.server.grpcHandler.GracefulStop()
+			if err := httpSrv.GracefulStop(); err != nil {
+				a.log.Error(
+					err,
+					"http server graceful shutdown error, shutting down forcefully",
+				)
+				httpSrv.Stop()
+			}
 		})
 
-	rg.Add(a.metric.httpHandler.Start,
-		func(err error) {
-			if err := a.metric.httpHandler.GracefulStop(); err != nil {
-				a.log.Error(err, "http metric server shutdown error")
+	metricSrv := a.metric.handler
+	rg.Add(metricSrv.Start,
+		func(_ error) {
+			if err := metricSrv.GracefulStop(); err != nil {
+				a.log.Error(
+					err,
+					"http metric server graceful shutdown error, shutting down forcefully",
+				)
+				metricSrv.Stop()
 			}
 		})
 

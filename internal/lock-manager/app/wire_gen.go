@@ -10,21 +10,24 @@ import (
 	"github.com/go-logr/logr"
 	"github.com/go-playground/validator/v10"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/ifiber"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/igrpc"
-	iprom2 "github.com/ruslanSorokin/lock-manager/internal/lock-manager/metric/iprom"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/metric/iprom"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/storage/iredis"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/conn/redis"
 	iprom3 "github.com/ruslanSorokin/lock-manager/internal/pkg/util/app/iprom"
+	"github.com/ruslanSorokin/lock-manager/internal/pkg/util/fiber"
 	"github.com/ruslanSorokin/lock-manager/internal/pkg/util/grpc"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/util/grpc/iprom"
-	"github.com/ruslanSorokin/lock-manager/internal/pkg/util/prom"
+	iprom2 "github.com/ruslanSorokin/lock-manager/internal/pkg/util/grpc/iprom"
+	"github.com/ruslanSorokin/lock-manager/internal/pkg/util/http"
 	"net/http"
 )
 
 // Injectors from wire.go:
 
 func Wire(logger logr.Logger, config *Config) (*App, func(), error) {
+	validate := validator.New()
 	appWireConfig, err := toWireConfig(config)
 	if err != nil {
 		return nil, nil, err
@@ -34,35 +37,33 @@ func Wire(logger logr.Logger, config *Config) (*App, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	registry := prometheus.NewRegistry()
-	serverMetrics := grpcutil.NewProcessingTimeHistogram(registry)
-	serveMux := http.NewServeMux()
-	server := provideHTTPServer()
-	loggingLogger := grpcutil.NewInterceptorLogger(logger)
-	recoveryMetric := iprom.NewRecoveryMetric(registry)
-	v := grpcutil.NewPanicRecoveryHandler(logger, recoveryMetric)
-	v2 := grpcutil.WireProvideInterceptors(loggingLogger, v, serverMetrics)
-	grpcutilConfig := appWireConfig.GRPC
-	grpcServer := grpcutil.WireProvideServer(v2, grpcutilConfig)
-	validate := validator.New()
 	lockStorage := iredis.NewLockStorage(logger, conn)
-	ipromMetric := iprom2.New(registry)
+	registry := prometheus.NewRegistry()
+	ipromMetric := iprom.New(registry)
 	lockService := service.New(logger, validate, lockStorage, ipromMetric)
-	grpcutilHandler := grpcutil.NewHandlerFromConfig(grpcServer, logger, grpcutilConfig)
+	loggingLogger := grpcutil.NewInterceptorLogger(logger)
+	recoveryMetric := iprom2.NewRecoveryMetric(registry)
+	v := grpcutil.NewPanicRecoveryHandler(logger, recoveryMetric)
+	serverMetrics := grpcutil.NewProcessingTimeHistogram(registry)
+	v2 := grpcutil.WireProvideDefaultServerOpts(loggingLogger, v, serverMetrics)
+	grpcutilConfig := appWireConfig.GRPC
+	server := grpcutil.WireProvideServer(v2, grpcutilConfig)
+	grpcutilHandler := grpcutil.NewHandler(server, logger, grpcutilConfig)
 	lockHandler := igrpc.NewLockHandler(grpcutilHandler, logger, lockService)
-	promutilConfig := appWireConfig.Pull
-	promutilHandler := promutil.NewHandlerFromConfig(logger, registry, serveMux, promutilConfig)
+	fiberutilConfig := appWireConfig.HTTP
+	v3 := fiberutil.WireProvideDefaultMiddleware()
+	serveMux := http.NewServeMux()
+	fiberApp := fiberutil.WireProvideDefaultApp(fiberutilConfig, v3, serveMux)
+	fiberutilHandler := fiberutil.NewHandler(fiberApp, logger, fiberutilConfig)
+	ifiberLockHandler := ifiber.NewLockHandler(logger, lockService, fiberutilHandler)
+	httputilConfig := appWireConfig.Pull
+	httpServer := httputil.WireProvideServer(httputilConfig)
+	httputilHandler := httputil.NewHandler(logger, httpServer, serveMux, httputilConfig)
 	metric2 := iprom3.New(registry)
 	env := appWireConfig.Environment
 	ver := appWireConfig.Version
-	appApp := New(config, logger, conn, registry, serverMetrics, serveMux, server, grpcServer, lockService, lockHandler, promutilHandler, metric2, env, ver)
+	appApp := New(config, logger, lockService, conn, server, lockHandler, ifiberLockHandler, httpServer, serveMux, httputilHandler, metric2, registry, serverMetrics, env, ver)
 	return appApp, func() {
 		cleanup()
 	}, nil
-}
-
-// wire.go:
-
-func provideHTTPServer() *http.Server {
-	return &http.Server{}
 }

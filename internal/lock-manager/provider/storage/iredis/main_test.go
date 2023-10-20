@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-logr/logr"
 	"github.com/ory/dockertest"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider/storage/iredis"
@@ -33,6 +34,16 @@ type IntegrationSuite struct {
 	resource *dockertest.Resource
 	pool     *dockertest.Pool
 	conn     *redisconn.Conn
+}
+
+func NewIntegrationSuite(s *suite.Suite) *IntegrationSuite {
+	return &IntegrationSuite{
+		Suite:    s,
+		PSuite:   nil,
+		pool:     nil,
+		resource: nil,
+		conn:     nil,
+	}
 }
 
 func (s *IntegrationSuite) SetupSuite() {
@@ -62,7 +73,7 @@ func (s *IntegrationSuite) SetupSuite() {
 		DB:       0,
 	}
 
-	c, err := redisconn.NewFromConfig(cfg)
+	c, err := redisconn.New(cfg)
 	if err != nil {
 		t.Error(err)
 	}
@@ -112,7 +123,5 @@ func RemoveRedisContainer(p *dockertest.Pool, r *dockertest.Resource) error {
 }
 
 func TestIntegrationRedisLockStorage(t *testing.T) {
-	suite.Run(t, &IntegrationSuite{
-		Suite: &suite.Suite{},
-	})
+	suite.Run(t, NewIntegrationSuite(&suite.Suite{Assertions: assert.New(t)}))
 }

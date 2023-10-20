@@ -14,7 +14,7 @@ func (s LockService) Lock(
 		return "", Errf(err)
 	}
 
-	l, err := model.NewLockWithToken(rID)
+	l, err := model.NewLock(rID)
 	if err != nil {
 		return "", err
 	}

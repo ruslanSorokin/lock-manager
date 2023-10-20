@@ -10,13 +10,14 @@ import (
 
 	pb "github.com/ruslanSorokin/lock-manager-api/gen/grpc/go"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/igrpc/shared"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/ilog"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
 )
 
 type Handler func(context.Context, *pb.UnlockReq) (*pb.UnlockRes, error)
 
 func newPBRes() *pb.UnlockRes {
-	return &pb.UnlockRes{}
+	return &pb.UnlockRes{Errors: nil}
 }
 
 func New(log logr.Logger, svc service.LockServiceI) Handler {
@@ -50,9 +51,9 @@ func New(log logr.Logger, svc service.LockServiceI) Handler {
 		}
 
 		log.Error(err, logMsg,
-			shared.LogTagResourceID, rID,
-			shared.LogTagToken, tkn,
-			shared.LogTagGRPCCode, code)
+			ilog.TagResourceID, rID,
+			ilog.TagToken, tkn,
+			ilog.TagGRPCStCode, code)
 
 		return newPBRes(), status.Error(code, apiStCode)
 	}

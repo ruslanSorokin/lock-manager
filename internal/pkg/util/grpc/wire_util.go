@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/keepalive"
 )
 
-func WireProvideInterceptors(
+func WireProvideDefaultServerOpts(
 	log logging.Logger,
 	recoveryHandler func(any) error,
 	metric *promgrpc.ServerMetrics,
@@ -43,8 +43,9 @@ func WireProvideServer(
 ) *grpc.Server {
 	opts = append(opts,
 		grpc.KeepaliveParams(keepalive.ServerParameters{
-			MaxConnectionIdle: cfg.Conn.MaxIdle,
-			MaxConnectionAge:  cfg.Conn.MaxAge,
+			MaxConnectionIdle:     cfg.Conn.MaxIdle,
+			MaxConnectionAge:      cfg.Conn.MaxAge,
+			MaxConnectionAgeGrace: cfg.Conn.Grace,
 
 			Time:    cfg.Ping.After,
 			Timeout: cfg.Ping.Timeout,
