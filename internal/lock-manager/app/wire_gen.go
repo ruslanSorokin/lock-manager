@@ -27,7 +27,7 @@ import (
 // Injectors from wire.go:
 
 func Wire(logger logr.Logger, config *Config) (*App, func(), error) {
-	validate := validator.New()
+	validate := provideValidator()
 	appWireConfig, err := toWireConfig(config)
 	if err != nil {
 		return nil, nil, err
@@ -66,4 +66,10 @@ func Wire(logger logr.Logger, config *Config) (*App, func(), error) {
 	return appApp, func() {
 		cleanup()
 	}, nil
+}
+
+// wire.go:
+
+func provideValidator() *validator.Validate {
+	return validator.New(validator.WithRequiredStructEnabled())
 }
