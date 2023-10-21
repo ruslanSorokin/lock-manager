@@ -1,12 +1,14 @@
 # Interprocess Communication Lock Manager
 
-### TLDR
+## TLDR
 
 Provides functionality to acquire & release resources over gRPC & HTTP.
 
-[API repository](https://github.com/ruslanSorokin/lock-manager-api)
+[`API`](https://github.com/ruslanSorokin/lock-manager-api)
 
-### Tech Stack
+## Tech Stack
+
+### Golang
 
 - [`google/wire`](https://github.com/google/wire) for compile-time DI
 - [`oklog/run`](https://github.com/oklog/run) for graceful structured
@@ -24,7 +26,18 @@ Provides functionality to acquire & release resources over gRPC & HTTP.
 - [`prometheus/client_golang`](https://github.com/prometheus/client_golang): metrics
 - [`go-logr/logr`](https://github.com/go-logr/logr) with [`rs/zerolog`](https://github.com/rs/zerolog) for logging
 
-### How to run
+---
+
+### General
+
+- [`pre-commit/pre-commit`](https://github.com/pre-commit/pre-commit): git hooks management
+- [`hadolint/hadolint`](https://github.com/hadolint/hadolint): Dockerfile linter
+- [`golangci/golangci-lint`](https://github.com/golangci/golangci-lint): Golang linter-runner
+- [`go-task/task`](https://github.com/go-task/task): task runner
+
+---
+
+## How to run
 
 - Install go-task with `make install-gotask`
 - `task deploy:up` to deploy application & all needed infrastructure locally
