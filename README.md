@@ -21,8 +21,8 @@ Provides functionality to acquire & release resources over gRPC & HTTP.
 - [`redis/go-redis`](https://github.com/redis/go-redis) as redis driver
 - [`ory/dockertest`](https://github.com/ory/dockertest) for container
   orchestration in integration tests
-- [`stretchr/testify`](https://github.com/stretchr/testify): mocks for table-driven unit
-  tests & suites for interface-driven integration tests
+- [`vektra/mockery`](https://github.com/vektra/mockery): mocks for table-driven unit tests
+- [`stretchr/testify`](https://github.com/stretchr/testify): suites for interface-driven integration tests
 - [`prometheus/client_golang`](https://github.com/prometheus/client_golang): metrics
 - [`go-logr/logr`](https://github.com/go-logr/logr) with [`rs/zerolog`](https://github.com/rs/zerolog) for logging
 
