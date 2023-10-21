@@ -18,7 +18,7 @@ require (
 	github.com/prometheus/client_golang v1.16.0
 	github.com/redis/go-redis/v9 v9.2.1
 	github.com/rs/zerolog v1.31.0
-	github.com/ruslanSorokin/lock-manager-api v0.0.0-20230715112900-02bd87ce70e3
+	github.com/ruslanSorokin/lock-manager-api v0.0.0-20231021073929-59519bd27f51
 	github.com/stretchr/testify v1.8.4
 	google.golang.org/grpc v1.58.3
 )
