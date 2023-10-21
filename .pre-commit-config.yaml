@@ -71,3 +71,10 @@ repos:
             --max-len=80,
             .,
           ]
+
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint-docker
+        name: hadolint
+        alias: hadolint

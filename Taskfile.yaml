@@ -40,6 +40,7 @@ tasks:
       vars:
         SRC_DIR: "{{.SRC_DIR}}"
         COMPANY_PREFIXES: "{{.COMPANY_PREFIXES}}"
+        DOCKERFILE: "{{.CONTAINER_FILE}}"
 
   # ------------------------------------ gen ----------------------------------- #
   gen:
@@ -171,10 +172,16 @@ tasks:
       vars: ["SRC_DIR"]
     cmd: go vet {{.SRC_DIR}}/...
 
+  lint:hadolint:
+    internal: true
+    requires:
+      vars: ["DOCKERFILE"]
+    cmd: hadolint {{.DOCKERFILE}}
+
   __lint:
     internal: true
     requires:
-      vars: ["SRC_DIR", "COMPANY_PREFIXES"]
+      vars: ["SRC_DIR", "COMPANY_PREFIXES", "DOCKERFILE"]
     deps:
       - task: "lint:golangci"
         vars:
@@ -192,11 +199,14 @@ tasks:
       - task: "lint:golines"
         vars:
           SRC_DIR: "{{.SRC_DIR}}"
+      - task: "lint:hadolint"
+        vars:
+          DOCKERFILE: "{{.DOCKERFILE}}"
 
   _lint:
     internal: true
     requires:
-      vars: ["SRC_DIR", "COMPANY_PREFIXES"]
+      vars: ["SRC_DIR", "COMPANY_PREFIXES", "DOCKERFILE"]
     sources:
       - "{{.SRC_DIR}}/**/*.go"
     cmd:
@@ -204,6 +214,7 @@ tasks:
       vars:
         SRC_DIR: "{{.SRC_DIR}}"
         COMPANY_PREFIXES: "{{.COMPANY_PREFIXES}}"
+        DOCKERFILE: "{{.DOCKERFILE}}"
 
   # ---------------------------------------------------------------------------- #
   #                                  Gen action                                  #
