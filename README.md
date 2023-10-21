@@ -14,7 +14,7 @@ Provides functionality to acquire & release resources over gRPC & HTTP.
 - [`oklog/run`](https://github.com/oklog/run) for graceful structured
   concurrency
 - [`ilyakaznacheev/cleanenv`](https://github.com/ilyakaznacheev/cleanenv) for YAML/TOML/JSON/ENV configuration
-- [`gofiber/fiber`](https://github.com/gofiber): HTTP transport
+- [`gofiber/fiber`](https://github.com/gofiber/fiber): HTTP transport
 - [`grpc/grpc-go`](https://github.com/grpc/grpc-go): GRPC transport
 - [`go-playground/validator`](https://github.com/go-playground/validator): validation
 - [`redis/redis`](https://github.com/redis/redis) as in-memory key-value database
