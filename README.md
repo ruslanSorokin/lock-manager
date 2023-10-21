@@ -39,6 +39,6 @@ Provides functionality to acquire & release resources over gRPC & HTTP.
 
 ## How to run
 
-- Install go-task with `make install-gotask`
+- `make install-gotask` to install go-task
 - `task deploy:up` to deploy application & all needed infrastructure locally
 - `task --list` to see all targets with description
