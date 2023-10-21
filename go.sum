@@ -125,8 +125,8 @@ github.com/rogpeppe/go-internal v1.11.0/go.mod h1:ddIwULY96R17DhadqLgMfk9H9tvdUz
 github.com/rs/xid v1.5.0/go.mod h1:trrq9SKmegXys3aeAKXMUTdJsYXVwGY3RLcfgqegfbg=
 github.com/rs/zerolog v1.31.0 h1:FcTR3NnLWW+NnTwwhFWiJSZr4ECLpqCm6QsEnyvbV4A=
 github.com/rs/zerolog v1.31.0/go.mod h1:/7mN4D5sKwJLZQ2b/znpjC3/GQWY/xaDXUM0kKWRHss=
-github.com/ruslanSorokin/lock-manager-api v0.0.0-20230715112900-02bd87ce70e3 h1:6JYmJkzXapT/BbNHnpsgvHRcMkGguhsbVHq/VaxlS4I=
-github.com/ruslanSorokin/lock-manager-api v0.0.0-20230715112900-02bd87ce70e3/go.mod h1:IF6FSlELKly2Sd9MjAflmnB0PYq6uRfuLrTmpxGWCLA=
+github.com/ruslanSorokin/lock-manager-api v0.0.0-20231021073929-59519bd27f51 h1:drs244xMecqaEb37hls6IJp4CPUOt9VZSrzG7jpyUEM=
+github.com/ruslanSorokin/lock-manager-api v0.0.0-20231021073929-59519bd27f51/go.mod h1:dVjYeATOFyBDvQThZLMxfMQTcgojZ8wC6S0ndA2+hdw=
 github.com/ruslanSorokin/run v1.2.1 h1:0PiRN/Aihf3pqZe8dazhEBu6iuDS0GAK2t+klf1jpDU=
 github.com/ruslanSorokin/run v1.2.1/go.mod h1:sVPdnTZT1zYwAJeCMu2Th4T21pA3FPOQRfWjQlk7DVU=
 github.com/sirupsen/logrus v1.9.3 h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ=

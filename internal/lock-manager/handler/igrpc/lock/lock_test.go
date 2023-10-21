@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	pb "github.com/ruslanSorokin/lock-manager-api/gen/grpc/go"
+	pb "github.com/ruslanSorokin/lock-manager-api/gen/proto/go"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/igrpc/lock"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/provider"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
@@ -49,7 +49,7 @@ func newIn(ctx context.Context, rID *string) in {
 
 func newOut(tkn *string, err error) out {
 	return out{
-		res: &pb.LockRes{Token: tkn, Errors: nil},
+		res: &pb.LockRes{Token: tkn},
 		err: err,
 	}
 }
