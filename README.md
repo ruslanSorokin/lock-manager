@@ -19,21 +19,21 @@ Provides functionality to acquire & release resources over gRPC & HTTP.
 - [`go-playground/validator`](https://github.com/go-playground/validator): validation
 - [`redis/redis`](https://github.com/redis/redis) as in-memory key-value database
 - [`redis/go-redis`](https://github.com/redis/go-redis) as redis driver
-- [`ory/dockertest`](https://github.com/ory/dockertest) for container
+- [`ory/dockertest`](https://github.com/ory/dockertest): container
   orchestration in integration tests
 - [`vektra/mockery`](https://github.com/vektra/mockery): mocks for table-driven unit tests
 - [`stretchr/testify`](https://github.com/stretchr/testify): suites for interface-driven integration tests
 - [`prometheus/client_golang`](https://github.com/prometheus/client_golang): metrics
-- [`go-logr/logr`](https://github.com/go-logr/logr) with [`rs/zerolog`](https://github.com/rs/zerolog) for logging
+- [`go-logr/logr`](https://github.com/go-logr/logr) with [`rs/zerolog`](https://github.com/rs/zerolog): logging
 
 ---
 
 ### General
 
 - [`pre-commit/pre-commit`](https://github.com/pre-commit/pre-commit): git hooks management
-- [`hadolint/hadolint`](https://github.com/hadolint/hadolint): Dockerfile linter
-- [`golangci/golangci-lint`](https://github.com/golangci/golangci-lint): Golang linter-runner
-- [`go-task/task`](https://github.com/go-task/task): task runner
+- [`hadolint/hadolint`](https://github.com/hadolint/hadolint): Dockerfile linting
+- [`golangci/golangci-lint`](https://github.com/golangci/golangci-lint) as Golang linter-runner
+- [`go-task/task`](https://github.com/go-task/task) as task runner(Makefile alternative)
 
 ---
 
