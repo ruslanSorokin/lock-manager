@@ -37,7 +37,7 @@ func Wire(logr.Logger, *Config) (*App, func(), error) {
 		),
 
 		New,
-		validator.New,
+		provideValidator,
 		redisconn.WireProvide,
 		http.NewServeMux,
 		httputil.WireProvideServer,
@@ -61,4 +61,8 @@ func Wire(logr.Logger, *Config) (*App, func(), error) {
 		service.WireSet,
 		iredis.WireLockStorageSet,
 	))
+}
+
+func provideValidator() *validator.Validate {
+	return validator.New(validator.WithRequiredStructEnabled())
 }
