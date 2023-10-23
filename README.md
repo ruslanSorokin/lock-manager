@@ -1,8 +1,6 @@
 <h1><a id="summary" class="anchor" aria-hidden="true"></a>Interprocess Communication Lock Manager</h1>
 
-<h2><a id="summary" class="anchor" aria-hidden="true"></a>TLDR</h2>
-
-Provides functionality to acquire & release resources over gRPC & HTTP.
+> Provides functionality to acquire & release resources over gRPC & HTTP.
 
 [`API`](https://github.com/ruslanSorokin/lock-manager-api)
 
@@ -17,7 +15,6 @@ Provides functionality to acquire & release resources over gRPC & HTTP.
 - [`gofiber/fiber`](https://github.com/gofiber/fiber): HTTP transport
 - [`grpc/grpc-go`](https://github.com/grpc/grpc-go): GRPC transport
 - [`go-playground/validator`](https://github.com/go-playground/validator): validation
-- [`redis/redis`](https://github.com/redis/redis) as in-memory key-value database
 - [`redis/go-redis`](https://github.com/redis/go-redis) as redis driver
 - [`ory/dockertest`](https://github.com/ory/dockertest): container
   orchestration in integration tests
@@ -30,6 +27,7 @@ Provides functionality to acquire & release resources over gRPC & HTTP.
 
 <h3><a id="summary" class="anchor" aria-hidden="true"></a>General</h3>
 
+- [`redis/redis`](https://github.com/redis/redis) as in-memory key-value database
 - [`pre-commit/pre-commit`](https://github.com/pre-commit/pre-commit): git hooks management
 - [`hadolint/hadolint`](https://github.com/hadolint/hadolint): Dockerfile linting
 - [`golangci/golangci-lint`](https://github.com/golangci/golangci-lint) as Golang linter-runner
@@ -40,5 +38,6 @@ Provides functionality to acquire & release resources over gRPC & HTTP.
 <h2><a id="summary" class="anchor" aria-hidden="true"></a>How to run</h2>
 
 - `make install-gotask` to install go-task
-- `task deploy:up` to deploy application & all needed infrastructure locally
+- `task containerize` to build source code into docker image
+- `task deploy:up` to deploy application & all needed infrastructure locally via containers
 - `task --list` to see all targets with description

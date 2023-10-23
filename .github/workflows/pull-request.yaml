@@ -57,7 +57,7 @@ jobs:
     - name: Install golang
       uses: actions/setup-go@v4
       with:
-        go-version-file: go.mod
+        go-version-file: tools/go.mod
         cache: true
         cache-dependency-path: |
           tools/go.sum
