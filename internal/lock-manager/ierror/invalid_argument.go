@@ -6,21 +6,21 @@ import (
 	"google.golang.org/grpc/codes"
 )
 
-type invalidArgumentError struct {
-	*apiError
+type InvalidArgumentError struct {
+	APIError
 }
 
-var _ apiErrorI = (*invalidArgumentError)(nil)
+var _ APIErrorI = (*InvalidArgumentError)(nil)
 
-// NewInvalidArgument creates a new invalidArgumentError with corresponding HTTP
-// and GRPC status codes.
-func NewInvalidArgument(msg, apiStCode string) error {
-	return &invalidArgumentError{
-		apiError: &apiError{
+// NewInvalidArgument creates a new InvalidArgumentError with corresponding HTTP
+// & GRPC status codes.
+func NewInvalidArgument(msg, enum string) *InvalidArgumentError {
+	return &InvalidArgumentError{
+		APIError: APIError{
 			msg:  msg,
 			grpc: codes.InvalidArgument,
 			http: http.StatusBadRequest,
-			api:  apiStCode,
+			enum: enum,
 		},
 	}
 }

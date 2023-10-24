@@ -4,32 +4,44 @@ import (
 	"google.golang.org/grpc/codes"
 )
 
-type apiErrorI interface {
-	error
-
-	GRPCStatusCode() codes.Code
-	HTTPStatusCode() int
-	APIStatusCode() string
+type GRPCConvertible interface {
+	GRPCStCode() codes.Code
 }
 
-type apiError struct {
+type HTTPConvertible interface {
+	HTTPStCode() int
+}
+
+type EnumConvertible interface {
+	EnumStCode() string
+}
+
+type APIErrorI interface {
+	error
+
+	GRPCConvertible
+	HTTPConvertible
+	EnumConvertible
+}
+
+type APIError struct {
 	msg  string
 	grpc codes.Code
 	http int
-	api  string
+	enum string
 }
 
-var _ apiErrorI = (*apiError)(nil)
+var _ APIErrorI = (*APIError)(nil)
 
-// New creates new a apiError that meets the apiErrorI interface.
-func New(msg string, grpc codes.Code, http int, api string) error {
-	return &apiError{msg: msg, grpc: grpc, http: http, api: api}
+// New creates new a APIError that meets the APIErrorI interface.
+func New(msg string, grpc codes.Code, http int, enum string) APIErrorI {
+	return &APIError{msg: msg, grpc: grpc, http: http, enum: enum}
 }
 
-func (e *apiError) Error() string { return e.msg }
+func (e *APIError) Error() string { return e.msg }
 
-func (e *apiError) GRPCStatusCode() codes.Code { return e.grpc }
+func (e *APIError) GRPCStCode() codes.Code { return e.grpc }
 
-func (e *apiError) HTTPStatusCode() int { return e.http }
+func (e *APIError) HTTPStCode() int { return e.http }
 
-func (e *apiError) APIStatusCode() string { return e.api }
+func (e *APIError) EnumStCode() string { return e.enum }

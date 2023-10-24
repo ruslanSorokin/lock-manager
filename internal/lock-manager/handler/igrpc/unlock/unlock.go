@@ -10,6 +10,7 @@ import (
 
 	pb "github.com/ruslanSorokin/lock-manager-api/gen/proto/go"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/igrpc/shared"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/ierror"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/ilog"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
 )
@@ -37,8 +38,8 @@ func New(log logr.Logger, svc service.LockServiceI) Handler {
 
 		var t interface {
 			error
-			GRPCStatusCode() codes.Code
-			APIStatusCode() string
+			ierror.GRPCConvertible
+			ierror.EnumConvertible
 		}
 		logMsg := internalErrLogMsg
 		code := codes.Internal
@@ -46,8 +47,8 @@ func New(log logr.Logger, svc service.LockServiceI) Handler {
 
 		if errors.As(err, &t) {
 			logMsg = badAttemptLogMsg
-			code = t.GRPCStatusCode()
-			apiStCode = t.APIStatusCode()
+			code = t.GRPCStCode()
+			apiStCode = t.EnumStCode()
 		}
 
 		log.Error(err, logMsg,

@@ -10,6 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2/utils"
 
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/ifiber/shared"
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/ierror"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/ilog"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
 )
@@ -47,8 +48,8 @@ func New(
 
 		var t interface {
 			error
-			HTTPStatusCode() int
-			APIStatusCode() string
+			ierror.HTTPConvertible
+			ierror.EnumConvertible
 		}
 		logMsg := internalErrLogMsg
 		code := http.StatusInternalServerError
@@ -56,8 +57,8 @@ func New(
 
 		if errors.As(err, &t) {
 			logMsg = badAttemptLogMsg
-			code = t.HTTPStatusCode()
-			apiStCode = t.APIStatusCode()
+			code = t.HTTPStCode()
+			apiStCode = t.EnumStCode()
 		}
 
 		log.Error(err, logMsg,
