@@ -7,7 +7,7 @@ import (
 )
 
 func Errf(err error) error {
-	return fmt.Errorf("%s: %w", "lock service", err)
+	return fmt.Errorf("lock service: %w", err)
 }
 
 var (

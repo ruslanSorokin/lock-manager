@@ -6,21 +6,21 @@ import (
 	"google.golang.org/grpc/codes"
 )
 
-type notFoundError struct {
-	*apiError
+type NotFoundError struct {
+	APIError
 }
 
-var _ apiErrorI = (*notFoundError)(nil)
+var _ APIErrorI = (*NotFoundError)(nil)
 
-// NewNotFound creates a new notFoundError with corresponding HTTP
-// and GRPC status codes.
-func NewNotFound(msg, apiStCode string) error {
-	return &notFoundError{
-		apiError: &apiError{
+// NewNotFound creates a new NotFoundError with corresponding HTTP
+// & GRPC status codes.
+func NewNotFound(msg, enum string) *NotFoundError {
+	return &NotFoundError{
+		APIError: APIError{
 			msg:  msg,
 			grpc: codes.NotFound,
 			http: http.StatusNotFound,
-			api:  apiStCode,
+			enum: enum,
 		},
 	}
 }
