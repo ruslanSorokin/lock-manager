@@ -9,9 +9,9 @@ import (
 	"github.com/gofiber/fiber/v2/utils"
 
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/ifiber/shared"
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/ierror"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/ilog"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
+	"github.com/ruslanSorokin/lock-manager/pkg/ierror"
 )
 
 type (

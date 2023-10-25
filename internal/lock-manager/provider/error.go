@@ -3,7 +3,7 @@ package provider
 import (
 	"fmt"
 
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/ierror"
+	"github.com/ruslanSorokin/lock-manager/pkg/ierror"
 )
 
 const errPrefix = "lock storage"
