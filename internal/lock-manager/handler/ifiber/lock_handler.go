@@ -45,7 +45,7 @@ func NewLockHandler(
 func (h LockHandler) registerRoutes() {
 	r := h.HandlerI.Router()
 
-	rg := r.Group("/locks")
+	rg := r.Group("/api/v1/locks")
 
 	rIDParam := shared.PathParamNameResourceID
 	rg.Post(fmt.Sprintf("/:%s", rIDParam), h.lock)
