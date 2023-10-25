@@ -4,8 +4,9 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/ierror"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/ierror"
 )
 
 func TestInstantiateAlreadyExists(t *testing.T) {

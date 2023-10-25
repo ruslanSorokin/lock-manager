@@ -21,11 +21,11 @@ type AlreadyExistsError struct {
 
 var _ AlreadyExistsErrorI = (*AlreadyExistsError)(nil)
 
-// NewAlreadyExists creates a new AlreadyExistsError with the given message and enum.
+// NewInvalidArgument creates a new InvalidArgumentError with corresponding status codes:
 //
-// Should be used to create a 'static' error, such as:
+// - HTTP: 409
 //
-//	var ErrAlreadyExists = ierror.NewAlreadyExists("user with this login already exists", "USER_ALREADY_EXISTS")
+// - GRPC: 6 .
 func NewAlreadyExists(msg, enum string) *AlreadyExistsError {
 	return &AlreadyExistsError{
 		duplicateID: "",
@@ -38,15 +38,8 @@ func NewAlreadyExists(msg, enum string) *AlreadyExistsError {
 	}
 }
 
-// InstantiateAlreadyExists creates a new AlreadyExistsError from "err" with
+// InstantiateAlreadyExists creates a copy of AlreadyExistsError based on "err" with
 // populated "duplicateID" field.
-//
-// Should be used when you want to create a 'dynamic' error in order to propagate
-// ID of the duplicate via the error, such as:
-//
-//	if (...){
-//		 return nil, ierror.InstantiateAlreadyExists(ErrAlreadyExists, id)
-//	}
 //
 // Panics if "err" is nil.
 func InstantiateAlreadyExists(
@@ -63,6 +56,7 @@ func InstantiateAlreadyExists(
 	}
 }
 
+// DuplicateID returns duplicate ID if field is populated.
 func (e AlreadyExistsError) DuplicateID() (string, bool) {
 	return e.duplicateID, e.duplicateID != ""
 }

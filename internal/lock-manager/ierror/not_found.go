@@ -12,8 +12,11 @@ type NotFoundError struct {
 
 var _ APIErrorI = (*NotFoundError)(nil)
 
-// NewNotFound creates a new NotFoundError with corresponding HTTP
-// & GRPC status codes.
+// NewNotFound creates a new NotFoundError with corresponding status codes:
+//
+// - HTTP: 404
+//
+// - GRPC: 5 .
 func NewNotFound(msg, enum string) *NotFoundError {
 	return &NotFoundError{
 		APIError: APIError{
