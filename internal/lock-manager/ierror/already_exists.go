@@ -21,7 +21,7 @@ type AlreadyExistsError struct {
 
 var _ AlreadyExistsErrorI = (*AlreadyExistsError)(nil)
 
-// NewAlreadyExists creates a new AlreadyExistsError object with the given message and enum value.
+// NewAlreadyExists creates a new AlreadyExistsError with the given message and enum.
 //
 // Should be used to create a 'static' error, such as:
 //

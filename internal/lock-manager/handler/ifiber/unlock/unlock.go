@@ -46,8 +46,8 @@ func New(log logr.Logger, svc service.LockServiceI) Handler {
 
 		if errors.As(err, &t) {
 			logMsg = badAttemptLogMsg
-			code = t.HTTPStCode()
-			apiStCode = t.EnumStCode()
+			code = t.ToHTTP()
+			apiStCode = t.ToEnum()
 		}
 
 		log.Error(err, logMsg,

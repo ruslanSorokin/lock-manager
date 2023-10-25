@@ -5,15 +5,15 @@ import (
 )
 
 type GRPCConvertible interface {
-	GRPCStCode() codes.Code
+	ToGRPC() codes.Code
 }
 
 type HTTPConvertible interface {
-	HTTPStCode() int
+	ToHTTP() int
 }
 
 type EnumConvertible interface {
-	EnumStCode() string
+	ToEnum() string
 }
 
 type APIErrorI interface {
@@ -34,14 +34,14 @@ type APIError struct {
 var _ APIErrorI = (*APIError)(nil)
 
 // New creates new a APIError that meets the APIErrorI interface.
-func New(msg string, grpc codes.Code, http int, enum string) APIErrorI {
+func New(msg string, grpc codes.Code, http int, enum string) *APIError {
 	return &APIError{msg: msg, grpc: grpc, http: http, enum: enum}
 }
 
 func (e *APIError) Error() string { return e.msg }
 
-func (e *APIError) GRPCStCode() codes.Code { return e.grpc }
+func (e *APIError) ToGRPC() codes.Code { return e.grpc }
 
-func (e *APIError) HTTPStCode() int { return e.http }
+func (e *APIError) ToHTTP() int { return e.http }
 
-func (e *APIError) EnumStCode() string { return e.enum }
+func (e *APIError) ToEnum() string { return e.enum }
