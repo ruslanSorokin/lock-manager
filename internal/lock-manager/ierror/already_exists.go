@@ -1,6 +1,7 @@
 package ierror
 
 import (
+	"errors"
 	"net/http"
 
 	"google.golang.org/grpc/codes"
@@ -25,7 +26,7 @@ var _ AlreadyExistsErrorI = (*AlreadyExistsError)(nil)
 // Should be used to create a 'static' error, such as:
 //
 //	var ErrAlreadyExists = ierror.NewAlreadyExists("user with this login already exists", "USER_ALREADY_EXISTS")
-func NewAlreadyExists(msg, enum string) AlreadyExistsErrorI {
+func NewAlreadyExists(msg, enum string) *AlreadyExistsError {
 	return &AlreadyExistsError{
 		duplicateID: "",
 		APIError: APIError{
@@ -51,7 +52,7 @@ func NewAlreadyExists(msg, enum string) AlreadyExistsErrorI {
 func InstantiateAlreadyExists(
 	err *AlreadyExistsError,
 	dupID string,
-) AlreadyExistsErrorI {
+) *AlreadyExistsError {
 	if err == nil {
 		panic("err cannot be nil")
 	}
@@ -64,4 +65,9 @@ func InstantiateAlreadyExists(
 
 func (e AlreadyExistsError) DuplicateID() (string, bool) {
 	return e.duplicateID, e.duplicateID != ""
+}
+
+func (e AlreadyExistsError) Is(target error) bool {
+	t := NewAlreadyExists("", "")
+	return errors.As(target, &t) && t.APIError == e.APIError
 }
