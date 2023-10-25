@@ -10,9 +10,9 @@ import (
 
 	pb "github.com/ruslanSorokin/lock-manager-api/gen/proto/go"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/igrpc/shared"
-	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/ierror"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/ilog"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
+	"github.com/ruslanSorokin/lock-manager/pkg/ierror"
 )
 
 type Handler func(context.Context, *pb.UnlockReq) (*pb.UnlockRes, error)
