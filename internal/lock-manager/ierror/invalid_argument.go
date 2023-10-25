@@ -12,8 +12,11 @@ type InvalidArgumentError struct {
 
 var _ APIErrorI = (*InvalidArgumentError)(nil)
 
-// NewInvalidArgument creates a new InvalidArgumentError with corresponding HTTP
-// & GRPC status codes.
+// NewInvalidArgument creates a new InvalidArgumentError with corresponding status codes:
+//
+// - HTTP: 404
+//
+// - GRPC: 5 .
 func NewInvalidArgument(msg, enum string) *InvalidArgumentError {
 	return &InvalidArgumentError{
 		APIError: APIError{
