@@ -1,16 +1,21 @@
 // Package provides functionality to create API-scope errors for CRUD-like
 // applications.
 //
-// term 'static' means compile-time or immutable error such as:
+// In this package there are 2 terms that will come up frequently:
+//
+// - 'static' means statically defined errors such as:
 //
 //	var ErrAlreadyExists = ierror.NewAlreadyExists("user with this login already exists", "USER_ALREADY_EXISTS")
 //
-// whearas 'dynamic' means that you want to create a copy of a 'static' error
-// and populate it with some information:
+// - 'dynamic' error is basically a copy of some 'static' error populated with
+// some information:
 //
 //	if (...){
-//		 return nil, ierror.InstantiateAlreadyExists(ErrAlreadyExists, id)
+//	   return nil, ierror.InstantiateAlreadyExists(ErrAlreadyExists, id)
 //	}
+//
+// All 'dynamic' errors instantiated based on some 'static' error treated as
+// equal to the error they are based on if you use [errors.Is] method.
 package ierror
 
 import (
