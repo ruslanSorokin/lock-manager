@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 
-	"github.com/ruslanSorokin/lock-manager/pkg/ierror"
+	"github.com/ruslanSorokin/lock-manager/internal/pkg/ierror"
 )
 
 func Errf(err error) error {

@@ -12,7 +12,7 @@ import (
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/handler/ifiber/shared"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/ilog"
 	"github.com/ruslanSorokin/lock-manager/internal/lock-manager/service"
-	"github.com/ruslanSorokin/lock-manager/pkg/ierror"
+	"github.com/ruslanSorokin/lock-manager/internal/pkg/ierror"
 )
 
 type (
