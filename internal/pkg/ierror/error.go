@@ -23,7 +23,7 @@ type GRPCConvertible interface {
 }
 
 type HTTPConvertible interface {
-	// ToHTTP returns HTTP status code.
+	// ToHTTP returns HTTP status code in format.
 	ToHTTP() int
 }
 
@@ -38,12 +38,6 @@ type APIErrorI interface {
 	GRPCConvertible
 	HTTPConvertible
 	EnumConvertible
-}
-
-type PropertyError struct {
-	InvalidArgumentError
-
-	property string
 }
 
 type APIError struct {
