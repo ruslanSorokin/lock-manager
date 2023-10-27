@@ -3,7 +3,7 @@ module github.com/ruslanSorokin/lock-manager
 go 1.21
 
 require (
-	github.com/go-logr/logr v1.2.4
+	github.com/go-logr/logr v1.3.0
 	github.com/go-logr/zerologr v1.2.3
 	github.com/go-playground/validator/v10 v10.15.5
 	github.com/goccy/go-json v0.10.2
