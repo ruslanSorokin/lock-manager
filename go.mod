@@ -10,7 +10,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.50.0
 	github.com/gofrs/uuid/v5 v5.0.0
 	github.com/google/wire v0.5.0
-	github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus v1.0.0-rc.0
+	github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus v1.0.0
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.1
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/oklog/run v1.1.0
