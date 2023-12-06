@@ -63,7 +63,7 @@ jobs:
           tools/go.sum
 
     - name: Install Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
 
     - name: Install go-task
       run: make install-gotask
