@@ -5,7 +5,7 @@ go 1.21
 require (
 	github.com/golangci/golangci-lint v1.55.1
 	github.com/google/wire v0.5.0
-	github.com/incu6us/goimports-reviser/v3 v3.5.6
+	github.com/incu6us/goimports-reviser/v3 v3.6.2
 	github.com/segmentio/golines v0.11.0
 	github.com/vektra/mockery/v2 v2.36.0
 	golang.org/x/tools v0.14.0
