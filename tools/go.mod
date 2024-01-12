@@ -7,7 +7,7 @@ require (
 	github.com/google/wire v0.5.0
 	github.com/incu6us/goimports-reviser/v3 v3.5.6
 	github.com/segmentio/golines v0.11.0
-	github.com/vektra/mockery/v2 v2.36.0
+	github.com/vektra/mockery/v2 v2.40.1
 	golang.org/x/tools v0.14.0
 	mvdan.cc/gofumpt v0.5.0
 )
@@ -46,7 +46,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/charithe/durationcheck v0.0.10 // indirect
 	github.com/chavacava/garif v0.1.0 // indirect
-	github.com/chigopher/pathlib v0.15.0 // indirect
+	github.com/chigopher/pathlib v0.19.1 // indirect
 	github.com/curioswitch/go-reassign v0.2.0 // indirect
 	github.com/daixiang0/gci v0.11.2 // indirect
 	github.com/dave/dst v0.27.0 // indirect
